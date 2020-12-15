@@ -8,13 +8,14 @@
 	<div class="main">
 		<h1>ログイン情報</h1>
 		<div class="user-table">
-			<span th:inline="text"> ユーザーID:[[${user.id}]]<br>
+			<span th:inline="text"> ユーザーID:[[${user.userId}]]<br>
 				ユーザ名:[[${user.username}]]<br> Email:[[${user.email}]]<br>
 				性別:[[${T(com.example.demo.util.GenderType).GENDERS.get(user.gender)}]]<br>
 				生年月日:[[${user.dateOfBirth}]]<br> 権限:[[${user.role}]]<br>
 			</span>
 		</div>
 		<a th:href="@{/setting}">設定</a> <a th:href="@{/logout}">ログアウト</a>
+		<a th:href="@{/post}">投稿</a>
 	</div>
 </body>
 </html>
