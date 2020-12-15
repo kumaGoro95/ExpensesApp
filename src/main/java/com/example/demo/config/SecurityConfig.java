@@ -51,6 +51,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		    .loginPage("/login")
 		    //認証後にリダイレクトする場所を指定
 		    .defaultSuccessUrl("/")
+		    .usernameParameter("email")
+		    .passwordParameter("password")
 		    .and()
 		  //ログアウトの設定
 		  .logout()

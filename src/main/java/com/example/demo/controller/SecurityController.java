@@ -1,5 +1,7 @@
 package com.example.demo.controller;
 
+import java.time.LocalDateTime;
+
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -54,6 +56,8 @@ public class SecurityController {
 		}else {
 			user.setRole(Role.USER.name());
 		}
+		LocalDateTime ldt = LocalDateTime.now();
+		user.setCreatedAt(ldt);
 		userRepository.save(user);
 		
 		return "redirect:/login?register";

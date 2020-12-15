@@ -23,11 +23,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 	private final SiteUserRepository userRepository;
 	
 	@Override
-	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException{
-		SiteUser user =  userRepository.findByUsername(username);
+	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException{
+		SiteUser user =  userRepository.findByEmail(email);
 		if(user == null) {
 			//ユーザーが見つからなければ、SpringSecurityの以下の例外をthrowする。
-			throw new UsernameNotFoundException(username + " not found");
+			throw new UsernameNotFoundException(email + " not found");
 		}
 		return createUserDetails(user);
 	}

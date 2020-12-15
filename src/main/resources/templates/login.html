@@ -8,7 +8,7 @@
 	<div class="main">
 		<h1>ログイン画面</h1>
 		<div class="alert-danger" th:if="${param.error}">
-			<p>ユーザー名またはパスワードが正しくありません</p>
+			<p>メールアドレスまたはパスワードが正しくありません</p>
 		</div>
 		<div class="alert-success" th:if="${param.register}">
 			<p>新規登録が完了しました</p>
@@ -17,7 +17,7 @@
 			<p>ログアウトしました</p>
 		</div>
 		<form th:action="@{/login}" class="user" method="post">
-			<input type="text" name="username" placeholder="ユーザー名"> <input
+			<input type="text" name="email" placeholder="メールアドレス"> <input
 				type="password" name="password" placeholder="パスワード"> <input
 				type="checkbox" id="remember-me" name="remember-me"> <label
 				for="remember-me">ログインしたままにする</label>
