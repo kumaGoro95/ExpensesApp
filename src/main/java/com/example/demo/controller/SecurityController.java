@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -12,8 +13,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import com.example.demo.model.MoneyRecord;
 import com.example.demo.model.SiteUser;
+import com.example.demo.repository.MoneyRecordRepository;
 import com.example.demo.repository.SiteUserRepository;
+import com.example.demo.repository.MoneyRecordRepository;
 import com.example.demo.util.Role;
 
 import lombok.RequiredArgsConstructor;
@@ -24,6 +28,7 @@ public class SecurityController {
 	
 	//DI
 	private final SiteUserRepository userRepository;
+	private final MoneyRecordRepository moneyRecordRepository;
 	private final BCryptPasswordEncoder passwordEncoder;
 
 	@GetMapping("/login")
@@ -33,9 +38,11 @@ public class SecurityController {
 	
 	@GetMapping("/")
 	//Authentication・・・認証済みのユーザー情報を取得
-	public String showList(Authentication loginUser, Model model) {
+	public String showList(@ModelAttribute MoneyRecord moneyRecord, Authentication loginUser, Model model) {
 		//Thymeleafに値を渡すためにModelに追加
-		model.addAttribute("user", userRepository.findByUsername(loginUser.getName()));		
+		model.addAttribute("user", userRepository.findByUsername(loginUser.getName()));	
+		SiteUser user = userRepository.findByUsername(loginUser.getName());
+		model.addAttribute("records", moneyRecordRepository.findByUserId(user.getUserId()));
 		return "main";
 	}
 	
@@ -56,7 +63,7 @@ public class SecurityController {
 		}else {
 			user.setRole(Role.USER.name());
 		}
-		LocalDateTime ldt = LocalDateTime.now();
+		LocalDateTime ldt = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
 		user.setCreatedAt(ldt);
 		userRepository.save(user);
 		

@@ -1,6 +1,8 @@
 package com.example.demo.model;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -11,9 +13,10 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import javax.validation.constraints.NotNull;
 
 import org.springframework.format.annotation.DateTimeFormat;
-import com.sun.istack.NotNull;
+import org.springframework.format.annotation.DateTimeFormat.ISO;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -29,7 +32,7 @@ public class SiteUser {
 	@GeneratedValue(strategy = GenerationType.IDENTITY) 
 	@NotNull
 	@Column(name = "user_id", nullable = false)
-	private long id;
+	private long userId;
 	
 	@NotBlank
 	@Size(min = 2, max = 20)
@@ -62,13 +65,11 @@ public class SiteUser {
 	@Column(name = "user_role")
 	private String role;
 	
-	@Max(100)
-	@Column(name = "money_records_name")
-	private String moneyRecordsName;
-	
 	@Column(name = "created_at")
-	private String createdAt;
+	@DateTimeFormat(iso = ISO.DATE_TIME)
+	private LocalDateTime createdAt;
 	
 	@Column(name = "updatedAt")
-	private String updatedAt;
+	@DateTimeFormat(iso = ISO.DATE)
+	private LocalDateTime updatedAt;
 }
