@@ -1,6 +1,9 @@
 package com.example.demo.model;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Collection;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -11,25 +14,31 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import javax.validation.constraints.NotNull;
 
 import org.springframework.format.annotation.DateTimeFormat;
-import com.sun.istack.NotNull;
+import org.springframework.format.annotation.DateTimeFormat.ISO;
 
 import lombok.Getter;
 import lombok.Setter;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 @Getter
 @Setter
 @Entity
 @Table(name="users")
-public class SiteUser {
-	
+public class SiteUser implements UserDetails{
+
+	private static final long serialVersionUID = 1L;
+
 	@Id //主キー
 	//DBのidentity列を使用して、キーを自動採番(strategyが無いとautoになる)
 	@GeneratedValue(strategy = GenerationType.IDENTITY) 
 	@NotNull
 	@Column(name = "user_id", nullable = false)
-	private long id;
+	private long userId;
 	
 	@NotBlank
 	@Size(min = 2, max = 20)
@@ -62,13 +71,43 @@ public class SiteUser {
 	@Column(name = "user_role")
 	private String role;
 	
-	@Max(100)
-	@Column(name = "money_records_name")
-	private String moneyRecordsName;
-	
 	@Column(name = "created_at")
-	private String createdAt;
+	@DateTimeFormat(iso = ISO.DATE_TIME)
+	private LocalDateTime createdAt;
 	
 	@Column(name = "updatedAt")
-	private String updatedAt;
+	@DateTimeFormat(iso = ISO.DATE)
+	private LocalDateTime updatedAt;
+
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		// TODO 自動生成されたメソッド・スタブ
+		return null;
+	}
+
+	@Override
+	public boolean isAccountNonExpired() {
+		// TODO 自動生成されたメソッド・スタブ
+		return true;
+	}
+
+	@Override
+	public boolean isAccountNonLocked() {
+		// TODO 自動生成されたメソッド・スタブ
+		return true;
+	}
+
+	@Override
+	public boolean isCredentialsNonExpired() {
+		// TODO 自動生成されたメソッド・スタブ
+		return true;
+	}
+
+	@Override
+	public boolean isEnabled() {
+		// TODO 自動生成されたメソッド・スタブ
+		return true;
+	}
+	
+	
 }

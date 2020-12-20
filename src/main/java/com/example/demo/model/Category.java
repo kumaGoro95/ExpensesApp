@@ -20,7 +20,7 @@ public class Category {
 	@Id
 	@NotNull
 	@Column(name = "category_id", nullable = false)
-	private Long categoryId;
+	private int categoryId;
 	
 	@NotBlank
 	@Column(name = "category_name", nullable = false)
@@ -29,7 +29,4 @@ public class Category {
 	@NotBlank
 	@Column(name = "subcategory_name", nullable = false)
 	private String subcategoryName;
-	
-	
-
 }
