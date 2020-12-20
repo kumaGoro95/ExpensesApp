@@ -2,6 +2,7 @@ package com.example.demo.model;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Collection;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -21,12 +22,17 @@ import org.springframework.format.annotation.DateTimeFormat.ISO;
 import lombok.Getter;
 import lombok.Setter;
 
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
 @Getter
 @Setter
 @Entity
 @Table(name="users")
-public class SiteUser {
-	
+public class SiteUser implements UserDetails{
+
+	private static final long serialVersionUID = 1L;
+
 	@Id //主キー
 	//DBのidentity列を使用して、キーを自動採番(strategyが無いとautoになる)
 	@GeneratedValue(strategy = GenerationType.IDENTITY) 
@@ -72,4 +78,36 @@ public class SiteUser {
 	@Column(name = "updatedAt")
 	@DateTimeFormat(iso = ISO.DATE)
 	private LocalDateTime updatedAt;
+
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		// TODO 自動生成されたメソッド・スタブ
+		return null;
+	}
+
+	@Override
+	public boolean isAccountNonExpired() {
+		// TODO 自動生成されたメソッド・スタブ
+		return true;
+	}
+
+	@Override
+	public boolean isAccountNonLocked() {
+		// TODO 自動生成されたメソッド・スタブ
+		return true;
+	}
+
+	@Override
+	public boolean isCredentialsNonExpired() {
+		// TODO 自動生成されたメソッド・スタブ
+		return true;
+	}
+
+	@Override
+	public boolean isEnabled() {
+		// TODO 自動生成されたメソッド・スタブ
+		return true;
+	}
+	
+	
 }
