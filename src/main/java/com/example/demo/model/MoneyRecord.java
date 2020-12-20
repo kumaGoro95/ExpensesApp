@@ -53,10 +53,10 @@ public class MoneyRecord{
 	private String note;
 	
 	@Column(name = "created_at")
-	@DateTimeFormat(iso = ISO.DATE)
+	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
 	private LocalDateTime createdAt;
 	
 	@Column(name = "updatedAt")
-	@DateTimeFormat(iso = ISO.DATE)
+	@DateTimeFormat(iso = ISO.DATE_TIME)
 	private LocalDateTime updatedAt;
 }

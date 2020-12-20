@@ -2,10 +2,8 @@ package com.example.demo.controller;
 
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -21,6 +19,7 @@ import com.example.demo.model.MoneyRecord;
 import com.example.demo.model.SiteUser;
 import com.example.demo.repository.SiteUserRepository;
 import com.example.demo.repository.MoneyRecordRepository;
+import com.example.demo.repository.CategoryRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -31,6 +30,7 @@ public class HomeController {
 	//DI
 	private final SiteUserRepository userRepository;
 	private final MoneyRecordRepository moneyRecordRepository;
+	private final CategoryRepository categoryRepository;
 	private final BCryptPasswordEncoder passwordEncoder;
 	
 	@GetMapping("/main")
@@ -68,6 +68,7 @@ public class HomeController {
 	@GetMapping("/post")
 	public String post(@ModelAttribute("moneyRecord") MoneyRecord moneyRecord, Authentication loginUser, Model model){
 		model.addAttribute("user", userRepository.findByUsername(loginUser.getName()));
+		model.addAttribute("categories", categoryRepository.findAll());
 		return "post";
 	}
 	
@@ -77,6 +78,7 @@ public class HomeController {
 		if(result.hasErrors()) { 
 			return "post";
 		}
+		//moneyRecord.setCategoryId();
 		SiteUser user = userRepository.findByUsername(loginUser.getName());
 		moneyRecord.setUserId(user.getUserId());
 		LocalDateTime ldt = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
