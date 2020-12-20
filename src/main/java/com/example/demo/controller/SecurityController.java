@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import com.example.demo.model.MoneyRecord;
 import com.example.demo.model.SiteUser;
+//import org.springframework.security.core.userdetails.UserDetails;
 import com.example.demo.repository.MoneyRecordRepository;
 import com.example.demo.repository.SiteUserRepository;
 import com.example.demo.repository.MoneyRecordRepository;
@@ -40,8 +43,9 @@ public class SecurityController {
 	//Authentication・・・認証済みのユーザー情報を取得
 	public String showList(@ModelAttribute MoneyRecord moneyRecord, Authentication loginUser, Model model) {
 		//Thymeleafに値を渡すためにModelに追加
-		model.addAttribute("user", userRepository.findByUsername(loginUser.getName()));	
-		SiteUser user = userRepository.findByUsername(loginUser.getName());
+	    UserDetails userDetails =(UserDetails)loginUser.getPrincipal();
+	    SiteUser user = userRepository.findByUsername(userDetails.getUsername());
+		model.addAttribute("user", user);
 		model.addAttribute("records", moneyRecordRepository.findByUserId(user.getUserId()));
 		return "main";
 	}
