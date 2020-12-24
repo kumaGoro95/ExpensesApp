@@ -33,7 +33,7 @@ public class MoneyRecord{
 	
 	@NotNull
 	@Column(name = "user_id")
-	private long userId;
+	private String username;
 	
 	@NotNull
 	@Column(name = "record_date")

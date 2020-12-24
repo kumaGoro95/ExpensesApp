@@ -58,6 +58,7 @@ public class SecurityController {
 		//@Validatedで入力値チェック→BindingResultに結果が入る→result.hasErrors()でエラーがあるか確認
 		user.setUserNickname(user.getUsername());
 		if(result.hasErrors()) { 
+			System.out.println(result);
 			return "register";
 		}
 		user.setPassword(passwordEncoder.encode(user.getPassword()));

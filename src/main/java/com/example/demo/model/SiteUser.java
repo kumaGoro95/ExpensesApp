@@ -6,8 +6,6 @@ import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-//import javax.persistence.GeneratedValue;
-//import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Max;
@@ -27,7 +25,8 @@ import lombok.Setter;
 public class SiteUser{
 
 	@Id //主キー
-	@NotBlank
+
+	@NotNull
 	@Size(min = 4, max = 20)
 	@Column(name = "user_id", nullable = false)
 	private String username;
