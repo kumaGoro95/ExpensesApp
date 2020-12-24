@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,9 +15,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import com.example.demo.model.MoneyRecord;
 import com.example.demo.model.SiteUser;
 import com.example.demo.repository.MoneyRecordRepository;
 import com.example.demo.repository.SiteUserRepository;
+import com.example.demo.repository.MoneyRecordRepository;
 import com.example.demo.util.Role;
 
 import lombok.RequiredArgsConstructor;
@@ -36,9 +40,11 @@ public class SecurityController {
 	
 	@GetMapping("/")
 	//Authentication・・・認証済みのユーザー情報を取得
+
 	public String loginProcess(Authentication loginUser, Model model) {
 		model.addAttribute("records", moneyRecordRepository.findByUsername(loginUser.getName()));
 		model.addAttribute("user", userRepository.findByUsername(loginUser.getName()));
+
 		return "main";
 	}
 	
