@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import com.example.demo.model.SiteUser;
+import com.example.demo.repository.MoneyRecordRepository;
 import com.example.demo.repository.SiteUserRepository;
 import com.example.demo.util.Role;
 
@@ -24,6 +26,7 @@ public class SecurityController {
 	
 	//DI
 	private final SiteUserRepository userRepository;
+	private final MoneyRecordRepository moneyRecordRepository;
 	private final BCryptPasswordEncoder passwordEncoder;
 
 	@GetMapping("/login")
@@ -33,9 +36,9 @@ public class SecurityController {
 	
 	@GetMapping("/")
 	//Authentication・・・認証済みのユーザー情報を取得
-	public String showList(Authentication loginUser, Model model) {
-		//Thymeleafに値を渡すためにModelに追加
-		model.addAttribute("user", userRepository.findByUsername(loginUser.getName()));		
+	public String loginProcess(Authentication loginUser, Model model) {
+		model.addAttribute("records", moneyRecordRepository.findByUsername(loginUser.getName()));
+		model.addAttribute("user", userRepository.findByUsername(loginUser.getName()));
 		return "main";
 	}
 	
@@ -47,6 +50,7 @@ public class SecurityController {
 	@PostMapping("/register")
 	public String process(@Validated @ModelAttribute("user") SiteUser user, BindingResult result) {
 		//@Validatedで入力値チェック→BindingResultに結果が入る→result.hasErrors()でエラーがあるか確認
+		user.setUserNickname(user.getUsername());
 		if(result.hasErrors()) { 
 			return "register";
 		}
@@ -56,7 +60,7 @@ public class SecurityController {
 		}else {
 			user.setRole(Role.USER.name());
 		}
-		LocalDateTime ldt = LocalDateTime.now();
+		LocalDateTime ldt = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
 		user.setCreatedAt(ldt);
 		userRepository.save(user);
 		
