@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import com.example.demo.model.MoneyRecord;
 import com.example.demo.model.SiteUser;
-//import org.springframework.security.core.userdetails.UserDetails;
 import com.example.demo.repository.MoneyRecordRepository;
 import com.example.demo.repository.SiteUserRepository;
 import com.example.demo.repository.MoneyRecordRepository;
@@ -41,12 +40,11 @@ public class SecurityController {
 	
 	@GetMapping("/")
 	//Authentication・・・認証済みのユーザー情報を取得
-	public String showList(@ModelAttribute MoneyRecord moneyRecord, Authentication loginUser, Model model) {
-		//Thymeleafに値を渡すためにModelに追加
-	    UserDetails userDetails =(UserDetails)loginUser.getPrincipal();
-	    SiteUser user = userRepository.findByUsername(userDetails.getUsername());
-		model.addAttribute("user", user);
-		model.addAttribute("records", moneyRecordRepository.findByUserId(user.getUserId()));
+
+	public String loginProcess(Authentication loginUser, Model model) {
+		model.addAttribute("records", moneyRecordRepository.findByUsername(loginUser.getName()));
+		model.addAttribute("user", userRepository.findByUsername(loginUser.getName()));
+
 		return "main";
 	}
 	
@@ -58,6 +56,7 @@ public class SecurityController {
 	@PostMapping("/register")
 	public String process(@Validated @ModelAttribute("user") SiteUser user, BindingResult result) {
 		//@Validatedで入力値チェック→BindingResultに結果が入る→result.hasErrors()でエラーがあるか確認
+		user.setUserNickname(user.getUsername());
 		if(result.hasErrors()) { 
 			return "register";
 		}

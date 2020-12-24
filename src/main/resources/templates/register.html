@@ -11,7 +11,7 @@
 		<form th:action="@{/register}" th:object="${user}" method="post"
 			novalidate>
 			<div class="form-group">
-				<label for="name"> ユーザー名* </label> <input type="text"
+				<label for="name"> ユーザーID* </label> <input type="text"
 					th:errorclass="is-invalid" th:field="*{username}">
 				<div class="invalid-feedback" th:errors="*{username}"></div>
 			</div>
