@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+<meta charset="UTF-8">
+<title>title</title>
+</head>
+<body>
+	<div class="main">
+		<h1>設定</h1>
+		<p>必要事項を入力してください。 *必須
+		<form th:action="@{/setting}" th:object="${user}" method="post"
+			novalidate>
+			<input type="hidden" name="username" th:value="*{username}" />
+			<div class="form-group">
+				<label for="userNickname"> ユーザー名* </label> <input type="text"
+					th:errorclass="is-invalid" th:field="*{userNickname}">
+				<div class="invalid-feedback" th:errors="*{userNickname}"></div>
+			</div>
+			<div class="form-group">
+				<label for="email"> メールアドレス* </label> <input type="email"
+					th:errorclass="is-invalid" th:field="*{email}">
+				<div class="invalid-feedback" th:errors="*{email}"></div>
+			</div>
+			<div class="form-group">
+				<label for="password"> パスワード* </label> <input type="password"
+					th:errorclass="is-invalid" th:field="*{password}">
+				<div class="invalid-feedback" th:errors="*{password}"></div>
+			</div>
+			<div class="form-group">
+				<label for="gender"> 性別 </label>
+				<div th:each="gender:${T(com.example.demo.util.GenderType).GENDERS}">
+					<input type="radio" th:errorclass="is-invalid" th:field="*{gender}"
+						th:value="${gender.key}"> <label
+						th:for="${#ids.prev('gender')}" th:text="${gender.value}">
+						<div class="invalid-feedback" th:errors="*{gender}"></div>
+					</label>
+				</div>
+			</div>
+			
+			
+			<div class="form-group">
+			<label for="dateOfBirth">生年月日</label>
+			<input type="date" value="2000-01-01" th:errorclass="is-invalid" th:field="*{dateOfBirth}">
+			<div class="invalid-feedback" th:errors ="*{dateOfBirth}"></div>
+			</div>
+			<div class="form-check"></div>
+			<button class="btn">登録</button>
+		</form>
+		<a th:href="@{/deleteUser}">退会する</a>
+		<a th:href="@{/logout}">ログアウト</a>
+
+	</div>
+</body>
+</html>
