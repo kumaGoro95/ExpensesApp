@@ -8,8 +8,8 @@
 	<div class="main">
 		<h1>ログイン情報</h1>
 		<div class="user-table">
-			<span th:inline="text"> ユーザーID:[[${user.userId}]]<br>
-				ユーザ名:[[${user.username}]]<br> Email:[[${user.email}]]<br>
+			<span th:inline="text"> ユーザーID:[[${user.username}]]<br>
+				ユーザ名:[[${user.userNickname}]]<br> Email:[[${user.email}]]<br>
 				性別:[[${T(com.example.demo.util.GenderType).GENDERS.get(user.gender)}]]<br>
 				生年月日:[[${user.dateOfBirth}]]<br> 権限:[[${user.role}]]<br>
 				作成日時:[[${user.createdAt}]]<br> 更新日時:[[${user.updatedAt}]]
@@ -21,7 +21,9 @@
 	<div class="record">
 	<h1>記録一覧</h1>
 	<div th:each="record : ${records}" th:inline="text">
+	<a th:href="@{/record/__${record.recordId}__}">
 		ID:[[${record.recordId}]] - 日付:[[${record.recordDate}]] - 支出額:[[${record.incomeAndExpense}]]円 - カテゴリID:[[${record.categoryId}]] - 登録日時:[[${record.createdAt}]]
+	</a>
 	</div>
 	</div>
 </body>

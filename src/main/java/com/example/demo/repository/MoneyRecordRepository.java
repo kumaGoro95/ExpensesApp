@@ -9,6 +9,10 @@ import com.example.demo.model.SiteUser;
 
 public interface MoneyRecordRepository extends JpaRepository<MoneyRecord, Long> {
 	
-	public List<MoneyRecord> findByUserId(Long userId);
+	public List<MoneyRecord> findByUsername(String username);
+	
+	public MoneyRecord findByRecordId(Long recordId);
+	
+	public void deleteByRecordId(Long recordId);
 	
 }

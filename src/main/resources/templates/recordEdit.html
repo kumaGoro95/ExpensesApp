@@ -6,13 +6,12 @@
 </head>
 <body>
 	<div class="main">
-		<h1>設定</h1>
-		<p>必要事項を入力してください。 *必須
-		<form th:action="@{/setting}" th:object="${user}" method="post"
+		<h1>編集</h1>
+		<form th:action="@{/recordEdit}" th:object="${record}" method="post"
 			novalidate>
 			<input type="hidden" name="username" th:value="*{username}" />
 			<div class="form-group">
-				<label for="name"> ユーザー名* </label> <input type="text"
+				<label for="userNickname"> ユーザー名* </label> <input type="text"
 					th:errorclass="is-invalid" th:field="*{userNickname}">
 				<div class="invalid-feedback" th:errors="*{userNickname}"></div>
 			</div>
@@ -46,8 +45,8 @@
 			<div class="form-check"></div>
 			<button class="btn">登録</button>
 		</form>
+		<a th:href="@{/deleteUser}">退会する</a>
 		<a th:href="@{/logout}">ログアウト</a>
-		<a th:href="@{/deleteUser}">退会</a>
 
 	</div>
 </body>
