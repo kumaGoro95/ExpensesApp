@@ -10,6 +10,7 @@
 		<p>必要事項を入力してください。 *必須
 		<form th:action="@{/post}" th:object="${moneyRecord}" method="post"
 			novalidate>
+			<input type="hidden" name="username" th:value="${user.username}" />
 			<div class="form-group">
 				<label for="recordDate">日付</label> <input type="date"
 					th:errorclass="is-invalid" th:field="*{recordDate}">

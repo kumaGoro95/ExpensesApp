@@ -85,11 +85,9 @@ public class HomeController {
 	
 	@PostMapping("/post")
 	public String process(@Validated @ModelAttribute("moneyRecord") MoneyRecord moneyRecord, BindingResult result, Authentication loginUser) {
-		//@Validatedで入力値チェック→BindingResultに結果が入る→result.hasErrors()でエラーがあるか確認
-		if(result.hasErrors()) { 
-			return "post";
+		if(result.hasErrors()) {
+			return "redirect:/post?post";
 		}
-		//moneyRecord.setCategoryId();
 		SiteUser user = userRepository.findByUsername(loginUser.getName());
 		moneyRecord.setUsername(user.getUsername());
 		LocalDateTime ldt = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
