@@ -11,14 +11,12 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
-import javax.validation.constraints.NotNull;
 
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
 
 import lombok.Getter;
 import lombok.Setter;
-
 
 @Getter
 @Setter
@@ -27,7 +25,9 @@ import lombok.Setter;
 public class SiteUser{
 
 	@Id //主キー
+
 	@NotNull
+	@Size(min = 4, max = 20)
 	@Column(name = "user_id", nullable = false)
 	private String username;
 	
