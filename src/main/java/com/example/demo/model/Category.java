@@ -30,3 +30,4 @@ public class Category {
 	@Column(name = "subcategory_name", nullable = false)
 	private String subcategoryName;
 }
+

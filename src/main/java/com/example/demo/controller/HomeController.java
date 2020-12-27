@@ -56,11 +56,7 @@ public class HomeController {
 		if(result.hasErrors()) { 
 			return "main";
 		}
-		SiteUser currentUserInfo = userRepository.findByUsername(loginUser.getName());
-		user.setUsername(currentUserInfo.getUsername());
-		user.setRole(currentUserInfo.getRole());
 		user.setPassword(passwordEncoder.encode(user.getPassword()));
-		user.setCreatedAt(currentUserInfo.getCreatedAt());
 		LocalDateTime ldt = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
 		user.setUpdatedAt(ldt);
 		userRepository.save(user);
@@ -88,8 +84,6 @@ public class HomeController {
 		if(result.hasErrors()) {
 			return "redirect:/post?post";
 		}
-		SiteUser user = userRepository.findByUsername(loginUser.getName());
-		moneyRecord.setUsername(user.getUsername());
 		LocalDateTime ldt = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
 		
 		//ZonedDateTime zonedDateTime = ZonedDateTime.now();
@@ -115,6 +109,30 @@ public class HomeController {
 		moneyRecordRepository.deleteById(recordId);
 		
 		return "redirect:/main?record";
+	}
+	
+	@GetMapping("/editRecord/{recordId}")
+	public String editRecord(@PathVariable("recordId") Long recordId, Authentication loginUser, Model model){
+		model.addAttribute("record", moneyRecordRepository.findByRecordId(recordId));
+		model.addAttribute("user", userRepository.findByUsername(loginUser.getName()));
+		model.addAttribute("categories", categoryRepository.findAll());
+		
+		return "recordEdit";
+	}
+	
+	@PostMapping("/editRecord/{recordId}")
+	public String updateRecord(@Validated @ModelAttribute("moneyRecord") MoneyRecord moneyRecord, BindingResult result, Authentication loginUser) {
+		if(result.hasErrors()) {
+			return "main";
+		}
+
+		LocalDateTime ldt = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
+		moneyRecord.setUpdatedAt(ldt);
+
+		
+		moneyRecordRepository.save(moneyRecord);
+		
+		return "redirect:/main?editRecord";
 	}
 
 }
