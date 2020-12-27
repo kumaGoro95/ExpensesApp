@@ -7,3 +7,4 @@ import com.example.demo.model.Category;
 public interface CategoryRepository extends JpaRepository<Category, Long> {
 
 }
+
