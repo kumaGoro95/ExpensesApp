@@ -11,6 +11,8 @@
 		<form th:action="@{/setting}" th:object="${user}" method="post"
 			novalidate>
 			<input type="hidden" name="username" th:value="*{username}" />
+			<input type="hidden" name="createdAt" th:value="*{createdAt}" />
+			<input type="hidden" name="role" th:value="*{role}" />
 			<div class="form-group">
 				<label for="name"> ユーザー名* </label> <input type="text"
 					th:errorclass="is-invalid" th:field="*{userNickname}">
