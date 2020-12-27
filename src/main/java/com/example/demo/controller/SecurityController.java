@@ -42,7 +42,7 @@ public class SecurityController {
 	//Authentication・・・認証済みのユーザー情報を取得
 
 	public String loginProcess(Authentication loginUser, Model model) {
-		model.addAttribute("records", moneyRecordRepository.findByUsername(loginUser.getName()));
+		model.addAttribute("records", moneyRecordRepository.findByUsernameOrderByRecordDate(loginUser.getName()));
 		model.addAttribute("user", userRepository.findByUsername(loginUser.getName()));
 
 		return "main";
