@@ -82,6 +82,8 @@ public class HomeController {
 	@PostMapping("/post")
 	public String process(@Validated @ModelAttribute("moneyRecord") MoneyRecord moneyRecord, BindingResult result, Authentication loginUser) {
 		if(result.hasErrors()) {
+			System.out.println(result);
+			System.out.println(moneyRecord.getNote());
 			return "redirect:/post?post";
 		}
 		LocalDateTime ldt = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);

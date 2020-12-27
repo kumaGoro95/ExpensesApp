@@ -22,7 +22,7 @@
 	<h1>記録一覧</h1>
 	<div th:each="record : ${records}" th:inline="text">
 	<a th:href="@{/record/__${record.recordId}__}">
-		ID:[[${record.recordId}]] - 日付:[[${record.recordDate}]] - 支出額:[[${record.incomeAndExpense}]]円 - カテゴリID:[[${record.categoryId}]] - 登録日時:[[${record.createdAt}]]
+		ID:[[${record.recordId}]] - 日付:[[${record.recordDate}]] - 支出額:[[${record.incomeAndExpense}]]円 - カテゴリID:[[${record.categoryId}]] - 登録日時:[[${record.createdAt}]] - 更新日時:[[${record.updatedAt}]] - 備考:[[${record.note}]]
 	</a>
 	</div>
 	</div>
