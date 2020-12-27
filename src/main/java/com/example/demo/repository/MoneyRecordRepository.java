@@ -15,4 +15,6 @@ public interface MoneyRecordRepository extends JpaRepository<MoneyRecord, Long> 
 	
 	public void deleteByRecordId(Long recordId);
 	
+	public List<MoneyRecord> findByUsernameOrderByRecordDate(String username);
+	
 }

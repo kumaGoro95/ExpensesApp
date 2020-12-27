@@ -40,7 +40,7 @@ public class HomeController {
 	public String main(@ModelAttribute MoneyRecord moneyRecord, Authentication loginUser, Model model){
 		SiteUser user = userRepository.findByUsername(loginUser.getName());
 		model.addAttribute("user", user);
-		model.addAttribute("records", moneyRecordRepository.findByUsername(user.getUsername()));
+		model.addAttribute("records", moneyRecordRepository.findByUsernameOrderByRecordDate(loginUser.getName()));
 		return "main";
 	}
 	
