@@ -9,9 +9,9 @@ import javax.persistence.Table;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.validation.constraints.Max;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.validator.constraints.Length;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
 
@@ -48,7 +48,7 @@ public class MoneyRecord{
 	@Column(name = "category_id")
 	private int categoryId;
 	
-	@Max(500)
+	@Length(min=0, max=500)
 	@Column(name = "record_note")
 	private String note;
 	

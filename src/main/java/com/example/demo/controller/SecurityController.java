@@ -1,7 +1,10 @@
 package com.example.demo.controller;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalAdjusters;
+import java.util.List;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -13,9 +16,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import com.example.demo.model.MoneyRecord;
 import com.example.demo.model.SiteUser;
 import com.example.demo.repository.MoneyRecordRepository;
 import com.example.demo.repository.SiteUserRepository;
+import com.example.demo.service.MoneyRecordService;
 import com.example.demo.util.Role;
 
 import lombok.RequiredArgsConstructor;
@@ -27,6 +32,7 @@ public class SecurityController {
 	//DI
 	private final SiteUserRepository userRepository;
 	private final MoneyRecordRepository moneyRecordRepository;
+	private final MoneyRecordService moneyRecordService;
 	private final BCryptPasswordEncoder passwordEncoder;
 
 	@GetMapping("/login")
@@ -40,7 +46,11 @@ public class SecurityController {
 	public String loginProcess(Authentication loginUser, Model model) {
 		model.addAttribute("records", moneyRecordRepository.findByUsernameOrderByRecordDate(loginUser.getName()));
 		model.addAttribute("user", userRepository.findByUsername(loginUser.getName()));
-
+	
+		List<MoneyRecord> list = moneyRecordService.getMonthExpense();
+		model.addAttribute("temporaryRecords", list);
+		
+		
 		return "main";
 	}
 	

@@ -25,6 +25,12 @@
 		ID:[[${record.recordId}]] - 日付:[[${record.recordDate}]] - 支出額:[[${record.incomeAndExpense}]]円 - カテゴリID:[[${record.categoryId}]] - 登録日時:[[${record.createdAt}]] - 更新日時:[[${record.updatedAt}]] - 備考:[[${record.note}]]
 	</a>
 	</div>
+	<br>
+	<br>
+	<div th:each="temporaryRecord : ${temporaryRecords}" th:inline="text">
+	<a th:href="@{/record/__${temporaryRecord.recordId}__}">
+		ID:[[${temporaryRecord.recordId}]] - 日付:[[${temporaryRecord.recordDate}]] - 支出額:[[${temporaryRecord.incomeAndExpense}]]円 - カテゴリID:[[${temporaryRecord.categoryId}]] - 登録日時:[[${temporaryRecord.createdAt}]] - 更新日時:[[${temporaryRecord.updatedAt}]] - 備考:[[${temporaryRecord.note}]]
+	</a>
 	</div>
 </body>
 </html>

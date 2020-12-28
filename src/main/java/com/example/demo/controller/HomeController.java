@@ -1,8 +1,11 @@
 package com.example.demo.controller;
 
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalAdjusters;
+import java.util.List;
 
 
 import javax.transaction.Transactional;
@@ -21,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.example.demo.model.MoneyRecord;
 import com.example.demo.model.SiteUser;
 import com.example.demo.repository.SiteUserRepository;
+import com.example.demo.service.MoneyRecordService;
 import com.example.demo.repository.MoneyRecordRepository;
 import com.example.demo.repository.CategoryRepository;
 
@@ -33,6 +37,7 @@ public class HomeController {
 	//DI
 	private final SiteUserRepository userRepository;
 	private final MoneyRecordRepository moneyRecordRepository;
+	private final MoneyRecordService moneyRecordService;
 	private final CategoryRepository categoryRepository;
 	private final BCryptPasswordEncoder passwordEncoder;
 	
@@ -41,6 +46,9 @@ public class HomeController {
 		SiteUser user = userRepository.findByUsername(loginUser.getName());
 		model.addAttribute("user", user);
 		model.addAttribute("records", moneyRecordRepository.findByUsernameOrderByRecordDate(loginUser.getName()));
+		
+		List<MoneyRecord> list = moneyRecordService.getMonthExpense();
+		model.addAttribute("temporaryRecords", list);
 		return "main";
 	}
 	
