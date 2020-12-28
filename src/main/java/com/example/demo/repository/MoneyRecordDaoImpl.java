@@ -42,5 +42,18 @@ public class MoneyRecordDaoImpl implements MoneyRecordDao<MoneyRecord> {
 		em.close();
 		return list;
 	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<MoneyRecord> find(String fstr, String a){
+		List<MoneyRecord> list = null;
+		String qstr = "from MoneyRecord where username = ?1 and record_date like ?2 and category_id not like ?3";
+		Query query = em.createQuery(qstr).setParameter(1, fstr)
+				.setParameter(2, a + "%")
+				.setParameter(3, 20 + "%");
+		list = query.getResultList();
+		
+		return list;
+	}
 
 }

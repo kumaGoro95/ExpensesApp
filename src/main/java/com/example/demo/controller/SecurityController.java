@@ -2,7 +2,6 @@ package com.example.demo.controller;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
@@ -18,12 +17,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import com.example.demo.model.MoneyRecord;
 import com.example.demo.model.SiteUser;
 import com.example.demo.repository.MoneyRecordDaoImpl;
-import com.example.demo.repository.MoneyRecordRepository;
 import com.example.demo.repository.SiteUserRepository;
-import com.example.demo.service.MoneyRecordService;
 import com.example.demo.util.Role;
 
 import lombok.RequiredArgsConstructor;
@@ -34,8 +30,6 @@ public class SecurityController {
 	
 	//DI
 	private final SiteUserRepository userRepository;
-	private final MoneyRecordRepository moneyRecordRepository;
-	private final MoneyRecordService moneyRecordService;
 	private  MoneyRecordDaoImpl mrDao;
 	private final BCryptPasswordEncoder passwordEncoder;
 	
@@ -59,10 +53,7 @@ public class SecurityController {
 		model.addAttribute("records", mrDao.findByUsername(loginUser.getName()));
 		//model.addAttribute("records", moneyRecordRepository.findByUsernameOrderByRecordDate(loginUser.getName()));
 		model.addAttribute("user", userRepository.findByUsername(loginUser.getName()));
-	
-		List<MoneyRecord> list = moneyRecordService.getMonthExpense();
-		model.addAttribute("temporaryRecords", list);
-		
+		model.addAttribute("temporaryRecords", mrDao.find(loginUser.getName(), "2020-12"));
 		
 		return "main";
 	}
