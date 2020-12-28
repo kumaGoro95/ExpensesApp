@@ -9,5 +9,6 @@ import org.springframework.stereotype.Repository;
 public interface MoneyRecordDao <T> extends Serializable {
 	public List<T> getAll();
 	public List<T> findByUsername(String username);
+	public List<T> find(String fstr, String a);
 
 }

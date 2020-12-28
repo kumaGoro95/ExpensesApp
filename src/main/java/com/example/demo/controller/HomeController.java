@@ -24,6 +24,7 @@ import com.example.demo.repository.SiteUserRepository;
 import com.example.demo.service.MoneyRecordService;
 import com.example.demo.repository.MoneyRecordRepository;
 import com.example.demo.repository.CategoryRepository;
+import com.example.demo.repository.MoneyRecordDaoImpl;
 
 import lombok.RequiredArgsConstructor;
 
@@ -34,7 +35,7 @@ public class HomeController {
 	//DI
 	private final SiteUserRepository userRepository;
 	private final MoneyRecordRepository moneyRecordRepository;
-	private final MoneyRecordService moneyRecordService;
+	private  MoneyRecordDaoImpl mrDao;
 	private final CategoryRepository categoryRepository;
 	private final BCryptPasswordEncoder passwordEncoder;
 	
@@ -43,9 +44,7 @@ public class HomeController {
 		SiteUser user = userRepository.findByUsername(loginUser.getName());
 		model.addAttribute("user", user);
 		model.addAttribute("records", moneyRecordRepository.findByUsernameOrderByRecordDate(loginUser.getName()));
-		
-		List<MoneyRecord> list = moneyRecordService.getMonthExpense();
-		model.addAttribute("temporaryRecords", list);
+		model.addAttribute("temporaryRecords", mrDao.find(loginUser.getName(), "2020-12"));
 		return "main";
 	}
 	
