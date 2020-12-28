@@ -1,10 +1,12 @@
 package com.example.demo.controller;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalAdjusters;
 import java.util.List;
+
+import javax.annotation.PostConstruct;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import com.example.demo.model.MoneyRecord;
 import com.example.demo.model.SiteUser;
+import com.example.demo.repository.MoneyRecordDaoImpl;
 import com.example.demo.repository.MoneyRecordRepository;
 import com.example.demo.repository.SiteUserRepository;
 import com.example.demo.service.MoneyRecordService;
@@ -33,7 +36,16 @@ public class SecurityController {
 	private final SiteUserRepository userRepository;
 	private final MoneyRecordRepository moneyRecordRepository;
 	private final MoneyRecordService moneyRecordService;
+	private  MoneyRecordDaoImpl mrDao;
 	private final BCryptPasswordEncoder passwordEncoder;
+	
+	@PersistenceContext
+	EntityManager em;
+	
+	@PostConstruct
+	public void init() {
+		mrDao = new MoneyRecordDaoImpl(em);
+	}
 
 	@GetMapping("/login")
 	public String login() {
@@ -44,7 +56,8 @@ public class SecurityController {
 	//Authentication・・・認証済みのユーザー情報を取得
 
 	public String loginProcess(Authentication loginUser, Model model) {
-		model.addAttribute("records", moneyRecordRepository.findByUsernameOrderByRecordDate(loginUser.getName()));
+		model.addAttribute("records", mrDao.findByUsername(loginUser.getName()));
+		//model.addAttribute("records", moneyRecordRepository.findByUsernameOrderByRecordDate(loginUser.getName()));
 		model.addAttribute("user", userRepository.findByUsername(loginUser.getName()));
 	
 		List<MoneyRecord> list = moneyRecordService.getMonthExpense();
