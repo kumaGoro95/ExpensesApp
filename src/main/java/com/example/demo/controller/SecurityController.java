@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import com.example.demo.dao.MoneyRecordDaoImpl;
 import com.example.demo.model.SiteUser;
 import com.example.demo.repository.MoneyRecordRepository;
-
 import com.example.demo.repository.SiteUserRepository;
 import com.example.demo.util.Role;
 
@@ -34,6 +33,14 @@ public class SecurityController {
 	private final SiteUserRepository userRepository;
 	private MoneyRecordDaoImpl mrDao;
 	private final BCryptPasswordEncoder passwordEncoder;
+	
+	@PersistenceContext
+	EntityManager em;
+	
+	@PostConstruct
+	public void init() {
+		mrDao = new MoneyRecordDaoImpl(em);
+	}
 
 	@PersistenceContext
 	EntityManager em;
@@ -68,7 +75,9 @@ public class SecurityController {
 	public String process(@Validated @ModelAttribute("user") SiteUser user, BindingResult result) {
 		// @Validatedで入力値チェック→BindingResultに結果が入る→result.hasErrors()でエラーがあるか確認
 		user.setUserNickname(user.getUsername());
-		if (result.hasErrors()) {
+		if(result.hasErrors()) { 
+			System.out.println(result);
+      
 			return "register";
 		}
 		user.setPassword(passwordEncoder.encode(user.getPassword()));

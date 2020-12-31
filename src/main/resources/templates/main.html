@@ -8,8 +8,8 @@
 	<div class="main">
 		<h1>ログイン情報</h1>
 		<div class="user-table">
-			<span th:inline="text"> ユーザーID:[[${user.userId}]]<br>
-				ユーザ名:[[${user.username}]]<br> Email:[[${user.email}]]<br>
+			<span th:inline="text"> ユーザーID:[[${user.username}]]<br>
+				ユーザ名:[[${user.userNickname}]]<br> Email:[[${user.email}]]<br>
 				性別:[[${T(com.example.demo.util.GenderType).GENDERS.get(user.gender)}]]<br>
 				生年月日:[[${user.dateOfBirth}]]<br> 権限:[[${user.role}]]<br>
 				作成日時:[[${user.createdAt}]]<br> 更新日時:[[${user.updatedAt}]]
@@ -21,8 +21,16 @@
 	<div class="record">
 	<h1>記録一覧</h1>
 	<div th:each="record : ${records}" th:inline="text">
-		ID:[[${record.recordId}]] - 日付:[[${record.recordDate}]] - 支出額:[[${record.incomeAndExpense}]]円 - カテゴリID:[[${record.categoryId}]] - 登録日時:[[${record.createdAt}]]
+	<a th:href="@{/record/__${record.recordId}__}">
+		ID:[[${record.recordId}]] - 日付:[[${record.recordDate}]] - 支出額:[[${record.incomeAndExpense}]]円 - カテゴリID:[[${record.categoryId}]] - 登録日時:[[${record.createdAt}]] - 更新日時:[[${record.updatedAt}]] - 備考:[[${record.note}]]
+	</a>
 	</div>
+	<br>
+	<br>
+	<div th:each="temporaryRecord : ${temporaryRecords}" th:inline="text">
+	<a th:href="@{/record/__${temporaryRecord.recordId}__}">
+		ID:[[${temporaryRecord.recordId}]] - 日付:[[${temporaryRecord.recordDate}]] - 支出額:[[${temporaryRecord.incomeAndExpense}]]円 - カテゴリID:[[${temporaryRecord.categoryId}]] - 登録日時:[[${temporaryRecord.createdAt}]] - 更新日時:[[${temporaryRecord.updatedAt}]] - 備考:[[${temporaryRecord.note}]]
+	</a>
 	</div>
 </body>
 </html>
