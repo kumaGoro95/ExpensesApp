@@ -5,6 +5,10 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 
+import javax.annotation.PostConstruct;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
 import javax.transaction.Transactional;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -18,13 +22,15 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.example.demo.dao.CategoryDaoImpl;
+import com.example.demo.model.CategoryName;
 import com.example.demo.model.MoneyRecord;
 import com.example.demo.model.SiteUser;
 import com.example.demo.repository.SiteUserRepository;
 import com.example.demo.service.MoneyRecordService;
 import com.example.demo.repository.MoneyRecordRepository;
 import com.example.demo.repository.CategoryRepository;
-import com.example.demo.repository.MoneyRecordDaoImpl;
+import com.example.demo.dao.MoneyRecordDaoImpl;
 
 import lombok.RequiredArgsConstructor;
 
@@ -35,9 +41,19 @@ public class HomeController {
 	//DI
 	private final SiteUserRepository userRepository;
 	private final MoneyRecordRepository moneyRecordRepository;
-	private  MoneyRecordDaoImpl mrDao;
+	private MoneyRecordDaoImpl mrDao;
+	private CategoryDaoImpl cDao;
 	private final CategoryRepository categoryRepository;
 	private final BCryptPasswordEncoder passwordEncoder;
+	
+	@PersistenceContext
+	EntityManager em;
+	
+	@PostConstruct
+	public void init() {
+		mrDao = new MoneyRecordDaoImpl(em);
+		cDao = new CategoryDaoImpl(em);
+	}
 	
 	@GetMapping("/main")
 	public String main(@ModelAttribute MoneyRecord moneyRecord, Authentication loginUser, Model model){
@@ -79,7 +95,15 @@ public class HomeController {
 	@GetMapping("/post")
 	public String post(@ModelAttribute("moneyRecord") MoneyRecord moneyRecord, Authentication loginUser, Model model){
 		model.addAttribute("user", userRepository.findByUsername(loginUser.getName()));
-		model.addAttribute("categories", categoryRepository.findAll());
+		model.addAttribute("subcategories", categoryRepository.findAll());
+		List<CategoryName> list = cDao.getCategory();
+		model.addAttribute("categories", list);
+		
+		for(int i = 0; i < list.size(); i++) {
+			CategoryName a = list.get(i);
+			System.out.println(a.getCategoryName());
+			System.out.println(a.getNumberOfSubcategory());
+		}
 		return "post";
 	}
 	
