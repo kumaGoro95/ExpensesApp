@@ -60,6 +60,7 @@ public class HomeController {
 		model.addAttribute("user", user);
 		model.addAttribute("records", moneyRecordRepository.findByUsernameOrderByRecordDate(loginUser.getName()));
 		model.addAttribute("temporaryRecords", mrDao.find(loginUser.getName(), "2020-12"));
+		model.addAttribute("total", mrDao.sumMonthExpense(loginUser.getName(), "2020-12"));
 		return "main";
 	}
 	
