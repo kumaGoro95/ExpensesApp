@@ -10,6 +10,7 @@ import javax.persistence.Query;
 
 import org.springframework.stereotype.Repository;
 
+import com.example.demo.model.CategorySum;
 import com.example.demo.model.MoneyRecord;
 
 @Repository
@@ -69,6 +70,21 @@ public class MoneyRecordDaoImpl implements MoneyRecordDao<MoneyRecord> {
 		BigDecimal sum =(BigDecimal) query.getSingleResult();
 		
 		return sum;
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public CategorySum sumCategoryExpense(String fstr, String month, int category) {
+		String qstr = "select sum(income_and_expense) from money_records where user_id = ?1 and record_date like ?2 and category_id like ?3";
+		Query query = em.createNativeQuery(qstr).setParameter(1, fstr)
+				.setParameter(2, month + "%")
+				.setParameter(3, category + "%");
+		BigDecimal result = (BigDecimal) query.getSingleResult();
+		String categoryStr = category+"01";
+	    Long categoryInt = Long.parseLong(categoryStr);
+		CategorySum cs = new CategorySum(categoryInt, result);
+		
+		return cs;
 	}
 
 }
