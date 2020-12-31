@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>title</title>
+</head>
+<body>
+	<div class="main">
+		<h1>出入金記録</h1>
+		<p>必要事項を入力してください。 *必須
+		<form th:action="@{/post}" th:object="${moneyRecord}" method="post"
+			novalidate>
+			<input type="hidden" name="username" th:value="${user.username}" />
+			<div class="form-group">
+				<label for="recordDate">日付</label> <input type="date"
+					th:errorclass="is-invalid" th:field="*{recordDate}">
+				<div class="invalid-feedback" th:errors="*{recordDate}"></div>
+			</div>
+			<div class="form-group">
+				<label for="incomeAndExpense">金額</label> <input type="number"
+					th:errorclass="is-invalid" th:field="*{incomeAndExpense}">
+				<div class="invalid-feedback" th:errors="*{incomeAndExpense}"></div>
+			</div>
+			<div class="form-group">
+				<select class="form-control" name="categoryId">
+					<div th:each="subcategory : ${subcategories}" th:inline="text">
+						<option th:value="${subcategory.categoryId}" th:field="*{categoryId}">[[${subcategory.subcategoryName}]]</option>
+					</div>
+				</select>
+			</div>
+			<div class="form-group">
+				<label for="note">備考</label> <textarea  rows="5" cols="40" th:errorclass="is-invalid" th:field="*{note}"></textarea>
+				<div class="invalid-feedback" th:errors="*{note}"></div>
+			</div>
+
+	<div class="form-check"></div>
+	<button class="btn">登録</button>
+	</form>
+	</div>
+
+</body>
+</html>
