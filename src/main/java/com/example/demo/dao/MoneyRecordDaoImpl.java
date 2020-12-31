@@ -1,4 +1,4 @@
-package com.example.demo.repository;
+package com.example.demo.dao;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -15,7 +15,6 @@ public class MoneyRecordDaoImpl implements MoneyRecordDao<MoneyRecord> {
 
 	private static final long serialVersionUID = 1L;
 	private EntityManager em;
-	private MoneyRecord md;
 	
 	public MoneyRecordDaoImpl() {
 		super();
@@ -26,20 +25,20 @@ public class MoneyRecordDaoImpl implements MoneyRecordDao<MoneyRecord> {
 		em = manager;
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<MoneyRecord> getAll(){
 		Query query = em.createQuery("from MoneyRecord");
-		@SuppressWarnings("unchecked")
 		List<MoneyRecord> list = query.getResultList();
 		em.close();
 		return list;
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<MoneyRecord> findByUsername(String username){
 		String qstr = "from MoneyRecord where username = :fstr";
 		Query query = em.createQuery(qstr).setParameter("fstr", username);
-		@SuppressWarnings("unchecked")
 		List<MoneyRecord> list = query.getResultList();
 		em.close();
 		return list;
@@ -57,9 +56,6 @@ public class MoneyRecordDaoImpl implements MoneyRecordDao<MoneyRecord> {
 		
 		return list;
 	}
-<<<<<<< Updated upstream:src/main/java/com/example/demo/repository/MoneyRecordDaoImpl.java
-
-=======
 	
 	@SuppressWarnings("unchecked")
 	@Override
@@ -68,9 +64,9 @@ public class MoneyRecordDaoImpl implements MoneyRecordDao<MoneyRecord> {
 		Query query = em.createNativeQuery(qstr).setParameter(1, fstr)
 				.setParameter(2, a + "%")
 				.setParameter(3, 20 + "%");
-		BigDecimal result =(BigDecimal)query.getSingleResult();
+		BigDecimal result = (BigDecimal)query.getSingleResult();
 		
 		return result;
 	}
->>>>>>> Stashed changes:src/main/java/com/example/demo/dao/MoneyRecordDaoImpl.java
+
 }
