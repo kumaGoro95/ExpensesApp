@@ -33,14 +33,6 @@ public class SecurityController {
 	private final SiteUserRepository userRepository;
 	private MoneyRecordDaoImpl mrDao;
 	private final BCryptPasswordEncoder passwordEncoder;
-	
-	@PersistenceContext
-	EntityManager em;
-	
-	@PostConstruct
-	public void init() {
-		mrDao = new MoneyRecordDaoImpl(em);
-	}
 
 	@PersistenceContext
 	EntityManager em;

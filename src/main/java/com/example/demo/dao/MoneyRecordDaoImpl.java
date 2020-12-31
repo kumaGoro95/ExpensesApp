@@ -1,5 +1,8 @@
 package com.example.demo.dao;
 
+
+import java.math.BigDecimal;
+
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -58,17 +61,14 @@ public class MoneyRecordDaoImpl implements MoneyRecordDao<MoneyRecord> {
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public int sumMonthExpense(String fstr, String a) {
-		String qstr = "select sum(income_and_expense) from MoneyRecord where username = ?1 and record_date like ?2 and category_id not like ?3";
-		Query query = em.createQuery(qstr).setParameter(1, fstr)
+	public BigDecimal sumMonthExpense(String fstr, String a) {
+		String qstr = "select sum(income_and_expense) from money_records where user_id = ?1 and record_date like ?2 and category_id not like ?3";
+		Query query = em.createNativeQuery(qstr).setParameter(1, fstr)
 				.setParameter(2, a + "%")
 				.setParameter(3, 20 + "%");
-		Object sum = query.getSingleResult();
-		String sumStr = sum.toString();
-		System.out.println(sum);
-		int result = Integer.parseInt(sumStr);
+		BigDecimal sum =(BigDecimal) query.getSingleResult();
 		
-		return result;
+		return sum;
 	}
 
 }
