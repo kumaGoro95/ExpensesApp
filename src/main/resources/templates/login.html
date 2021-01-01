@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>title</title>
+</head>
+<body>
+	<div class="main">
+		<h1>ログイン画面</h1>
+		<div class="alert-danger" th:if="${param.error}">
+			<p>メールアドレスまたはパスワードが正しくありません</p>
+		</div>
+		<div class="alert-success" th:if="${param.register}">
+			<p>新規登録が完了しました</p>
+		</div>
+		<div class="alert-success" th:if="${param.logout}">
+			<p>ログアウトしました</p>
+		</div>
+		<form th:action="@{/login}" class="user" method="post">
+			<input type="text" name="email" placeholder="メールアドレス"> <input
+				type="password" name="password" placeholder="パスワード"> <input
+				type="checkbox" id="remember-me" name="remember-me"> <label
+				for="remember-me">ログインしたままにする</label>
+			<button class="btn">ログイン</button>
+		</form>
+		<hr>
+		<a th:href="@{/register}">新規登録はこちら</a>
+	</div>
+
+</body>
+</html>
