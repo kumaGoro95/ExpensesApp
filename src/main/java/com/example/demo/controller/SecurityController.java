@@ -55,9 +55,7 @@ public class SecurityController {
 		//model.addAttribute("records", moneyRecordRepository.findByUsernameOrderByRecordDate(loginUser.getName()));
 		model.addAttribute("user", userRepository.findByUsername(loginUser.getName()));
 		model.addAttribute("temporaryRecords", mrDao.find(loginUser.getName(), "2020-12"));
-		model.addAttribute("total", moneyRecordRepository.findSummaries(loginUser.getName()));
 		model.addAttribute("categorySum", mrDao.sumCategoryExpense(loginUser.getName(), "2020-12", 1));
-		System.out.println(moneyRecordRepository.findSummaries(loginUser.getName()));
 
 		return "main";
 	}

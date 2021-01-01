@@ -92,8 +92,8 @@ public class HomeController {
 		return "login";
 	}
 	
-	@GetMapping("/post")
-	public String post(@ModelAttribute("moneyRecord") MoneyRecord moneyRecord, Authentication loginUser, Model model){
+	@GetMapping("/record")
+	public String record(@ModelAttribute("moneyRecord") MoneyRecord moneyRecord, Authentication loginUser, Model model){
 		model.addAttribute("user", userRepository.findByUsername(loginUser.getName()));
 		model.addAttribute("subcategories", categoryRepository.findAll());
 		List<CategoryName> list = cDao.getCategory();
@@ -104,10 +104,10 @@ public class HomeController {
 			System.out.println(a.getCategoryName());
 			System.out.println(a.getNumberOfSubcategory());
 		}
-		return "post";
+		return "recordPost";
 	}
 	
-	@PostMapping("/post")
+	@PostMapping("/record")
 	public String process(@Validated @ModelAttribute("moneyRecord") MoneyRecord moneyRecord, BindingResult result, Authentication loginUser) {
 		if(result.hasErrors()) {
 			System.out.println(result);
@@ -123,7 +123,7 @@ public class HomeController {
 		moneyRecord.setCreatedAt(ldt);
 		moneyRecordRepository.save(moneyRecord);
 		
-		return "redirect:/main?post";
+		return "redirect:/main?recordPost";
 	}
 	
 	@RequestMapping("/record/{recordId}")
