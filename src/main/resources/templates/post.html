@@ -25,6 +25,7 @@
 				<select class="form-control" name="categoryId">
 					<div th:each="subcategory : ${subcategories}" th:inline="text">
 						<option th:value="${subcategory.categoryId}" th:field="*{categoryId}">[[${subcategory.subcategoryName}]]</option>
+
 					</div>
 				</select>
 			</div>
