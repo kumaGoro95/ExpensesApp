@@ -31,4 +31,5 @@ public interface MoneyRecordRepository extends JpaRepository<MoneyRecord, Long>{
 	default List<Summary> findSummaries(String username) {
         return findMonthSummaries(username).stream().map(Summary::new).collect(Collectors.toList());
     }
+
 }
