@@ -16,7 +16,7 @@
 			</span>
 		</div>
 		<a th:href="@{/setting}">設定</a> <a th:href="@{/logout}">ログアウト</a>
-		<a th:href="@{/post}">出入金記録</a> <a th:href="@{/post}">投稿へ</a>
+		<a th:href="@{/record}">出入金記録</a> <a th:href="@{/post}">投稿へ</a>
 	</div>
 	<div class="record">
 	<h1>記録一覧</h1>
@@ -31,6 +31,9 @@
 	<a th:href="@{/record/__${temporaryRecord.recordId}__}">
 		ID:[[${temporaryRecord.recordId}]] - 日付:[[${temporaryRecord.recordDate}]] - 支出額:[[${temporaryRecord.incomeAndExpense}]]円 - カテゴリID:[[${temporaryRecord.categoryId}]] - 登録日時:[[${temporaryRecord.createdAt}]] - 更新日時:[[${temporaryRecord.updatedAt}]] - 備考:[[${temporaryRecord.note}]]
 	</a>
+	</div>
+	<div th:each="monthExpense : ${monthExpenses}" th:inline="text">
+		[[${monthExpense.month}]] - [[${monthExpense.sum}]]円
 	</div>
 	<p th:text="${total}"></p>
 	<p th:text="${categorySum}"></p>
