@@ -49,6 +49,8 @@ public class PostController {
 	private final PostCommentRepository commentRepository;
 	private final LikeRepository likeRepository;
 	
+	
+	//投稿系ホーム画面
 	@GetMapping("/postmain")
 	public String goToPost(@ModelAttribute("posts") Post post, Authentication loginUser, Model model){
 		model.addAttribute("user", userRepository.findByUsername(loginUser.getName()));
@@ -57,6 +59,7 @@ public class PostController {
 		return "postmain";
 	}
 	
+	//投稿画面へ遷移
 	@GetMapping("/post")
 	public String post(@ModelAttribute("post") Post post, Authentication loginUser, Model model){
 		model.addAttribute("user", userRepository.findByUsername(loginUser.getName()));
@@ -64,6 +67,7 @@ public class PostController {
 		return "post";
 	}
 	
+	//投稿実行
 	@PostMapping("/post")
 	public String post(@Validated @ModelAttribute("post") Post post, BindingResult result, Authentication loginUser) {
 		if(result.hasErrors()) {
@@ -83,6 +87,7 @@ public class PostController {
 		return "redirect:/postmain?recordPost";
 	}
 	
+	//投稿内容詳細画面へ遷移
 	@RequestMapping("/post/{postId}")
 	public String showPost(@PathVariable("postId") Long postId, @ModelAttribute("comment") PostComment comment, Authentication loginUser, Model model){
 		model.addAttribute("user", userRepository.findByUsername(loginUser.getName()));
@@ -93,6 +98,7 @@ public class PostController {
 		return "postdetail";
 	}
 	
+	//コメント投稿を実行
 	@PostMapping("/postComment")
 	public String postComment(@Validated @ModelAttribute("comment") PostComment comment, BindingResult result, Authentication loginUser) {
 		if(result.hasErrors()) {
@@ -112,6 +118,7 @@ public class PostController {
 		return "redirect:/postmain?postdetail";
 	}
 	
+	//いいね実行
 	@RequestMapping("/like/{postId}")
 	public String Like(@PathVariable("postId") Long postId, @ModelAttribute("like") Like like, Authentication loginUser, Model model) {
 		like.setPostId(postId);
@@ -123,11 +130,48 @@ public class PostController {
 		return "redirect:/postmain?postdetail";
 	}
 	
+	//いいね一覧を表示
 	@RequestMapping("/likesList/{postId}")
 	public String showLikes(@PathVariable("postId") Long postId, @ModelAttribute("likes") Like like, Authentication loginUser, Model model) {
 		model.addAttribute("likes", likeRepository.findByPostId(postId));
 		
 		return "likesDetail";
 	}
+	
+	//コメント削除
+	@Transactional
+	@GetMapping("/deleteComment/{commentId}")
+	public String deleteComment(@PathVariable("commentId") Long commentId, Model model) {
+		commentRepository.deleteById(commentId);
+		
+		return "redirect:/postmain?postdetail";
+	}
+	
+	//コメント編集画面へ遷移
+	@GetMapping("/editComment/{commentId}")
+	public String editComment(@PathVariable("commentId") Long commentId, Authentication loginUser, Model model){
+		model.addAttribute("comment", commentRepository.findByCommentId(commentId));
+		model.addAttribute("user", userRepository.findByUsername(loginUser.getName()));
+		
+		return "commentEdit";
+	}
+	
+	//コメント編集を実行
+	@PostMapping("/updateComment")
+	public String updateComment(@Validated @ModelAttribute("comment") PostComment comment, BindingResult result, Authentication loginUser) {
+		if(result.hasErrors()) {
+			return "main";
+		}
+
+		LocalDateTime ldt = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
+		System.out.println(ldt);
+		comment.setUpdatedAt(ldt);
+
+		
+		commentRepository.save(comment);
+		
+		return "redirect:/postmain?commentEdit";
+	}
+	
 
 }
