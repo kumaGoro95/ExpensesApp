@@ -7,5 +7,7 @@ import com.example.demo.model.Post;
 
 @Repository
 public interface PostRepository extends JpaRepository<Post, Long> {
+	
+	public Post findByPostId(Long postId);
 
 }
