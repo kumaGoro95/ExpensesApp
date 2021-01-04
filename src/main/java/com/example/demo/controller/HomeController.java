@@ -151,7 +151,7 @@ public class HomeController {
 		return "recordEdit";
 	}
 	
-	@PostMapping("/editRecord/{recordId}")
+	@PostMapping("/updateRecord")
 	public String updateRecord(@Validated @ModelAttribute("moneyRecord") MoneyRecord moneyRecord, BindingResult result, Authentication loginUser) {
 		if(result.hasErrors()) {
 			return "main";

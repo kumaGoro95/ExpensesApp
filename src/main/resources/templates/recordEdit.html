@@ -8,7 +8,7 @@
 	<div class="main">
 		<h1>出入金記録</h1>
 		<p>必要事項を入力してください。 *必須
-		<form th:action="@{/post}" th:object="${record}" method="post"
+		<form th:action="@{/updateRecord}" th:object="${record}" method="post"
 			novalidate>
 			<input type="hidden" name="recordId" th:value="*{recordId}" />
 			<input type="hidden" name="username" th:value="${user.username}" />
