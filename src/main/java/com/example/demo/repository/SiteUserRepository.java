@@ -12,6 +12,8 @@ public interface SiteUserRepository extends JpaRepository<SiteUser, Long> {
 	//同名のユーザーが存在するか判定
 	boolean existsByUsername(String username);
 	
+	boolean existsByEmail(String email);
+	
 	void deleteByUsername(String username);
 
 }

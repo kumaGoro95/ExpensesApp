@@ -70,6 +70,12 @@ public class SecurityController {
 	@PostMapping("/register")
 	public String process(@Validated @ModelAttribute("user") SiteUser user, BindingResult result) {
 		// @Validatedで入力値チェック→BindingResultに結果が入る→result.hasErrors()でエラーがあるか確認
+		
+		//同名ユーザー、メールアドレスのアカウントが存在していないか確認
+		if(userRepository.existsByUsername(user.getUsername()) == true | userRepository.existsByEmail(user.getEmail()) == true){
+			return "register";
+		}
+		//デフォルトのニックネームとしてユーザーIDを代入
 		user.setUserNickname(user.getUsername());
 		if(result.hasErrors()) { 
 			System.out.println(result);
@@ -82,6 +88,8 @@ public class SecurityController {
 		} else {
 			user.setRole(Role.USER.name());
 		}
+		
+		//現在日時を取得、登録日時にセット
 		LocalDateTime ldt = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
 		user.setCreatedAt(ldt);
 		userRepository.save(user);
