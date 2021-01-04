@@ -26,9 +26,11 @@ import com.example.demo.dao.CategoryDaoImpl;
 import com.example.demo.model.CategoryName;
 import com.example.demo.model.MoneyRecord;
 import com.example.demo.model.Post;
+import com.example.demo.model.PostComment;
 import com.example.demo.model.SiteUser;
 import com.example.demo.repository.SiteUserRepository;
 import com.example.demo.repository.MoneyRecordRepository;
+import com.example.demo.repository.PostCommentRepository;
 import com.example.demo.repository.PostRepository;
 import com.example.demo.repository.CategoryRepository;
 import com.example.demo.dao.MoneyRecordDaoImpl;
@@ -43,6 +45,7 @@ public class PostController {
 	private final SiteUserRepository userRepository;
 	private final MoneyRecordRepository moneyRecordRepository;
 	private final PostRepository postRepository;
+	private final PostCommentRepository commentRepository;
 	private MoneyRecordDaoImpl mrDao;
 	private CategoryDaoImpl cDao;
 	private final CategoryRepository categoryRepository;
@@ -57,6 +60,14 @@ public class PostController {
 		cDao = new CategoryDaoImpl(em);
 	}
 
+	
+	@GetMapping("/postmain")
+	public String goToPost(@ModelAttribute("posts") Post post, Authentication loginUser, Model model){
+		model.addAttribute("user", userRepository.findByUsername(loginUser.getName()));
+		model.addAttribute("posts", postRepository.findAll());
+		
+		return "postmain";
+	}
 	
 	@GetMapping("/post")
 	public String post(@ModelAttribute("post") Post post, Authentication loginUser, Model model){
@@ -81,7 +92,35 @@ public class PostController {
 		post.setCreatedAt(ldt);
 		postRepository.save(post);
 		
-		return "redirect:/main?recordPost";
+		return "redirect:/postmain?recordPost";
+	}
+	
+	@RequestMapping("/post/{postId}")
+	public String showPost(@PathVariable("postId") Long postId, @ModelAttribute("comment") PostComment comment, Authentication loginUser, Model model){
+		model.addAttribute("user", userRepository.findByUsername(loginUser.getName()));
+		model.addAttribute("post", postRepository.findByPostId(postId));
+		model.addAttribute("comments", commentRepository.findByPostId(postId));
+		
+		return "postdetail";
+	}
+	
+	@PostMapping("/postComment")
+	public String postComment(@Validated @ModelAttribute("comment") PostComment comment, BindingResult result, Authentication loginUser) {
+		if(result.hasErrors()) {
+			System.out.println(result);
+			System.out.println(comment.getCommentBody());
+			return "redirect:/post?post";
+		}
+		LocalDateTime ldt = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
+		
+		//ZonedDateTime zonedDateTime = ZonedDateTime.now();
+		//DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss.SSSxxxxx VV");
+		//String s = zonedDateTime.format(formatter);
+		
+		comment.setCreatedAt(ldt);
+		commentRepository.save(comment);
+		
+		return "redirect:/postmain?postdetail";
 	}
 
 }
