@@ -26,6 +26,7 @@ import com.example.demo.dao.CategoryDaoImpl;
 import com.example.demo.model.CategoryName;
 import com.example.demo.model.MoneyRecord;
 import com.example.demo.model.Post;
+import com.example.demo.model.Like;
 import com.example.demo.model.PostComment;
 import com.example.demo.model.SiteUser;
 import com.example.demo.repository.SiteUserRepository;
@@ -33,6 +34,7 @@ import com.example.demo.repository.MoneyRecordRepository;
 import com.example.demo.repository.PostCommentRepository;
 import com.example.demo.repository.PostRepository;
 import com.example.demo.repository.CategoryRepository;
+import com.example.demo.repository.LikeRepository;
 import com.example.demo.dao.MoneyRecordDaoImpl;
 
 import lombok.RequiredArgsConstructor;
@@ -43,23 +45,9 @@ public class PostController {
 	
 	//DI
 	private final SiteUserRepository userRepository;
-	private final MoneyRecordRepository moneyRecordRepository;
 	private final PostRepository postRepository;
 	private final PostCommentRepository commentRepository;
-	private MoneyRecordDaoImpl mrDao;
-	private CategoryDaoImpl cDao;
-	private final CategoryRepository categoryRepository;
-	private final BCryptPasswordEncoder passwordEncoder;
-	
-	@PersistenceContext
-	EntityManager em;
-	
-	@PostConstruct
-	public void init() {
-		mrDao = new MoneyRecordDaoImpl(em);
-		cDao = new CategoryDaoImpl(em);
-	}
-
+	private final LikeRepository likeRepository;
 	
 	@GetMapping("/postmain")
 	public String goToPost(@ModelAttribute("posts") Post post, Authentication loginUser, Model model){
@@ -100,6 +88,7 @@ public class PostController {
 		model.addAttribute("user", userRepository.findByUsername(loginUser.getName()));
 		model.addAttribute("post", postRepository.findByPostId(postId));
 		model.addAttribute("comments", commentRepository.findByPostId(postId));
+		model.addAttribute("theNumberOfLikes",likeRepository.countByPostId(postId));
 		
 		return "postdetail";
 	}
@@ -121,6 +110,24 @@ public class PostController {
 		commentRepository.save(comment);
 		
 		return "redirect:/postmain?postdetail";
+	}
+	
+	@RequestMapping("/like/{postId}")
+	public String Like(@PathVariable("postId") Long postId, @ModelAttribute("like") Like like, Authentication loginUser, Model model) {
+		like.setPostId(postId);
+		like.setUsername(loginUser.getName());
+		LocalDateTime ldt = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
+		like.setCreatedAt(ldt);
+		likeRepository.save(like);
+		
+		return "redirect:/postmain?postdetail";
+	}
+	
+	@RequestMapping("/likesList/{postId}")
+	public String showLikes(@PathVariable("postId") Long postId, @ModelAttribute("likes") Like like, Authentication loginUser, Model model) {
+		model.addAttribute("likes", likeRepository.findByPostId(postId));
+		
+		return "likesDetail";
 	}
 
 }

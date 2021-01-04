@@ -5,16 +5,20 @@
 <title>title</title>
 </head>
 <body>
-	<div class="post">
-	<h1>記録</h1>
+	<div class="list">
+	<h1>投稿</h1>
 	<span th:inline="text">
 		ユーザー:[[${post.username}]] - 内容:[[${post.postBody}]] - 登録日時:[[${post.createdAt}]] - 更新日時:[[${post.updatedAt}]]
 	</span>
+	<h1>コメント</h1>
 	<div th:each="comment : ${comments}" th:inline="text">
 		ユーザー:[[${comment.username}]] - 内容:[[${comment.commentBody}]] - 登録日時:[[${comment.createdAt}]] - 更新日時:[[${comment.updatedAt}]]
 	</div>
-	<div class="main">
-		<h3>コメント</h3>
+	<a th:href="@{/like/__${post.postId}__}">いいね</a>
+	<a th:href="@{/likesList/__${post.postId}__}"><p th:text="${theNumberOfLikes}"></p></a>
+	</div>
+	<div class="comment">
+		<h3>コメント入力</h3>
 		<form th:action="@{/postComment}" th:object="${comment}" method="post"
 			novalidate>
 			<input type="hidden" name="username" th:value="${user.username}" />
