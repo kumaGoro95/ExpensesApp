@@ -9,13 +9,22 @@
 		<h1>投稿</h1>
 		<span th:inline="text"> ユーザー:[[${post.username}]] -
 			内容:[[${post.postBody}]] - 登録日時:[[${post.createdAt}]] -
-			更新日時:[[${post.updatedAt}]] </span>
+			更新日時:[[${post.updatedAt}]] </span> 
+			 <span th:if="${user.username == post.username}">
+                <a
+			th:href="@{/editPost/__${post.postId}__}">編集</a> <a
+			th:href="@{/deletePost/__${post.postId}__}">削除</a>
+            </span>
+			
 		<h1>コメント</h1>
 		<div th:each="comment : ${comments}" th:inline="text">
 			ユーザー:[[${comment.username}]] - 内容:[[${comment.commentBody}]] -
-			登録日時:[[${comment.createdAt}]] - 更新日時:[[${comment.updatedAt}]] <a
+			登録日時:[[${comment.createdAt}]] - 更新日時:[[${comment.updatedAt}]] 
+			<span th:if="${user.username == comment.username}">
+			<a
 				th:href="@{/editComment/__${comment.commentId}__}">編集</a> <a
 				th:href="@{/deleteComment/__${comment.commentId}__}">削除</a>
+				</span>
 		</div>
 		<a th:href="@{/like/__${post.postId}__}">いいね</a> <a
 			th:href="@{/likesList/__${post.postId}__}"><p
