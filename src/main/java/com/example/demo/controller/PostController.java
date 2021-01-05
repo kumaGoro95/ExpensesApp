@@ -125,6 +125,9 @@ public class PostController {
 	@RequestMapping("/like/{postId}")
 	public String Like(@PathVariable("postId") Long postId, @ModelAttribute("like") Like like, Authentication loginUser,
 			Model model) {
+		if(likeRepository.existsByUsernameAndPostId(loginUser.getName(), postId) == true) {
+			return "postmain";
+		}
 		like.setPostId(postId);
 		like.setUsername(loginUser.getName());
 		LocalDateTime ldt = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
