@@ -44,6 +44,7 @@ public interface MoneyRecordRepository extends JpaRepository<MoneyRecord, Long>{
 	default List<SummaryByCategory> findCategorySummaries(String username, String month) {
         return getCategorySummaries(username, month).stream().map(SummaryByCategory::new).collect(Collectors.toList());
     }
+
 	
 	//月ごと、カテゴリー毎の合計一覧を算出
 	@Query(value = "select DATE_FORMAT(record_date, \"%Y%m\") as YM, left(category_id, 2) as category, sum(income_and_expense) as sum "
@@ -55,5 +56,5 @@ public interface MoneyRecordRepository extends JpaRepository<MoneyRecord, Long>{
 	default List<SummariesByMonthAndCategory> findMonthAndCategorySummaries(String username) {
         return getMonthAndCategorySummaries(username).stream().map(SummariesByMonthAndCategory::new).collect(Collectors.toList());
     }
-	
+
 }
