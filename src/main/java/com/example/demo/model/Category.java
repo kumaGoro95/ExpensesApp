@@ -23,8 +23,9 @@ public class Category {
 	private int categoryId;
 	
 	@NotBlank
-	@Column(name = "category_name", nullable = false)
-	private String categoryName;
+	@Column(name = "category_code", nullable = false)
+	private int categoryCode;
+
 	
 	@NotBlank
 	@Column(name = "subcategory_name", nullable = false)
