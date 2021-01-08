@@ -1,7 +1,10 @@
 package com.example.demo.controller;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -22,7 +25,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.example.demo.dao.CategoryDaoImpl;
-import com.example.demo.model.CategoryName;
+import com.example.demo.util.CategoryCodeToName;
 import com.example.demo.model.MoneyRecord;
 import com.example.demo.model.SiteUser;
 import com.example.demo.repository.SiteUserRepository;
@@ -51,6 +54,29 @@ public class HomeController {
 	public void init() {
 		mrDao = new MoneyRecordDaoImpl(em);
 		cDao = new CategoryDaoImpl(em);
+	}
+	
+	
+	//テスト
+	@GetMapping("/test")
+	public String test(@ModelAttribute MoneyRecord moneyRecord, Authentication loginUser, Model model) {
+		List<String> expenseCategory = new ArrayList<String>();
+		for(int i = 1; i < CategoryCodeToName.Categories.size(); i++) {
+				expenseCategory.add(CategoryCodeToName.Categories.get(i));
+		}
+		String expenseLabel[] = expenseCategory.toArray(new String[expenseCategory.size()]);
+		for(String str : expenseLabel) {
+			System.out.println(str);
+		}
+		int expenseData[] = {3452, 600, 488, 9999, 0, 0, 0, 400, 500, 0, 0, 0, 0, 0, 0, 0, 1000};
+		
+		String incomeLabel[] = {"給与","ボーナス","臨時収入","財形貯蓄","配当金","その他収入","未分類"};
+		int incomeData[] = {10000, 50000, 0, 0, 0, 0, 300};
+		model.addAttribute("expenseLabel", expenseLabel);
+		model.addAttribute("expenseData", expenseData);
+		model.addAttribute("incomeLabel", incomeLabel);
+		model.addAttribute("incomeData", incomeData);		
+		return "test";
 	}
 	
 	//ホーム画面へ遷移
@@ -101,23 +127,24 @@ public class HomeController {
 
 		return "login";
 	}
-	
+	/*
 	//出入金記録登録画面へ遷移
 	@GetMapping("/record")
 	public String record(@ModelAttribute("moneyRecord") MoneyRecord moneyRecord, Authentication loginUser,
 			Model model) {
 		model.addAttribute("user", userRepository.findByUsername(loginUser.getName()));
 		model.addAttribute("subcategories", categoryRepository.findAll());
-		List<CategoryName> list = cDao.getCategory();
+		List<CategoryCodeToName> list = cDao.getCategory();
 		model.addAttribute("categories", list);
 
 		for (int i = 0; i < list.size(); i++) {
-			CategoryName a = list.get(i);
-			System.out.println(a.getCategoryName());
-			System.out.println(a.getNumberOfSubcategory());
+			CategoryCodeToName a = list.get(i);
+			//System.out.println(a.getCategoryName());
+			//System.out.println(a.getNumberOfSubcategory());
 		}
 		return "recordPost";
 	}
+	*/
 	
 	//出入金記録を登録
 	@PostMapping("/record")

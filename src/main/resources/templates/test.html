@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.js"></script>
+      <link rel="stylesheet" type="text/css" th:href="@{/webjars/materializecss/css/materialize.min.css}" />
+　<title>グラフ</title> 
+</head>
+<body>
+  <h1>ドーナツチャート</h1>
+  <canvas id="expenseChart"></canvas>
+  <canvas id="incomeChart"></canvas>
+  <!-- CDN -->
+
+  <script type="text/javascript" th:inline="javascript">
+  var ctx = document.getElementById("expenseChart");
+  var expenseChart = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: [[ ${expenseLabel} ]],
+      datasets: [{
+          backgroundColor: [
+              "#BB5179",
+              "#FAFF67",
+              "#58A27C",
+              "#3C00FF"
+          ],
+          data:[[${expenseData}]],
+      }]
+    },
+    options: {
+      title: {
+        display: true,
+        text: '支出'
+      }
+    }
+  });
+  
+  var ctx = document.getElementById("incomeChart");
+  var incomeChart = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: [[ ${incomeLabel} ]],
+      datasets: [{
+          backgroundColor: [
+              "#BB5179",
+              "#FAFF67",
+              "#58A27C",
+              "#3C00FF"
+          ],
+          data:[[${incomeData}]],
+      }]
+    },
+    options: {
+      title: {
+        display: true,
+        text: '支出'
+      }
+    }
+  });
+  </script>
+<script type="text/javascript" th:src="@{/webjars/materializecss/materialize.min.js/}"></script>
+</body>
+</html>

@@ -4,7 +4,7 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class CategoryName {
+public class CategoryCodeToName {
 	public static final Map<Integer, String> Categories;
 	static {
 		//Map<キーのクラス,値のクラス>
