@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>title</title>
+</head>
+<body>
+	<div class="main">
+		<a th:href="@{/main}">メインへ</a>
+		<a th:href="@{/post}">投稿へ</a>
+	</div>
+	<div class="likes">
+	<h1>いいね一覧</h1>
+	<div th:each="like : ${likes}" th:inline="text">
+		ユーザー:[[${like.username}]] - 登録日時:[[${like.createdAt}]]
+	</div>
+	<br>
+	<br>
+	</div>
+</body>
+</html>

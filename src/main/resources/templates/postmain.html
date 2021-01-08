@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>title</title>
+</head>
+<body>
+	<div class="main">
+		<a th:href="@{/main}">メインへ</a> <a th:href="@{/post}">投稿へ</a>
+	</div>
+	<div class="record">
+		<h1>記録一覧</h1>
+		<div th:each="post : ${posts}" th:inline="text">
+			<a th:href="@{/post/__${post.postId}__}">
+				ユーザー:[[${post.username}]] - 内容:[[${post.postBody}]] -
+				登録日時:[[${post.createdAt}]] - 更新日時:[[${post.updatedAt}]] </a><span th:if="${user.username == post.username}">
+                <a
+			th:href="@{/editPost/__${post.postId}__}">編集</a> <a
+			th:href="@{/deletePost/__${post.postId}__}">削除</a>
+            </span>
+		</div>
+		<br> <br>
+	</div>
+</body>
+</html>

@@ -1,0 +1,26 @@
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>title</title>
+</head>
+<body>
+	<div class="main">
+		<h1>投稿</h1>
+		<p>必要事項を入力してください。 *必須
+		<form th:action="@{/post}" th:object="${post}" method="post"
+			novalidate>
+			<input type="hidden" name="username" th:value="${user.username}" />
+			<div class="form-group">
+				<label for="note">本文</label> <textarea  rows="5" cols="40" th:errorclass="is-invalid" th:field="*{postBody}"></textarea>
+				<div class="invalid-feedback" th:errors="*{postBody}"></div>
+			</div>
+
+	<div class="form-check"></div>
+	<button class="btn">登録</button>
+	</form>
+	</div>
+
+</body>
+</html>

@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+
 <head>
 <meta charset="UTF-8">
 <title>title</title>
@@ -10,11 +12,13 @@
 		<p>必要事項を入力してください。 *必須
 		<form th:action="@{/setting}" th:object="${user}" method="post"
 			novalidate>
-			<input type="hidden" name="id" th:value="*{userId}" />
+			<input type="hidden" name="username" th:value="*{username}" />
+			<input type="hidden" name="createdAt" th:value="*{createdAt}" />
+			<input type="hidden" name="role" th:value="*{role}" />
 			<div class="form-group">
 				<label for="name"> ユーザー名* </label> <input type="text"
-					th:errorclass="is-invalid" th:field="*{username}">
-				<div class="invalid-feedback" th:errors="*{username}"></div>
+					th:errorclass="is-invalid" th:field="*{userNickname}">
+				<div class="invalid-feedback" th:errors="*{userNickname}"></div>
 			</div>
 			<div class="form-group">
 				<label for="email"> メールアドレス* </label> <input type="email"
@@ -47,6 +51,7 @@
 			<button class="btn">登録</button>
 		</form>
 		<a th:href="@{/logout}">ログアウト</a>
+		<a th:href="@{/deleteUser}">退会</a>
 
 	</div>
 </body>
