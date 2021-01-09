@@ -2,6 +2,13 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
+<th:block th:insert="fragments/header :: header"></th:block>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet"
+	th:href="@{/webjars/materializecss/1.0.0/css/materialize.min.css}">
+<script type="text/javascript"
+	th:src="@{/webjars/materializecss/1.0.0/js/materialize.min.js/}"></script>
+<script type="text/javascript" th:src="@{/webjars/jquery/3.5.1/jquery.min.js}"></script>
 <title>title</title>
 </head>
 <body>
@@ -12,8 +19,9 @@
 			novalidate>
 			<input type="hidden" name="username" th:value="${user.username}" />
 			<div class="form-group">
-				<label for="recordDate">日付</label> <input type="date"
-					th:errorclass="is-invalid" th:field="*{recordDate}">
+				<label for="recordDate">日付</label> <input type="text"
+					class="datepicker" th:errorclass="is-invalid"
+					th:field="*{recordDate}">
 				<div class="invalid-feedback" th:errors="*{recordDate}"></div>
 			</div>
 			<div class="form-group">
@@ -24,19 +32,34 @@
 			<div class="form-group">
 				<select class="form-control" name="categoryId">
 					<div th:each="subcategory : ${subcategories}" th:inline="text">
-						<option th:value="${subcategory.categoryId}" th:field="*{categoryId}">[[${subcategory.subcategoryName}]]</option>
+						<option th:value="${subcategory.categoryId}"
+							th:field="*{categoryId}">[[${subcategory.subcategoryName}]]</option>
 					</div>
 				</select>
 			</div>
 			<div class="form-group">
-				<label for="note">備考</label> <textarea  rows="5" cols="40" th:errorclass="is-invalid" th:field="*{note}"></textarea>
+				<label for="note">備考</label>
+				<textarea rows="5" cols="40" th:errorclass="is-invalid"
+					th:field="*{note}"></textarea>
 				<div class="invalid-feedback" th:errors="*{note}"></div>
 			</div>
 
-	<div class="form-check"></div>
-	<button class="btn">登録</button>
-	</form>
+			<div class="form-check"></div>
+			<button class="btn">登録</button>
+		</form>
 	</div>
-
+	<script>
+		(document).ready(function() {
+			$('.datepicker').datepicker(
+					{
+						i18n : {
+							months : [ "1月", "2月", "3月", "4月", "5月", "6月",
+									"7月", "8月", "9月", "10月", "11月", "12月" ]
+						//...公式ドキュメントの[Datepicker Internationalization options]の項目を指定できます。
+						},
+						format : "yyyy-MM-dd"
+					});
+		});
+	</script>
 </body>
 </html>

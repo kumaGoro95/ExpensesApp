@@ -4,41 +4,70 @@
 <meta charset="UTF-8">
 <th:block th:insert="fragments/header :: header"></th:block>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.js"></script>
+<link rel="stylesheet"
+	th:href="@{/webjars/materializecss/1.0.0/css/materialize.min.css}">
+<script type="text/javascript"
+	th:src="@{/webjars/materializecss/1.0.0/js/materialize.min.js/}"></script>
 <title>title</title>
 </head>
 <body>
 	<div class="main">
-		<h1>ログイン情報</h1>
-		<div class="user-table">
-			<span th:inline="text"> ユーザーID:[[${user.username}]]<br>
-				ユーザ名:[[${user.userNickname}]]<br> Email:[[${user.email}]]<br>
-				性別:[[${T(com.example.demo.util.GenderType).GENDERS.get(user.gender)}]]<br>
-				生年月日:[[${user.dateOfBirth}]]<br> 権限:[[${user.role}]]<br>
-				作成日時:[[${user.createdAt}]]<br> 更新日時:[[${user.updatedAt}]]
-			</span>
-		</div>
-		<a th:href="@{/setting}">設定</a> <a th:href="@{/logout}">ログアウト</a>
-		<a th:href="@{/record}">出入金記録</a> <a th:href="@{/postmain}">投稿へ</a>
+	<h3>ドーナツチャート</h3>
+  <canvas id="expenseChart" style="display: block; height: 320px; width: 640px;" width="800" height="400" class="chartjs-render-monitor"></canvas>
+  <canvas id="incomeChart" style="display: block; height: 320px; width: 640px;" width="800" height="400" class="chartjs-render-monitor"></canvas>
+  <!-- CDN -->
+
+  <script type="text/javascript" th:inline="javascript">
+  var ctx = document.getElementById("expenseChart");
+  var expenseChart = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: [[ ${expenseLabel} ]],
+      datasets:[{
+          backgroundColor: [
+            "rgb(255, 99, 132)",
+            "rgb(54, 162, 235)",
+            "rgb(255, 205, 86)"
+          ],
+          data:[[${expenseData}]],
+      }]
+    },
+    options: {
+      title: {
+        display: true,
+        text: '支出'
+      }
+    }
+  });
+  
+  var ctx = document.getElementById("incomeChart");
+  var incomeChart = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: [[ ${incomeLabel} ]],
+      datasets: [{
+          backgroundColor: [
+              "#BB5179",
+              "#FAFF67",
+              "#58A27C",
+              "#3C00FF"
+          ],
+          data:[[${incomeData}]],
+      }]
+    },
+    options: {
+      title: {
+        display: true,
+        text: '支出'
+      }
+    }
+  });
+  </script>
+		<a th:href="@{/logout}">ログアウト</a><a th:href="@{/postmain}">投稿へ</a>
 		<a th:href="@{/test}">出入金記録</a>
 	</div>
-	<div class="record">
-	<h1>記録一覧</h1>
-	<div th:each="record : ${records}" th:inline="text">
-	<a th:href="@{/record/__${record.recordId}__}">
-		ID:[[${record.recordId}]] - 日付:[[${record.recordDate}]] - 支出額:[[${record.incomeAndExpense}]]円 - カテゴリID:[[${record.categoryId}]] - 登録日時:[[${record.createdAt}]] - 更新日時:[[${record.updatedAt}]] - 備考:[[${record.note}]]
-	</a>
-	</div>
-	<br>
-	<br>
-	<div th:each="temporaryRecord : ${temporaryRecords}" th:inline="text">
-	<a th:href="@{/record/__${temporaryRecord.recordId}__}">
-		ID:[[${temporaryRecord.recordId}]] - 日付:[[${temporaryRecord.recordDate}]] - 支出額:[[${temporaryRecord.incomeAndExpense}]]円 - カテゴリID:[[${temporaryRecord.categoryId}]] - 登録日時:[[${temporaryRecord.createdAt}]] - 更新日時:[[${temporaryRecord.updatedAt}]] - 備考:[[${temporaryRecord.note}]]
-	</a>
-	</div>
-	<div th:each="monthExpense : ${monthExpenses}" th:inline="text">
-		[[${monthExpense.month}]] - [[${monthExpense.sum}]]円
-	</div>
-	<p th:text="${total}"></p>
-	<p th:text="${categorySum}"></p>
+
+	
 </body>
 </html>

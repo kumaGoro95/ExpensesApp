@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -59,10 +58,9 @@ public class HomeController {
 		cDao = new CategoryDaoImpl(em);
 	}
 	
-	
-	//テスト
-	@GetMapping("/test")
-	public String test(@ModelAttribute MoneyRecord moneyRecord, Authentication loginUser, Model model) {
+	//ホーム画面へ遷移
+	@GetMapping("/main")
+	public String main(@ModelAttribute MoneyRecord moneyRecord, Authentication loginUser, Model model) {
 		//支出のカテゴリ一覧を設定
 		List<String> expenseCategory = new ArrayList<String>();
 		for(int i = 1; i < CategoryCodeToName.Categories.size(); i++) {
@@ -97,19 +95,8 @@ public class HomeController {
 		model.addAttribute("expenseLabel", expenseLabel);
 		model.addAttribute("expenseData", expenseData);
 		model.addAttribute("incomeLabel", incomeLabel);
-		model.addAttribute("incomeData", incomeData);		
-		return "test";
-	}
-	
-	//ホーム画面へ遷移
-	@GetMapping("/main")
-	public String main(@ModelAttribute MoneyRecord moneyRecord, Authentication loginUser, Model model) {
-		SiteUser user = userRepository.findByUsername(loginUser.getName());
-		model.addAttribute("user", user);
-		model.addAttribute("records", moneyRecordRepository.findByUsernameOrderByRecordDate(loginUser.getName()));
-		model.addAttribute("temporaryRecords", mrDao.find(loginUser.getName(), "2020-12"));
-		model.addAttribute("total", mrDao.sumMonthExpense(loginUser.getName(), "2020-12"));
-		model.addAttribute("monthExpenses", moneyRecordRepository.findMonthSummaries(loginUser.getName()));
+		model.addAttribute("incomeData", incomeData);	
+		
 		return "main";
 	}
 	
