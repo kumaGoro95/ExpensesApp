@@ -26,8 +26,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.example.demo.dao.CategoryDaoImpl;
 import com.example.demo.util.CategoryCodeToName;
+import com.example.demo.model.Category;
+import com.example.demo.model.CategoryName;
 import com.example.demo.model.MoneyRecord;
 import com.example.demo.model.SiteUser;
+import com.example.demo.model.SummaryByCategory;
 import com.example.demo.repository.SiteUserRepository;
 import com.example.demo.repository.MoneyRecordRepository;
 import com.example.demo.repository.CategoryRepository;
@@ -60,18 +63,37 @@ public class HomeController {
 	//テスト
 	@GetMapping("/test")
 	public String test(@ModelAttribute MoneyRecord moneyRecord, Authentication loginUser, Model model) {
+		//支出のカテゴリ一覧を設定
 		List<String> expenseCategory = new ArrayList<String>();
 		for(int i = 1; i < CategoryCodeToName.Categories.size(); i++) {
 				expenseCategory.add(CategoryCodeToName.Categories.get(i));
 		}
 		String expenseLabel[] = expenseCategory.toArray(new String[expenseCategory.size()]);
-		for(String str : expenseLabel) {
-			System.out.println(str);
-		}
-		int expenseData[] = {3452, 600, 488, 9999, 0, 0, 0, 400, 500, 0, 0, 0, 0, 0, 0, 0, 1000};
 		
-		String incomeLabel[] = {"給与","ボーナス","臨時収入","財形貯蓄","配当金","その他収入","未分類"};
-		int incomeData[] = {10000, 50000, 0, 0, 0, 0, 300};
+		//支出のカテゴリ毎の合計を設定
+		List<SummaryByCategory> expenseByCategory = moneyRecordRepository.findCategorySummaries(loginUser.getName(), "2020-12");
+		List<BigDecimal> expenseAmmount = new ArrayList<BigDecimal>();
+		for(int i = 0; i < expenseByCategory.size()-1; i++) {
+			expenseAmmount.add(expenseByCategory.get(i).getSum());
+		}
+		BigDecimal expenseData[] = expenseAmmount.toArray(new BigDecimal[expenseAmmount.size()]);
+		
+		//収入のカテゴリ一覧を設定
+		List<Category> incomeCategories = categoryRepository.findBycategoryCode(99);
+		System.out.println(categoryRepository.findBycategoryCode(99));
+		List<String> incomeCategoriesStr = new ArrayList<String>();
+		for(int i = 0; i < incomeCategories.size(); i++) {
+			incomeCategoriesStr.add(incomeCategories.get(i).getSubcategoryName());
+		}
+		String incomeLabel[] = incomeCategoriesStr.toArray(new String[incomeCategoriesStr.size()]);
+		
+		//収入のカテゴリ毎の合計を設定
+		List<SummaryByCategory> incomeByCategory = moneyRecordRepository.findSubcategorySummaries(loginUser.getName(), "2020-12", 99);
+		List<BigDecimal> incomeAmmount = new ArrayList<BigDecimal>();
+		for(int i = 0; i < incomeByCategory.size(); i++) {
+			incomeAmmount.add(incomeByCategory.get(i).getSum());
+		}
+		BigDecimal incomeData[] = incomeAmmount.toArray(new BigDecimal[incomeAmmount.size()]);
 		model.addAttribute("expenseLabel", expenseLabel);
 		model.addAttribute("expenseData", expenseData);
 		model.addAttribute("incomeLabel", incomeLabel);
@@ -127,24 +149,23 @@ public class HomeController {
 
 		return "login";
 	}
-	/*
 	//出入金記録登録画面へ遷移
 	@GetMapping("/record")
 	public String record(@ModelAttribute("moneyRecord") MoneyRecord moneyRecord, Authentication loginUser,
 			Model model) {
 		model.addAttribute("user", userRepository.findByUsername(loginUser.getName()));
 		model.addAttribute("subcategories", categoryRepository.findAll());
-		List<CategoryCodeToName> list = cDao.getCategory();
+		List<CategoryName> list = cDao.getCategory();
 		model.addAttribute("categories", list);
 
 		for (int i = 0; i < list.size(); i++) {
-			CategoryCodeToName a = list.get(i);
+			CategoryName a = list.get(i);
 			//System.out.println(a.getCategoryName());
 			//System.out.println(a.getNumberOfSubcategory());
 		}
 		return "recordPost";
 	}
-	*/
+
 	
 	//出入金記録を登録
 	@PostMapping("/record")
