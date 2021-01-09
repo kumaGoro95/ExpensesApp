@@ -44,7 +44,7 @@ public class SecurityController {
 	}
 
 	@GetMapping("/login")
-	public String login() {
+	public String login(@ModelAttribute("user") SiteUser user) {
 		return "login";
 	}
 
