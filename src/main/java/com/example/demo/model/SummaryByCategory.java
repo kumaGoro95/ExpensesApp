@@ -10,17 +10,17 @@ public class SummaryByCategory implements Serializable{
 	 
 	private static final long serialVersionUID = 1L;
 	
-	private String category;
+	private int categoryCode;
 	private BigDecimal sum;
 	
-	public SummaryByCategory(String category, BigDecimal sum) {
+	public SummaryByCategory(int categoryCode, BigDecimal sum) {
 		super();
-		this.category = category;
+		this.categoryCode = categoryCode;
 		this.sum = sum;
 	}
 	
 	public SummaryByCategory(Object[] objects) {
-        this((String) objects[0], (BigDecimal) objects[1]);
+        this((int) objects[0], (BigDecimal) objects[1]);
     }
 
 }

@@ -28,7 +28,7 @@ public class CategoryDaoImpl implements CategoryDao<Category> {
 
 	@Override
 	public List<CategoryName> getCategory() {
-		Query query = em.createQuery("select categoryName from Category");
+		Query query = em.createQuery("select subcategoryName from Category");
 		@SuppressWarnings("unchecked")
 		List<String> list = query.getResultList();
 		em.close();
