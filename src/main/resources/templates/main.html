@@ -1,24 +1,41 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-<meta charset="UTF-8">
-<th:block th:insert="fragments/header :: header"></th:block>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.js"></script>
+<meta charset="utf-8">
+  <th:block th:insert="fragments/header :: header"></th:block>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 <link rel="stylesheet"
 	th:href="@{/webjars/materializecss/1.0.0/css/materialize.min.css}">
-<script type="text/javascript"
-	th:src="@{/webjars/materializecss/1.0.0/js/materialize.min.js/}"></script>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>title</title>
 </head>
 <body>
-	<div class="main">
-	<h3>ドーナツチャート</h3>
+	<div class="container">
+	<div class="row">
+	<div class="col m6 s12">
+	<div class="exChart">
   <canvas id="expenseChart" style="display: block; height: 320px; width: 640px;" width="800" height="400" class="chartjs-render-monitor"></canvas>
+  </div>
+  <p class="center">
+  1000円
+  </p>
+  </div>
+  <div class="col m6 s12">
+  <div class="inChart">
   <canvas id="incomeChart" style="display: block; height: 320px; width: 640px;" width="800" height="400" class="chartjs-render-monitor"></canvas>
+  </div>
+  <p class="center">
+  10000円
+  </p>
+  </div>
+  </div>
   <!-- CDN -->
-
-  <script type="text/javascript" th:inline="javascript">
+		<a th:href="@{/logout}">ログアウト</a><a th:href="@{/postmain}">投稿へ</a>
+		<a th:href="@{/test}">テスト</a>
+		</div>
+		  <script type="text/javascript" th:inline="javascript">
   var ctx = document.getElementById("expenseChart");
   var expenseChart = new Chart(ctx, {
     type: 'doughnut',
@@ -59,14 +76,11 @@
     options: {
       title: {
         display: true,
-        text: '支出'
+        text: '収入'
       }
     }
   });
   </script>
-		<a th:href="@{/logout}">ログアウト</a><a th:href="@{/postmain}">投稿へ</a>
-		<a th:href="@{/test}">出入金記録</a>
-	</div>
 
 	
 </body>
