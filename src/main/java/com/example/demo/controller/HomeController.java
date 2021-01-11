@@ -58,6 +58,12 @@ public class HomeController {
 		cDao = new CategoryDaoImpl(em);
 	}
 	
+	//テスト
+	@GetMapping("/test")
+	public String test() {
+		return "test";
+	}
+	
 	//ホーム画面へ遷移
 	@GetMapping("/main")
 	public String main(@ModelAttribute MoneyRecord moneyRecord, Authentication loginUser, Model model) {

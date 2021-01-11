@@ -13,8 +13,10 @@
 <title>title</title>
 </head>
 <body>
-	<div class="main">
-		<h1>投稿</h1>
+	<div class="container">
+	<div class="row card hoverable">
+	<div class="card-content">
+		<h3 class="center gray-text">投稿</h3>
 		<p>必要事項を入力してください。 *必須
 		<form th:action="@{/post}" th:object="${post}" method="post"
 			novalidate>
@@ -27,6 +29,8 @@
 	<div class="form-check"></div>
 	<button class="btn">登録</button>
 	</form>
+	</div>
+	</div>
 	</div>
 
 </body>
