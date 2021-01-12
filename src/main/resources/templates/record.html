@@ -55,6 +55,7 @@
 											<th>日付</th>
 											<th>金額</th>
 											<th>カテゴリ</th>
+											<th>備考</th>
 											<th></th>
 										</tr>
 									</thead>
@@ -64,6 +65,7 @@
 												<td>[[${record.recordDate}]]</td>
 												<td>[[${record.incomeAndExpense}]]円</td>
 												<td>[[${record.categoryId}]]</td>
+												<td>[[${record.note}]]</td>
 												<td><a th:href="@{/editRecord/__${record.recordId}__}">編集</a>
 													<a th:href="@{/deleteRecord/__${record.recordId}__}">削除</a></td>
 											</tr>

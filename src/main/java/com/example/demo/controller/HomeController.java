@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
@@ -61,6 +62,9 @@ public class HomeController {
 	//テスト
 	@GetMapping("/test")
 	public String test(Model model) {
+		model.addAttribute("subcategories", categoryRepository.findAll());
+		Map<Integer, String> categories = CategoryCodeToName.Categories;
+		model.addAttribute("categories", categories);
 		return "test";
 	}
 	
@@ -148,14 +152,9 @@ public class HomeController {
 			Model model) {
 		model.addAttribute("user", userRepository.findByUsername(loginUser.getName()));
 		model.addAttribute("subcategories", categoryRepository.findAll());
-		List<CategoryName> list = cDao.getCategory();
-		model.addAttribute("categories", list);
-
-		for (int i = 0; i < list.size(); i++) {
-			CategoryName a = list.get(i);
-			//System.out.println(a.getCategoryName());
-			//System.out.println(a.getNumberOfSubcategory());
-		}
+		Map<Integer, String> categories = CategoryCodeToName.Categories;
+		model.addAttribute("categories", categories);
+		
 		return "recordPost";
 	}
 
