@@ -13,12 +13,28 @@
 </head>
 <body>
 	<div class="record">
-	<h1>記録</h1>
-	<span th:inline="text">
-		ID:[[${record.recordId}]] - 日付:[[${record.recordDate}]] - 支出額:[[${record.incomeAndExpense}]]円 - カテゴリID:[[${record.categoryId}]] - 登録日時:[[${record.createdAt}]]
-	</span>
-	<a th:href="@{/editRecord/__${record.recordId}__}">編集</a>
-	<a th:href="@{/deleteRecord/__${record.recordId}__}">削除</a>
+		<h1>履歴</h1>
+		<table>
+			<thead>
+				<tr>
+					<th>日付</th>
+					<th>金額</th>
+					<th>カテゴリ</th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody>
+				<span th:inline="text">
+					<tr>
+						<td>[[${record.recordDate}]]</td>
+						<td>[[${record.incomeAndExpense}]]円</td>
+						<td>[[${record.categoryId}]]</td>
+				</span>
+				<td><a th:href="@{/editRecord/__${record.recordId}__}">編集</a> <a
+					th:href="@{/deleteRecord/__${record.recordId}__}">削除</a></td>
+				</tr>
+	</tbody>
+	</table>
 	</div> 
 </body>
 </html>

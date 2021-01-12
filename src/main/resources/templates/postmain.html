@@ -11,21 +11,39 @@
 <title>title</title>
 </head>
 <body>
-	<div class="main">
+	<div class="container">
 		<a th:href="@{/main}">メインへ</a> <a th:href="@{/post}">投稿へ</a>
 	</div>
 	<div class="record">
-		<h1>記録一覧</h1>
+		<h1>投稿一覧</h1>
+		 <table>
+        <thead>
+          <tr>
+              <th>ユーザー名</th>
+              <th>内容</th>
+              <th>投稿日時</th>
+              <th>更新日時</th>
+              <th>　</th>
+          </tr>
+        </thead>
+      <tbody>
 		<div th:each="post : ${posts}" th:inline="text">
 			<a th:href="@{/post/__${post.postId}__}">
-				ユーザー:[[${post.username}]] - 内容:[[${post.postBody}]] -
-				登録日時:[[${post.createdAt}]] - 更新日時:[[${post.updatedAt}]] </a><span th:if="${user.username == post.username}">
+			<tr>
+				<td>[[${post.username}]]</td>
+				<td>[[${post.postBody}]]</td>
+				<td>[[${post.createdAt}]]</td>
+				<td>[[${post.updatedAt}]]</td>
+				<td>
+				<span th:if="${user.username == post.username}">
                 <a
 			th:href="@{/editPost/__${post.postId}__}">編集</a> <a
 			th:href="@{/deletePost/__${post.postId}__}">削除</a>
             </span>
-		</div>
-		<br> <br>
+            </td>
+				</tr></a>
+				</div>
+				</tbody>
 	</div>
 </body>
 </html>
