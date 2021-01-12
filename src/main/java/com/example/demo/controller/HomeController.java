@@ -171,15 +171,18 @@ public class HomeController {
 		}
 		LocalDateTime ldt = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
 
-		// ZonedDateTime zonedDateTime = ZonedDateTime.now();
-		// DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd
-		// HH:mm:ss.SSSxxxxx VV");
-		// String s = zonedDateTime.format(formatter);
-
 		moneyRecord.setCreatedAt(ldt);
 		moneyRecordRepository.save(moneyRecord);
 
 		return "redirect:/main?recordPost";
+	}
+	
+	//履歴画面へ遷移
+	@GetMapping("/showRecords")
+	public String showRecords(Authentication loginUser, Model model) {
+		model.addAttribute("user", userRepository.findByUsername(loginUser.getName()));
+		model.addAttribute("records", moneyRecordRepository.findByUsernameOrderByRecordDate(loginUser.getName()));
+		return "record";
 	}
 	
 	//出入金記録詳細画面へ遷移
@@ -187,7 +190,7 @@ public class HomeController {
 	public String showRecord(@PathVariable("recordId") Long recordId, Model model) {
 		model.addAttribute("record", moneyRecordRepository.findByRecordId(recordId));
 
-		return "record";
+		return "";
 	}
 	
 	//出入金記録を削除
@@ -196,7 +199,7 @@ public class HomeController {
 	public String deleteRecord(@PathVariable("recordId") Long recordId, Model model) {
 		moneyRecordRepository.deleteById(recordId);
 
-		return "redirect:/main?record";
+		return "redirect:/showRecords?showRecords";
 	}
 	
 	//出入金記録編集画面へ遷移

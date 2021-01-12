@@ -55,5 +55,15 @@ public class CategoryDaoImpl implements CategoryDao<Category> {
 
 		return categoryList;
 	}
+	
+	public String getCategoryName(int categoryId) {
+		String qstr = "select subcategoryName from Category where categoryId = :categoryId";
+		Query query = em.createQuery(qstr).setParameter("categoryId", categoryId);
+		Object category = query.getSingleResult();
+		String categoryStr = category.toString();
+		em.close();
+
+		return categoryStr;
+	}
 
 }

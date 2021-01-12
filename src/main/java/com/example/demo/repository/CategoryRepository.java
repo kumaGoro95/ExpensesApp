@@ -9,6 +9,8 @@ import com.example.demo.model.Category;
 public interface CategoryRepository extends JpaRepository<Category, Long> {
 	
 	public List<Category> findBycategoryCode(int categoryCode);
+	
+	public Category findBycategoryId(int categoryCode);
 
 }
 

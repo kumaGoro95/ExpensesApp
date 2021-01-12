@@ -10,4 +10,5 @@ import com.example.demo.model.CategoryName;
 @Repository
 public interface CategoryDao <T> extends Serializable {
 	public List<CategoryName> getCategory();
+	public String getCategoryName(int categoryId);
 }
