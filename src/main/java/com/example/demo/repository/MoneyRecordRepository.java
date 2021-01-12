@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import com.example.demo.model.DailySummary;
 import com.example.demo.model.MoneyRecord;
 import com.example.demo.model.MonthlySummary;
 import com.example.demo.model.SummariesByMonthAndCategory;
@@ -68,6 +69,17 @@ public interface MoneyRecordRepository extends JpaRepository<MoneyRecord, Long> 
 
 	default List<SummariesByMonthAndCategory> findMonthAndCategorySummaries(String username) {
 		return getMonthAndCategorySummaries(username).stream().map(SummariesByMonthAndCategory::new)
+				.collect(Collectors.toList());
+	}
+	
+	//日ごとの支出合計を算出
+	@Query(value = "select CAST(concat(sum(income_and_expense), '円') as char), DATE_FORMAT(record_date, '%Y-%m-%d') "
+			+ "from money_records where user_id = :username and category_id not like '99%' "
+			+ "group by record_date order by record_date asc", nativeQuery = true)
+	public List<Object[]> getDailySummaries(@Param("username") String username);
+
+	default List<DailySummary> findDailySummaries(String username) {
+		return getDailySummaries(username).stream().map(DailySummary::new)
 				.collect(Collectors.toList());
 	}
 
