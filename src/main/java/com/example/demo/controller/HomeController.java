@@ -60,7 +60,7 @@ public class HomeController {
 	
 	//テスト
 	@GetMapping("/test")
-	public String test() {
+	public String test(Model model) {
 		return "test";
 	}
 	
