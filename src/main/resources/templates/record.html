@@ -22,7 +22,7 @@
 				url : '/api/event/all'
 			}
 		});
-		
+
 		$('.tabs').tabs();
 	});
 </script>
@@ -80,11 +80,23 @@
 			</div>
 
 			<div id="tab2" class="col s12">
-				<div class="card center">
-					<div id='calendar'></div>
+				<div class="container">
+					<div class="row">
+						<div class="col s12">
+							<ul class="tabs">
+								<li class="tab col s6"><a href="#tab2-3">支出</a></li>
+								<li class="tab col s6"><a href="#tab2-4">収入</a></li>
+							</ul>
+						</div>
+						<div id="tab2-3" class="col s12">
+							<div class="card center">
+								<div id='calendar'></div>
+							</div>
+						</div>
+						<div id="tab2-4" class="col s12">
+						</div>
+					</div>
 				</div>
-			</div>
-		</div>
-	</div>
+				</div>
 </body>
 </html>
