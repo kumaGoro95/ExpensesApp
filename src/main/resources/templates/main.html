@@ -2,40 +2,41 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="utf-8">
-  <th:block th:insert="fragments/header :: header"></th:block>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+<th:block th:insert="fragments/header :: header"></th:block>
+<script th:src="@{/webjars/jquery/3.5.1/jquery.min.js}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.js"></script>
+<script type="text/javascript"
+	th:src="@{/webjars/materializecss/1.0.0/js/materialize.min.js/}"></script>
 <link rel="stylesheet"
 	th:href="@{/webjars/materializecss/1.0.0/css/materialize.min.css}">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>title</title>
 </head>
 <body>
 	<div class="container">
-	<div class="row">
-	<div class="col m6 s12">
-	<div class="exChart">
-  <canvas id="expenseChart" style="display: block; height: 320px; width: 640px;" width="800" height="400" class="chartjs-render-monitor"></canvas>
-  </div>
-  <p class="center">
-  1000円
-  </p>
-  </div>
-  <div class="col m6 s12">
-  <div class="inChart">
-  <canvas id="incomeChart" style="display: block; height: 320px; width: 640px;" width="800" height="400" class="chartjs-render-monitor"></canvas>
-  </div>
-  <p class="center">
-  10000円
-  </p>
-  </div>
-  </div>
-  <!-- CDN -->
-		<a th:href="@{/logout}">ログアウト</a><a th:href="@{/postmain}">投稿へ</a>
-		<a th:href="@{/test}">テスト</a>
+		<div class="row">
+			<div class="col m6 s12">
+				<div class="exChart">
+					<canvas id="expenseChart"
+						style="display: block; height: 320px; width: 640px;" width="800"
+						height="400" class="chartjs-render-monitor"></canvas>
+				</div>
+				<p class="center"></p>
+			</div>
+			<div class="col m6 s12">
+				<div class="inChart">
+					<canvas id="incomeChart"
+						style="display: block; height: 320px; width: 640px;" width="800"
+						height="400" class="chartjs-render-monitor"></canvas>
+				</div>
+				<p class="center">10000円</p>
+			</div>
 		</div>
-		  <script type="text/javascript" th:inline="javascript">
+		<!-- CDN -->
+		<a th:href="@{/logout}">ログアウト</a><a th:href="@{/postmain}">投稿へ</a> <a
+			th:href="@{/test}">テスト</a>
+	</div>
+	<script type="text/javascript" th:inline="javascript">
   var ctx = document.getElementById("expenseChart");
   var expenseChart = new Chart(ctx, {
     type: 'doughnut',
@@ -45,7 +46,21 @@
           backgroundColor: [
             "rgb(255, 99, 132)",
             "rgb(54, 162, 235)",
-            "rgb(255, 205, 86)"
+            "rgb(255, 205, 86)",
+            "rgb(255, 99, 71)",
+            "rgb(173, 255, 47)",
+            "rgb(100, 149, 237)",
+            "rgb(221, 160, 221)",
+            "rgb(244, 164, 96)",
+            "rgb(240, 248, 255)",
+            "rgb(192, 192, 192)",
+            "rgb(220, 20, 60)",
+            "rgb(189, 183, 107)",
+            "rgb(46, 139, 87)",
+            "rgb(72, 209, 204)",
+            "rgb(218, 112, 214)",
+            "rgb(210, 105, 30)",
+            "rgb(47, 79, 79)"
           ],
           data:[[${expenseData}]],
       }]
@@ -82,6 +97,6 @@
   });
   </script>
 
-	
+
 </body>
 </html>
