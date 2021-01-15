@@ -3,92 +3,111 @@
 
 <head>
 <meta charset="utf-8">
-  <th:block th:insert="fragments/header :: header"></th:block>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+<th:block th:insert="fragments/header :: header"></th:block>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 <link rel="stylesheet"
 	th:href="@{/webjars/materializecss/1.0.0/css/materialize.min.css}">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>title</title>
 </head>
 <body>
 	<div class="container">
-	<div class="row card hoverable">
-	<div class="card-content">
-		<h3 class="center gray-text">設定</h3>
-		<p>必要事項を入力してください。 *必須
-		<form th:action="@{/setting}" th:object="${user}" method="post"
-			novalidate>
-			<input type="hidden" name="username" th:value="*{username}" /> <input
-				type="hidden" name="createdAt" th:value="*{createdAt}" /> <input
-				type="hidden" name="role" th:value="*{role}" />
-			<div class="form-group">
-				<label for="name"> ユーザー名* </label> <input type="text"
-					th:errorclass="is-invalid" th:field="*{userNickname}">
-				<div class="invalid-feedback" th:errors="*{userNickname}"></div>
-			</div>
-			<div class="form-group">
-				<label for="email"> メールアドレス* </label> <input type="email"
-					th:errorclass="is-invalid" th:field="*{email}">
-				<div class="invalid-feedback" th:errors="*{email}"></div>
-			</div>
-			<div class="form-group">
-				<label for="password"> パスワード* </label> <input type="password"
-					th:errorclass="is-invalid" th:field="*{password}">
-				<div class="invalid-feedback" th:errors="*{password}"></div>
-			</div>
-			<div class="form-group">
-				<label for="gender"> 性別 </label>
-				<div th:each="gender:${T(com.example.demo.util.GenderType).GENDERS}">
-					<p>
-						<label> <input class="with-gap" type="radio"
-							th:errorclass="is-invalid" th:field="*{gender}"
-							th:value="${gender.key}"> <span
-							th:for="${#ids.prev('gender')}" th:text="${gender.value}">
-								<div class="invalid-feedback" th:errors="*{gender}"></div>
-						</span>
-						</label>
-					</p>
-				</div>
-			</div>
+		<div class="row card hoverable">
+			<div class="card-content">
+				<h3 class="center gray-text">設定</h3>
+				<p>必要事項を入力してください。 *必須
+				<form th:action="@{/setting}" th:object="${user}" method="post"
+					novalidate>
+					<input type="hidden" name="username" th:value="*{username}" /> <input
+						type="hidden" name="createdAt" th:value="*{createdAt}" /> <input
+						type="hidden" name="role" th:value="*{role}" />
+					<div class="form-group">
+						<label for="name"> ユーザー名* </label> <input type="text"
+							th:errorclass="is-invalid" th:field="*{userNickname}">
+						<div class="invalid-feedback" th:errors="*{userNickname}"></div>
+					</div>
+					<div class="form-group">
+						<label for="email"> メールアドレス* </label> <input type="email"
+							th:errorclass="is-invalid" th:field="*{email}">
+						<div class="invalid-feedback" th:errors="*{email}"></div>
+					</div>
+					<div class="form-group">
+						<label for="password"> パスワード* </label> <input type="password"
+							th:errorclass="is-invalid" th:field="*{password}">
+						<div class="invalid-feedback" th:errors="*{password}"></div>
+					</div>
+					<div class="form-group">
+						<label for="gender"> 性別 </label>
+						<div
+							th:each="gender:${T(com.example.demo.util.GenderType).GENDERS}">
+							<p>
+								<label> <input class="with-gap" type="radio"
+									th:errorclass="is-invalid" th:field="*{gender}"
+									th:value="${gender.key}"> <span
+									th:for="${#ids.prev('gender')}" th:text="${gender.value}">
+										<div class="invalid-feedback" th:errors="*{gender}"></div>
+								</span>
+								</label>
+							</p>
+						</div>
+					</div>
 
 
-			<label for="dateOfBirth">生年月日</label> <input type="text"
-				class="datepicker" value="2000-01-01"
-				th:errorclass="is-invalid" th:field="*{dateOfBirth}" />
-			<div class="invalid-feedback" th:errors="*{dateOfBirth}"></div>
-			<div class="form-check"></div>
-			<button class="btn">更新</button>
-		</form>
+					<label for="dateOfBirth">生年月日</label> <input type="text"
+						class="datepicker" value="2000-01-01" th:errorclass="is-invalid"
+						th:field="*{dateOfBirth}" />
+					<div class="invalid-feedback" th:errors="*{dateOfBirth}"></div>
+					<div class="form-check"></div>
+
+					<div class="form-group">
+						<label for="budget">月の予算</label> <input type="number"
+							th:errorclass="is-invalid" th:field="*{budget}">
+						<div class="invalid-feedback" th:errors="*{budget}"></div>
+					</div>
+
+					<button class="btn">更新</button>
+				</form>
+			</div>
 		</div>
-		</div>
-		
+
 		<a th:href="@{/deleteUser}">退会する</a>
 
 	</div>
-<script>
-$(document).ready(function(){
-    $('.datepicker').datepicker({
-        format: "yyyy-mm-dd",
-        i18n:{
-          months:  ["1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"],
-          monthsShort: ["1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"],
-          weekdays: ["日曜日", "月曜日", "火曜日", "水曜日", "木曜日", "金曜日", "土曜日"],
-          weekdaysShort: ["日", "月", "火", "水", "木", "金", "土"],
-          weekdaysAbbrev: ["日", "月", "火", "水", "木", "金", "土"],
-          nextMonth: "翌月",
-          previousMonth: "前月",
-          labelMonthSelect: "月を選択",
-          labelYearSelect: "年を選択",
-          setDefaultDate:true,
-          cancel:'キャンセル',
-          clear: 'クリア',
-          done: 'OK',
-          close: "閉じる",
-          format: "yyyy-mm-dd",
-        }
-    });
-  });
-</script>
+	<script>
+		$(document).ready(
+				function() {
+					$('.datepicker').datepicker(
+							{
+								format : "yyyy-mm-dd",
+								i18n : {
+									months : [ "1月", "2月", "3月", "4月", "5月",
+											"6月", "7月", "8月", "9月", "10月",
+											"11月", "12月" ],
+									monthsShort : [ "1月", "2月", "3月", "4月",
+											"5月", "6月", "7月", "8月", "9月",
+											"10月", "11月", "12月" ],
+									weekdays : [ "日曜日", "月曜日", "火曜日", "水曜日",
+											"木曜日", "金曜日", "土曜日" ],
+									weekdaysShort : [ "日", "月", "火", "水", "木",
+											"金", "土" ],
+									weekdaysAbbrev : [ "日", "月", "火", "水", "木",
+											"金", "土" ],
+									nextMonth : "翌月",
+									previousMonth : "前月",
+									labelMonthSelect : "月を選択",
+									labelYearSelect : "年を選択",
+									setDefaultDate : true,
+									cancel : 'キャンセル',
+									clear : 'クリア',
+									done : 'OK',
+									close : "閉じる",
+									format : "yyyy-mm-dd",
+								}
+							});
+				});
+	</script>
 </body>
 </html>

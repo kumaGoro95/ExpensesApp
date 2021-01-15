@@ -4,7 +4,8 @@
 <meta charset="utf-8">
 <th:block th:insert="fragments/header :: header"></th:block>
 <script th:src="@{/webjars/jquery/3.5.1/jquery.min.js}"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.js"></script>
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.js"></script>
 <script type="text/javascript"
 	th:src="@{/webjars/materializecss/1.0.0/js/materialize.min.js/}"></script>
 <link rel="stylesheet"
@@ -14,24 +15,39 @@
 </head>
 <body>
 	<div class="container">
-		<div class="row">
-			<div class="col m6 s12">
-				<div class="exChart">
-					<canvas id="expenseChart"
-						style="display: block; height: 320px; width: 640px;" width="800"
-						height="400" class="chartjs-render-monitor"></canvas>
+		<div class="row card hovarable">
+			<div class="card-content">
+				<div class="col m6 s12">
+					<div class="exChart">
+						<canvas id="expenseChart"
+							style="display: block; height: 320px; width: 640px;" width="800"
+							height="400" class="chartjs-render-monitor"></canvas>
+					</div>
+					<p class="center"></p>
 				</div>
-				<p class="center"></p>
-			</div>
-			<div class="col m6 s12">
-				<div class="inChart">
-					<canvas id="incomeChart"
-						style="display: block; height: 320px; width: 640px;" width="800"
-						height="400" class="chartjs-render-monitor"></canvas>
+				<div class="col m6 s12">
+					<div class="inChart">
+						<canvas id="incomeChart"
+							style="display: block; height: 320px; width: 640px;" width="800"
+							height="400" class="chartjs-render-monitor"></canvas>
+					</div>
+					<p class="center">10000円</p>
 				</div>
-				<p class="center">10000円</p>
 			</div>
 		</div>
+
+		<div class="row card hovarable">
+			<div class="card-content">
+				<div class="col m6 s12">
+					<div class="total" >
+						<canvas id="total" style="display: block; height: 320px; width: 640px;" width="800"
+							height="400" class="chartjs-render-monitor"></canvas>
+					</div>
+				</div>
+			</div>
+		</div>
+
+
 		<!-- CDN -->
 		<a th:href="@{/logout}">ログアウト</a><a th:href="@{/postmain}">投稿へ</a> <a
 			th:href="@{/test}">テスト</a>
@@ -96,7 +112,33 @@
     }
   });
   </script>
+<script>
+var ctx = document.getElementById("total");
+var data = {
+	    labels: ["平成26年", "平成27年", "平成28年", "平成29年", "平成30年"],
+	    datasets: [{
+	        label: '得点',
+	        data: [880, 740, 900, 520, 930],
+	        backgroundColor: 'rgba(255, 100, 100, 1)'
+	    }]
+	};
 
+	var options = {
+	    scales: {
+	        yAxes: [{
+	            ticks: {
+	                min: 300
+	            }
+	        }]
+	    }
+	};
+
+	var ex_chart = new Chart(ctx, {
+	    type: 'horizontalBar',
+	    data: data,
+	    options: options
+	});
+</script>
 
 </body>
 </html>

@@ -14,6 +14,10 @@ public interface SiteUserRepository extends JpaRepository<SiteUser, Long> {
 	
 	boolean existsByEmail(String email);
 	
+	public int countByUsername(String username);
+	
+	public int countByEmail(String email);
+	
 	void deleteByUsername(String username);
 
 }
