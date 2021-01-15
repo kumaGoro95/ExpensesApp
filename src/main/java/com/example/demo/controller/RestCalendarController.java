@@ -33,6 +33,12 @@ public class RestCalendarController {
         String jsonMsg = null;
         try {
             List<DailySummary> dailySummaries = moneyRecordRepository.findDailySummaries(loginUser.getName());
+            for(int i = 0; i < dailySummaries.size(); i++) {
+            	DailySummary ds = dailySummaries.get(i);
+            	String title = "<a th:href=\"./main.html\">" + ds.getTitle() + "</a>";
+            	ds.setTitle(title);
+            	
+            }
             // FullCalendarにエンコード済み文字列を渡す
             ObjectMapper mapper = new ObjectMapper();
             jsonMsg =  mapper.writerWithDefaultPrettyPrinter().writeValueAsString(dailySummaries);

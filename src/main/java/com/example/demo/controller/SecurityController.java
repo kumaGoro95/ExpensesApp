@@ -1,7 +1,9 @@
 package com.example.demo.controller;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
@@ -51,6 +53,12 @@ public class SecurityController {
 	// Authentication・・・認証済みのユーザー情報を取得
 	public String loginProcess(Authentication loginUser, Model model) {
 		model.addAttribute("user", userRepository.findByUsername(loginUser.getName()));
+		
+		//現在の月を取得
+		LocalDate now = LocalDate.now();
+		String strNow = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+		String month = strNow.substring(0,7);
+		
 		// 支出のカテゴリ一覧を設定
 		List<String> expenseCategory = new ArrayList<String>();
 		for (int i = 1; i < CategoryCodeToName.Categories.size(); i++) {
@@ -60,7 +68,7 @@ public class SecurityController {
 
 		// 支出のカテゴリ毎の合計を設定
 		List<SummaryByCategory> expenseByCategory = moneyRecordRepository.findCategorySummaries(loginUser.getName(),
-				"2020-12");
+				month);
 		List<BigDecimal> expenseAmmount = new ArrayList<BigDecimal>();
 		for (int i = 0; i < expenseByCategory.size() - 1; i++) {
 			expenseAmmount.add(expenseByCategory.get(i).getSum());
@@ -78,7 +86,7 @@ public class SecurityController {
 
 		// 収入のカテゴリ毎の合計を設定
 		List<SummaryByCategory> incomeByCategory = moneyRecordRepository.findSubcategorySummaries(loginUser.getName(),
-				"2020-12", 99);
+				month, 99);
 		List<BigDecimal> incomeAmmount = new ArrayList<BigDecimal>();
 		for (int i = 0; i < incomeByCategory.size(); i++) {
 			incomeAmmount.add(incomeByCategory.get(i).getSum());

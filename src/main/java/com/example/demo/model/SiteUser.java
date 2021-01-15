@@ -1,5 +1,6 @@
 package com.example.demo.model;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -56,6 +57,9 @@ public class SiteUser{
 	@Max(100)
 	@Column(name = "user_icon")
 	private String icon;
+
+	@Column(name = "budget")
+	private BigDecimal budget;
 	
 	private boolean admin;
 	

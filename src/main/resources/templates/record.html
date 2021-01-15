@@ -20,7 +20,16 @@
 		$('#calendar').fullCalendar({
 			events : {
 				url : '/api/event/all'
-			}
+			},
+			//イベントの色を変える
+            eventColor: '#87cefa',
+            //イベントの文字色を変える
+            eventTextColor: '#000000',
+            eventRender: function(event, element) {
+                element.css("font-size", "0.8em");
+                element.css("padding", "5px");
+                element.find('span.fc-title').html(element.find('span.fc-title').text());
+            }
 		});
 
 		$('.tabs').tabs();
