@@ -4,50 +4,71 @@
 <meta charset="utf-8">
 <th:block th:insert="fragments/header :: header"></th:block>
 <script th:src="@{/webjars/jquery/3.5.1/jquery.min.js}"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.js"></script>
+<script type="text/javascript"
+	th:src="@{/webjars/materializecss/1.0.0/js/materialize.min.js/}"></script>
 <link rel="stylesheet"
 	th:href="@{/webjars/materializecss/1.0.0/css/materialize.min.css}">
 <title>title</title>
 </head>
 <body>
-<div class="container">
-<a class='dropdown-trigger btn' th:field="${categoryId}" data-target='dropdown1'>カテゴリ</a>
+<a class="waves-effect waves-light btn modal-trigger" href="#modal1">Modal</a>
 
-<div class = "row">
-              <div class="input-field col s12">
-    <select>
-      <optgroup label="team 1">
-        <option value="1">Option 1</option>
-        <option value="2">Option 2</option>
-      </optgroup>
-      <optgroup label="team 2">
-        <option value="3">Option 3</option>
-        <option value="4">Option 4</option>
-      </optgroup>
-    </select>
-    <label>Optgroups</label>
-  </div>
-  </div>
-
-<!-- Dropdown Structure -->
-  <ul id='dropdown1' class='dropdown-content'>
-  <div th:each="category, index : ${categories}" th:inline="text">
-    <li><p class="center" th:text="${category['value']}"></p></li>
-    <div th:each="subcategory : ${subcategories}" th:inline="text">
-    <th:block th:if="${subcategory.categoryCode == category['key']}">
-    <li><a th:value="${subcategory.categoryId}">[[${subcategory.subcategoryName}]]</a></li>
-    </th:block>
+ <div id="modal1" class="modal">
+    <div class="modal-content">
+      <h4>Modal Header</h4>
+      <p>A bunch of text</p>
     </div>
+    <div class="modal-footer">
+      <a href="#!" class="modal-close waves-effect waves-green btn-flat">Agree</a>
     </div>
-  </ul>
   </div>
-  <script>
   
-  $(document).ready(function(){
-	    $('select').formSelect();
+	<canvas id="total"></canvas>
+	<script type="text/javascript" th:inline="javascript">
+
+	var ctx = document.getElementById("total");
+	  var myBarChart = new Chart(ctx, {
+	    type: 'bar',
+	    data: {
+	      labels: [8/1],
+	      datasets: [
+	        {
+	          label: '月',
+	          data: [[${total}]],
+	          backgroundColor: "rgba(219,39,91,0.5)"
+	        },{
+	          label: '日',
+	          data: [11],
+	          backgroundColor: "rgba(130,201,169,0.5)"
+	        }
+	      ]
+	    },
+	    options: {
+	      title: {
+	        display: true,
+	        text: '合計'
+	      },
+	      scales: {
+	        yAxes: [{
+	          ticks: {
+	            suggestedMax: 100,
+	            suggestedMin: 0,
+	            stepSize: 10,
+	            callback: function(value, index, values){
+	              return  value +  '%'
+	            }
+	          }
+	        }]
+	      },
+	    }
 	  });
-  
-$('.dropdown-trigger').dropdown();
+	  
+	  $(document).ready(function(){
+		    $('.modal').modal();
+		  });
+	  
 </script>
 </body>
 </html>

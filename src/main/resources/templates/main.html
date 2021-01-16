@@ -39,8 +39,9 @@
 		<div class="row card hovarable">
 			<div class="card-content">
 				<div class="col m6 s12">
-					<div class="total" >
-						<canvas id="total" style="display: block; height: 320px; width: 640px;" width="800"
+					<div class="total">
+						<canvas id="total"
+							style="display: block; height: 320px; width: 640px;" width="800"
 							height="400" class="chartjs-render-monitor"></canvas>
 					</div>
 				</div>
@@ -111,15 +112,14 @@
       }
     }
   });
-  </script>
-<script>
+
 var ctx = document.getElementById("total");
 var data = {
-	    labels: ["平成26年", "平成27年", "平成28年", "平成29年", "平成30年"],
+	    labels: [[${totalLabel}]],
 	    datasets: [{
 	        label: '得点',
-	        data: [880, 740, 900, 520, 930],
-	        backgroundColor: 'rgba(255, 100, 100, 1)'
+	        data: [[${total}]],
+	        backgroundColor: 'rgb(255, 99, 132, 1)',
 	    }]
 	};
 
