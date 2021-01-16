@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <th:block th:insert="fragments/header :: header"></th:block>
 <script th:src="@{/webjars/jquery/3.5.1/jquery.min.js}"></script>
-<script
-	src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+<script type="text/javascript"
+	th:src="@{/webjars/materializecss/1.0.0/js/materialize.min.js/}"></script>
 <link rel="stylesheet"
 	th:href="@{/webjars/materializecss/1.0.0/css/materialize.min.css}">
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -93,13 +93,8 @@
 								}
 							});
 				});
-
-		$('.dropdown-trigger').dropdown();
-		$('#dropdown1 li').click(function() {
-			a = $(this).text()
-			$('.btn').text(a)
-		})
-
+		
+		
 		$(document).ready(function() {
 			$('select').formSelect();
 		});

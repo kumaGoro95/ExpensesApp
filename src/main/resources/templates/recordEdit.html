@@ -1,21 +1,21 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-<meta charset="UTF-8">
+<meta charset="utf-8">
 <th:block th:insert="fragments/header :: header"></th:block>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet"
-	th:href="@{/webjars/materializecss/1.0.0/css/materialize.min.css}">
+<script th:src="@{/webjars/jquery/3.5.1/jquery.min.js}"></script>
 <script type="text/javascript"
 	th:src="@{/webjars/materializecss/1.0.0/js/materialize.min.js/}"></script>
-<script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
+<link rel="stylesheet"
+	th:href="@{/webjars/materializecss/1.0.0/css/materialize.min.css}">
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>title</title>
 </head>
 <body>
 	<div class="container">
-		<div class="card">
-			<h3 class="center gray-text">出入金記録</h3>
-			<p>必要事項を入力してください。 *必須
+		<div class="row card hoverable">
+			<div class="card-content">
+			<h3 class="center gray-text">編集</h3>
 			<form th:action="@{/updateRecord}" th:object="${record}"
 				method="post" novalidate>
 				<input type="hidden" name="recordId" th:value="*{recordId}" /> <input
@@ -33,13 +33,22 @@
 					<div class="invalid-feedback" th:errors="*{incomeAndExpense}"></div>
 				</div>
 				<div class="form-group">
-					<select class="form-control" name="categoryId">
-						<div th:each="category : ${categories}" th:inline="text">
-							<option th:value="${category.categoryId}"
-								th:field="*{categoryId}">[[${category.subcategoryName}]]</option>
-						</div>
-					</select>
-				</div>
+							<div class="input-field col s12">
+								<select th:field="*{categoryId}">
+									<div th:each="category, index : ${categories}" th:inline="text">
+										<optgroup th:label="${category['value']}">
+											<div th:each="subcategory : ${subcategories}"
+												th:inline="text">
+												<th:block
+													th:if="${subcategory.categoryCode == category['key']}">
+													<option th:value="${subcategory.categoryId}">[[${subcategory.subcategoryName}]]</option>
+												</th:block>
+										</optgroup>
+									</div>
+								</select> <label for="recordDate">カテゴリ</label>
+							</div>
+							</div>
+							
 				<div class="form-group">
 					<label for="note">備考</label>
 					<textarea rows="5" cols="40" th:errorclass="is-invalid"
@@ -50,7 +59,14 @@
 				<div class="form-check"></div>
 				<button class="btn">更新</button>
 			</form>
+			</div>
+			
 		</div>
 	</div>
+	<script>
+	$(document).ready(function() {
+		$('select').formSelect();
+	});
+	</script>
 </body>
 </html>

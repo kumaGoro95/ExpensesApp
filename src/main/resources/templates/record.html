@@ -76,28 +76,15 @@
 											<tr>
 												<td>[[${record.recordDate}]]</td>
 												<td>[[${record.incomeAndExpense}]]円</td>
-												<td>[[${record.categoryId}]]</td>
+												<td>[[${record.subcategoryName}]]</td>
 												<td>[[${record.note}]]</td>
 												<td><a th:href="@{/editRecord/__${record.recordId}__}">編集</a>
 													<a th:href="@{/deleteRecord/__${record.recordId}__}">削除</a></td>
-												<td><a
-													class="waves-effect waves-light btn modal-trigger"
-													href="#modal1" id="info" th:data-id="${record.recordId}">Modal</a></td>
 											</tr>
 										</div>
 									</tbody>
 								</table>
 
-								<div id="modal1" class="modal">
-									<div class="modal-content">
-										<h4></h4>
-										<p>A bunch of text</p>
-									</div>
-									<div class="modal-footer">
-										<a href="#!"
-											class="modal-close waves-effect waves-green btn-flat">Agree</a>
-									</div>
-								</div>
 
 							</div>
 							<div id="tab2-2" class="col s12">テスト</div>
@@ -126,20 +113,5 @@
 			</div>
 		</div>
 	</div>
-	<script>
-		$(document).on('click', '.modal-trigger', function(e) {
-			let id = $(e.currentTarget).data('id');
-			$.ajax({
-				type : "GET",
-				url : `/editRecord/${id}`,
-				dataType : 'json',
-				success : function(result) {
-					$(document).ready(function(){
-						$('.modal').modal('.open');
-					  });
-				}
-			});
-		});
-	</script>
 </body>
 </html>
