@@ -49,56 +49,6 @@ public class SecurityController {
 		return "login";
 	}
 
-	@GetMapping("/")
-	// Authentication・・・認証済みのユーザー情報を取得
-	public String loginProcess(Authentication loginUser, Model model) {
-		model.addAttribute("user", userRepository.findByUsername(loginUser.getName()));
-		
-		//現在の月を取得
-		LocalDate now = LocalDate.now();
-		String strNow = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-		String month = strNow.substring(0,7);
-		
-		// 支出のカテゴリ一覧を設定
-		List<String> expenseCategory = new ArrayList<String>();
-		for (int i = 1; i < CategoryCodeToName.Categories.size(); i++) {
-			expenseCategory.add(CategoryCodeToName.Categories.get(i));
-		}
-		String expenseLabel[] = expenseCategory.toArray(new String[expenseCategory.size()]);
-
-		// 支出のカテゴリ毎の合計を設定
-		List<SummaryByCategory> expenseByCategory = moneyRecordRepository.findCategorySummaries(loginUser.getName(),
-				month);
-		List<BigDecimal> expenseAmmount = new ArrayList<BigDecimal>();
-		for (int i = 0; i < expenseByCategory.size() - 1; i++) {
-			expenseAmmount.add(expenseByCategory.get(i).getSum());
-		}
-		BigDecimal expenseData[] = expenseAmmount.toArray(new BigDecimal[expenseAmmount.size()]);
-
-		// 収入のカテゴリ一覧を設定
-		List<Category> incomeCategories = categoryRepository.findBycategoryCode(99);
-		System.out.println(categoryRepository.findBycategoryCode(99));
-		List<String> incomeCategoriesStr = new ArrayList<String>();
-		for (int i = 0; i < incomeCategories.size(); i++) {
-			incomeCategoriesStr.add(incomeCategories.get(i).getSubcategoryName());
-		}
-		String incomeLabel[] = incomeCategoriesStr.toArray(new String[incomeCategoriesStr.size()]);
-
-		// 収入のカテゴリ毎の合計を設定
-		List<SummaryByCategory> incomeByCategory = moneyRecordRepository.findSubcategorySummaries(loginUser.getName(),
-				month, 99);
-		List<BigDecimal> incomeAmmount = new ArrayList<BigDecimal>();
-		for (int i = 0; i < incomeByCategory.size(); i++) {
-			incomeAmmount.add(incomeByCategory.get(i).getSum());
-		}
-		BigDecimal incomeData[] = incomeAmmount.toArray(new BigDecimal[incomeAmmount.size()]);
-		model.addAttribute("expenseLabel", expenseLabel);
-		model.addAttribute("expenseData", expenseData);
-		model.addAttribute("incomeLabel", incomeLabel);
-		model.addAttribute("incomeData", incomeData);
-
-		return "main";
-	}
 
 	@GetMapping("/register")
 	public String register(@ModelAttribute("user") SiteUser user) {

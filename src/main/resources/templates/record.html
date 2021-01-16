@@ -16,24 +16,27 @@
 <title>title</title>
 
 <script>
-	$(document).ready(function() {
-		$('#calendar').fullCalendar({
-			events : {
-				url : '/api/event/all'
-			},
-			//イベントの色を変える
-            eventColor: '#87cefa',
-            //イベントの文字色を変える
-            eventTextColor: '#000000',
-            eventRender: function(event, element) {
-                element.css("font-size", "0.8em");
-                element.css("padding", "5px");
-                element.find('span.fc-title').html(element.find('span.fc-title').text());
-            }
-		});
+	$(document).ready(
+			function() {
+				$('#calendar').fullCalendar(
+						{
+							events : {
+								url : '/api/event/all'
+							},
+							//イベントの色を変える
+							eventColor : '#FFFFFF',
+							//イベントの文字色を変える
+							eventTextColor : '#FF0000',
+							eventRender : function(event, element) {
+								element.css("font-size", "0.8em");
+								element.css("padding", "5px");
+								element.find('span.fc-title').html(
+										element.find('span.fc-title').text());
+							}
+						});
 
-		$('.tabs').tabs();
-	});
+				$('.tabs').tabs();
+			});
 </script>
 
 </head>
@@ -77,10 +80,25 @@
 												<td>[[${record.note}]]</td>
 												<td><a th:href="@{/editRecord/__${record.recordId}__}">編集</a>
 													<a th:href="@{/deleteRecord/__${record.recordId}__}">削除</a></td>
+												<td><a
+													class="waves-effect waves-light btn modal-trigger"
+													href="#modal1" id="info" th:data-id="${record.recordId}">Modal</a></td>
 											</tr>
 										</div>
 									</tbody>
 								</table>
+
+								<div id="modal1" class="modal">
+									<div class="modal-content">
+										<h4></h4>
+										<p>A bunch of text</p>
+									</div>
+									<div class="modal-footer">
+										<a href="#!"
+											class="modal-close waves-effect waves-green btn-flat">Agree</a>
+									</div>
+								</div>
+
 							</div>
 							<div id="tab2-2" class="col s12">テスト</div>
 						</div>
@@ -102,10 +120,26 @@
 								<div id='calendar'></div>
 							</div>
 						</div>
-						<div id="tab2-4" class="col s12">
-						</div>
+						<div id="tab2-4" class="col s12"></div>
 					</div>
 				</div>
-				</div>
+			</div>
+		</div>
+	</div>
+	<script>
+		$(document).on('click', '.modal-trigger', function(e) {
+			let id = $(e.currentTarget).data('id');
+			$.ajax({
+				type : "GET",
+				url : `/editRecord/${id}`,
+				dataType : 'json',
+				success : function(result) {
+					$(document).ready(function(){
+						$('.modal').modal('.open');
+					  });
+				}
+			});
+		});
+	</script>
 </body>
 </html>

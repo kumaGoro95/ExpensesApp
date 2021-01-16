@@ -126,13 +126,14 @@ public class PostController {
 	public String Like(@PathVariable("postId") Long postId, @ModelAttribute("like") Like like, Authentication loginUser,
 			Model model) {
 		if(likeRepository.existsByUsernameAndPostId(loginUser.getName(), postId) == true) {
-			return "postmain";
-		}
+			likeRepository.deleteByUsernameAndPostId(loginUser.getName(), postId);
+		}else {
 		like.setPostId(postId);
 		like.setUsername(loginUser.getName());
 		LocalDateTime ldt = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
 		like.setCreatedAt(ldt);
 		likeRepository.save(like);
+		}
 
 		return "redirect:/postmain?postdetail";
 	}

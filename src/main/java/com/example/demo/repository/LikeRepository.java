@@ -15,5 +15,7 @@ public interface LikeRepository extends JpaRepository<Like, Long> {
 	
 	//既にいいねしているか検索
 	boolean existsByUsernameAndPostId(String username, Long postId);
+	
+	public void deleteByUsernameAndPostId(String username, Long postId);
 
 }

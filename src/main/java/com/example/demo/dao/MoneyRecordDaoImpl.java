@@ -66,7 +66,7 @@ public class MoneyRecordDaoImpl implements MoneyRecordDao<MoneyRecord> {
 		String qstr = "select sum(income_and_expense) from money_records where user_id = ?1 and record_date like ?2 and category_id not like ?3";
 		Query query = em.createNativeQuery(qstr).setParameter(1, fstr)
 				.setParameter(2, a + "%")
-				.setParameter(3, 20 + "%");
+				.setParameter(3, 99 + "%");
 		BigDecimal sum =(BigDecimal) query.getSingleResult();
 		
 		return sum;

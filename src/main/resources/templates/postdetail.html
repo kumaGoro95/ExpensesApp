@@ -9,6 +9,7 @@
 <script type="text/javascript"
 	th:src="@{/webjars/materializecss/1.0.0/js/materialize.min.js/}"></script>
 <script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
+<link href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" rel="stylesheet">
 <title>title</title>
 </head>
 <body>
@@ -33,7 +34,17 @@
 				th:href="@{/deleteComment/__${comment.commentId}__}">削除</a>
 				</span>
 		</div>
-		<a th:href="@{/like/__${post.postId}__}">いいね</a> <a
+		<section class="post" data-postid="${post.postId}">
+		<div class="btn-good"><i class="fa-heart fa-lg px-16
+        <th:if(isGood($_SESSION['user_id'],$dbPostData['id'])){ //いいね押したらハートが塗りつぶされる
+                echo ' active fas';
+            }else{ //いいねを取り消したらハートのスタイルが取り消される
+                echo ' far';
+            }; ?>"></i><span><?php echo $dbPostGoodNum; ?></span>
+		</section>
+		
+		
+		 <a
 			th:href="@{/likesList/__${post.postId}__}"><p
 				th:text="${theNumberOfLikes}"></p></a>
 	</div>
@@ -55,5 +66,36 @@
 		</form>
 	</div>
 	</div>
+	<script>
+	$(function(){
+	    var $good = $('.btn-good'), //いいねボタンセレクタ
+	                goodPostId; //投稿ID
+	    $good.on('click',function(e){
+	        e.stopPropagation();
+	        var $this = $(this);
+	        //カスタム属性（postid）に格納された投稿ID取得
+	        goodPostId = $this.parents('.post').data('postid'); 
+	        $.ajax({
+	            type: 'POST',
+	            url: , `/like/${postid}` //post送信を受けとるphpファイル
+	            data: { postId: goodPostId} //{キー:投稿ID}
+	        }).done(function(data){
+	            console.log('Ajax Success');
+
+	            // いいねの総数を表示
+	            $this.children('span').html(data);
+	            // いいね取り消しのスタイル
+	            $this.children('i').toggleClass('far'); //空洞ハート
+	            // いいね押した時のスタイル
+	            $this.children('i').toggleClass('fas'); //塗りつぶしハート
+	            $this.children('i').toggleClass('active');
+	            $this.toggleClass('active');
+	        }).fail(function(msg) {
+	            console.log('Ajax Error');
+	        });
+	    });
+	});
+	
+	</script>
 </body>
 </html>
