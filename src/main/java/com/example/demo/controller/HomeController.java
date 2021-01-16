@@ -195,7 +195,7 @@ public class HomeController {
 		user.setUpdatedAt(ldt);
 		userRepository.save(user);
 
-		return "redirect:/main?setting";
+		return "redirect:/?setting";
 	}
 
 	// ユーザーを削除
@@ -233,20 +233,20 @@ public class HomeController {
 		moneyRecord.setCreatedAt(ldt);
 		moneyRecordRepository.save(moneyRecord);
 
-		return "redirect:/main?recordPost";
+		return "redirect:/?recordPost";
 	}
 
 	// 履歴画面へ遷移
 	@GetMapping("/showRecords")
 	public String showRecords(Authentication loginUser, Model model) {
 		model.addAttribute("user", userRepository.findByUsername(loginUser.getName()));
-		model.addAttribute("records", moneyRecordRepository.findByUsernameOrderByRecordDate(loginUser.getName()));
+		model.addAttribute("records", moneyRecordRepository.findMoneyRecordList(loginUser.getName()));
 		return "record";
 	}
 
 	// 出入金記録詳細画面へ遷移
 	@RequestMapping("/record/{recordId}")
-	public String showRecord(@PathVariable("recordId") Long recordId, Model model) {
+	public String showRecord(@PathVariable("recordId") int recordId, Model model) {
 		model.addAttribute("record", moneyRecordRepository.findByRecordId(recordId));
 
 		return "";
@@ -263,10 +263,12 @@ public class HomeController {
 
 	// 出入金記録編集画面へ遷移
 	@GetMapping("/editRecord/{recordId}")
-	public String editRecord(@PathVariable("recordId") Long recordId, Authentication loginUser, Model model) {
+	public String editRecord(@PathVariable("recordId") int recordId, Authentication loginUser, Model model) {
 		model.addAttribute("record", moneyRecordRepository.findByRecordId(recordId));
 		model.addAttribute("user", userRepository.findByUsername(loginUser.getName()));
-		model.addAttribute("categories", categoryRepository.findAll());
+		model.addAttribute("subcategories", categoryRepository.findAll());
+		Map<Integer, String> categories = CategoryCodeToName.Categories;
+		model.addAttribute("categories", categories);
 
 		return "recordEdit";
 	}
@@ -276,7 +278,7 @@ public class HomeController {
 	public String updateRecord(@Validated @ModelAttribute("moneyRecord") MoneyRecord moneyRecord, BindingResult result,
 			Authentication loginUser) {
 		if (result.hasErrors()) {
-			return "main";
+			return "/";
 		}
 
 		LocalDateTime ldt = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
@@ -284,7 +286,7 @@ public class HomeController {
 
 		moneyRecordRepository.save(moneyRecord);
 
-		return "redirect:/main?editRecord";
+		return "redirect:/showRecords?editRecord";
 	}
 
 }

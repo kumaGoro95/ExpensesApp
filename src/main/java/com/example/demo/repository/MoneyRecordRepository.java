@@ -10,6 +10,7 @@ import org.springframework.data.repository.query.Param;
 
 import com.example.demo.model.DailySummary;
 import com.example.demo.model.MoneyRecord;
+import com.example.demo.model.MoneyRecordList;
 import com.example.demo.model.MonthlySummary;
 import com.example.demo.model.SummariesByMonthAndCategory;
 import com.example.demo.model.SummaryByCategory;
@@ -18,13 +19,22 @@ public interface MoneyRecordRepository extends JpaRepository<MoneyRecord, Long> 
 
 	public List<MoneyRecord> findByUsername(String username);
 
-	public MoneyRecord findByRecordId(Long recordId);
+	public MoneyRecord findByRecordId(int recordId);
 
-	public void deleteByRecordId(Long recordId);
+	public void deleteByRecordId(int recordId);
 
 	public List<MoneyRecord> findByUsernameOrderByRecordDate(String username);
 
 	public List<MoneyRecord> findByRecordDateBetweenOrderByRecordDateAsc(LocalDate start, LocalDate end);
+	
+	@Query(value = "select record_id, record_date, income_and_expense, subcategory_name, record_note  "
+			+"from money_records M left join categories C on C.category_id = M.category_id "
+			+"where M.user_id = :username", nativeQuery = true)
+	public List<Object[]> getMoneyRecordList(@Param("username")String username);
+	
+	default List<MoneyRecordList> findMoneyRecordList(String username) {
+		return getMoneyRecordList(username).stream().map(MoneyRecordList::new).collect(Collectors.toList());
+	}
 
 	// 月ごとの支出の合計を算出
 	@Query(value = "SELECT DATE_FORMAT(record_date, '%Y%m'), sum(income_and_expense) FROM money_records "
