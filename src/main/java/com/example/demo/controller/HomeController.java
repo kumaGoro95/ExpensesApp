@@ -96,9 +96,12 @@ public class HomeController {
 
 	@GetMapping("/")
 	// Authentication・・・認証済みのユーザー情報を取得
-	public String loginProcess(Authentication loginUser, Model model) {
+	public String loginProcess(@ModelAttribute("moneyRecord") MoneyRecord moneyRecord, Authentication loginUser, Model model) {
 		SiteUser currentUser = userRepository.findByUsername(loginUser.getName());
 		model.addAttribute("user", currentUser);
+		model.addAttribute("subcategories", categoryRepository.findAll());
+		Map<Integer, String> categories = CategoryCodeToName.Categories;
+		model.addAttribute("categories", categories);
 
 		// 現在の月を取得
 		LocalDate now = LocalDate.now();

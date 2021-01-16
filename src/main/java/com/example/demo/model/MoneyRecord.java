@@ -29,7 +29,7 @@ public class MoneyRecord{
 	@GeneratedValue(strategy = GenerationType.IDENTITY) 
 	@NotNull
 	@Column(name = "record_id")
-	private long recordId;
+	private int recordId;
 	
 	@NotNull
 	@Column(name = "user_id")
