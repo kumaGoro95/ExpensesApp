@@ -8,12 +8,18 @@
 <!-- Header -->
 <nav>
     <div class="nav-wrapper">
-      <a href="#" class="brand-logo">Logo</a>
+      <a th:href="@{/}" class="brand-logo">Logo</a>
       <ul id="nav-mobile" class="right hide-on-med-and-down">
+      <span th:if="${user.username != null}">
         <li><a th:href="@{/postmain}">家計簿共有</a></li>
         <li><a th:href="@{/record}">出入金入力</a></li>
         <li><a th:href="@{/showRecords}">履歴</a></li>
         <li><a th:href="@{/setting}">ユーザー設定</a></li>
+        </span>
+        <span th:if="${user.username == null}">
+        <li><a th:href="@{/login}">ログイン</a></li>
+        <li><a th:href="@{/register}">会員登録</a></li>
+        </span>
       </ul>
     </div>
   </nav>
