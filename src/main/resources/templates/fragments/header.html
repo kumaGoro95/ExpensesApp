@@ -11,10 +11,11 @@
       <a th:href="@{/}" class="brand-logo">Logo</a>
       <ul id="nav-mobile" class="right hide-on-med-and-down">
       <span th:if="${user.username != null}">
-        <li><a th:href="@{/postmain}">家計簿共有</a></li>
-        <li><a th:href="@{/record}">出入金入力</a></li>
-        <li><a th:href="@{/showRecords}">履歴</a></li>
-        <li><a th:href="@{/setting}">ユーザー設定</a></li>
+        <li><a class="waves-effect waves-light btn">入力 <i class="material-icons right">note_add</i></a></li>
+        <li><a th:href="@{/postmain}"><i class="material-icons left">people_outline</i>家計簿公開</a></li>
+        <li><a th:href="@{/showRecords}"><i class="material-icons left">history</i>履歴</a></li>
+        <li><a th:href="@{/setting}"><i class="material-icons left">insert_chart</i>分析</a></li>
+        <li><a th:href="@{/setting}"><i class="material-icons left">settings</i>設定</a></li>
         </span>
         <span th:if="${user.username == null}">
         <li><a th:href="@{/login}">ログイン</a></li>

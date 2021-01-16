@@ -10,27 +10,31 @@
 <script type="text/javascript"
 	th:src="@{/webjars/materializecss/1.0.0/js/materialize.min.js/}"></script>
 <script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+	rel="stylesheet">
 <title>title</title>
 </head>
 <body>
 	<div class="container">
-	<div class="row card hoverable">
-	<div class="card-content">
-		<h3 class="center gray-text">投稿</h3>
-		<p>必要事項を入力してください。 *必須
-		<form th:action="@{/post}" th:object="${post}" method="post"
-			novalidate>
-			<input type="hidden" name="username" th:value="${user.username}" />
-			<div class="form-group">
-				<label for="note">本文</label> <textarea  rows="5" cols="40" th:errorclass="is-invalid" th:field="*{postBody}"></textarea>
-				<div class="invalid-feedback" th:errors="*{postBody}"></div>
-			</div>
+		<div class="row card hoverable">
+			<div class="card-content">
+				<h3 class="center gray-text">投稿</h3>
+				<p>必要事項を入力してください。 *必須
+				<form th:action="@{/post}" th:object="${post}" method="post"
+					novalidate>
+					<input type="hidden" name="username" th:value="${user.username}" />
+					<div class="form-group">
+						<label for="note">本文</label>
+						<textarea rows="5" cols="40" th:errorclass="is-invalid"
+							th:field="*{postBody}"></textarea>
+						<div class="invalid-feedback" th:errors="*{postBody}"></div>
+					</div>
 
-	<div class="form-check"></div>
-	<button class="btn">登録</button>
-	</form>
-	</div>
-	</div>
+					<div class="form-check"></div>
+					<button class="btn">登録</button>
+				</form>
+			</div>
+		</div>
 	</div>
 
 </body>
