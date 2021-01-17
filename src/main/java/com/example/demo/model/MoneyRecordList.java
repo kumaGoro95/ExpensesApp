@@ -16,13 +16,13 @@ public class MoneyRecordList implements Serializable{
 
 	private Date recordDate;
 	
-	private int incomeAndExpense;
+	private String incomeAndExpense;
 	
 	private String subcategoryName;
 	
 	private String note;
 	
-	public MoneyRecordList(int recordId, Date recordDate, int incomeAndExpense, String subcategoryName, String note) {
+	public MoneyRecordList(int recordId, Date recordDate, String incomeAndExpense, String subcategoryName, String note) {
 		super();
 		this.recordId = recordId;
 		this.recordDate = recordDate;
@@ -32,7 +32,7 @@ public class MoneyRecordList implements Serializable{
 	}
 	
 	public MoneyRecordList(Object[] objects) {
-        this((int)objects[0], (Date) objects[1],(int) objects[2], (String) objects[3], (String) objects[4]);
+        this((int)objects[0], (Date) objects[1],(String) objects[2], (String) objects[3], (String) objects[4]);
     }
 
 }

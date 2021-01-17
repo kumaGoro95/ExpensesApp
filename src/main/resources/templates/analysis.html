@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<th:block th:insert="fragments/header :: header"></th:block>
+<script th:src="@{/webjars/jquery/3.5.1/jquery.min.js}"></script>
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.js"></script>
+<script type="text/javascript"
+	th:src="@{/webjars/materializecss/1.0.0/js/materialize.min.js/}"></script>
+<link rel="stylesheet"
+	th:href="@{/webjars/materializecss/1.0.0/css/materialize.min.css}">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+	rel="stylesheet">
+<link rel="stylesheet" th:href="@{/css/stylesheet.css}">
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>title</title>
+</head>
+<body>
+	<div class="container">
+		<div class="row">
+			<div class="col s12">
+				<div class="exChart">
+					<canvas id="expenseChart"
+						style="display: block; height: 320px; width: 640px;" width="800"
+						height="400" class="chartjs-render-monitor"></canvas>
+				</div>
+				<div class="inChart">
+					<canvas id="incomeChart"
+						style="display: block; height: 320px; width: 640px;" width="800"
+						height="400" class="chartjs-render-monitor"></canvas>
+				</div>
+				<p class="center">10000円</p>
+			</div>
+
+		</div>
+
+		<div class="container">
+			<div class="row">
+			<div class="col s8">
+				<canvas id="total"></canvas>
+			</div>
+		</div>
+	</div>
+
+
+	<!-- CDN -->
+	<a th:href="@{/logout}">ログアウト</a>
+	<a th:href="@{/postmain}">投稿へ</a>
+	<a th:href="@{/test}">テスト</a>
+	</div>
+	<script type="text/javascript" th:inline="javascript">
+  var ctx = document.getElementById("expenseChart");
+  var expenseChart = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: [[ ${expenseLabel} ]],
+      datasets:[{
+          backgroundColor: [
+            "rgb(255, 99, 132)",
+            "rgb(54, 162, 235)",
+            "rgb(255, 205, 86)",
+            "rgb(255, 99, 71)",
+            "rgb(173, 255, 47)",
+            "rgb(100, 149, 237)",
+            "rgb(221, 160, 221)",
+            "rgb(244, 164, 96)",
+            "rgb(240, 248, 255)",
+            "rgb(192, 192, 192)",
+            "rgb(220, 20, 60)",
+            "rgb(189, 183, 107)",
+            "rgb(46, 139, 87)",
+            "rgb(72, 209, 204)",
+            "rgb(218, 112, 214)",
+            "rgb(210, 105, 30)",
+            "rgb(47, 79, 79)"
+          ],
+          data:[[${expenseData}]],
+      }]
+    },
+    options: {
+      title: {
+        display: true,
+        text: '支出'
+      }
+    }
+  });
+  
+  var ctx = document.getElementById("incomeChart");
+  var incomeChart = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: [[ ${incomeLabel} ]],
+      datasets: [{
+          backgroundColor: [
+              "#BB5179",
+              "#FAFF67",
+              "#58A27C",
+              "#3C00FF"
+          ],
+          data:[[${incomeData}]],
+      }]
+    },
+    options: {
+      title: {
+        display: true,
+        text: '収入'
+      }
+    }
+  });
+
+var ctx = document.getElementById("total");
+var data = {
+	    labels: [[${totalLabel}]],
+	    datasets: [{
+	        label: '得点',
+	        data: [[${total}]],
+	        backgroundColor: 'rgb(255, 99, 132, 1)',
+	    }]
+	};
+
+	var options = {
+	    scales: {
+	        yAxes: [{
+	            ticks: {
+	                min: 300
+	            }
+	        }]
+	    }
+	};
+	
+	$(document).ready(function() {
+		$('select').formSelect();
+	});
+	
+	$(document).ready(
+			function() {
+				$('.datepicker').datepicker(
+						{
+							format : "yyyy-mm-dd",
+							i18n : {
+								months : [ "1月", "2月", "3月", "4月", "5月",
+										"6月", "7月", "8月", "9月", "10月",
+										"11月", "12月" ],
+								monthsShort : [ "1月", "2月", "3月", "4月",
+										"5月", "6月", "7月", "8月", "9月",
+										"10月", "11月", "12月" ],
+								weekdays : [ "日曜日", "月曜日", "火曜日", "水曜日",
+										"木曜日", "金曜日", "土曜日" ],
+								weekdaysShort : [ "日", "月", "火", "水", "木",
+										"金", "土" ],
+								weekdaysAbbrev : [ "日", "月", "火", "水", "木",
+										"金", "土" ],
+								nextMonth : "翌月",
+								previousMonth : "前月",
+								labelMonthSelect : "月を選択",
+								labelYearSelect : "年を選択",
+								setDefaultDate : true,
+								cancel : 'キャンセル',
+								clear : 'クリア',
+								done : 'OK',
+								close : "閉じる",
+								format : "yyyy-mm-dd",
+							}
+						});
+			});
+	
+	var ctx = document.getElementById("total");
+	  var myBarChart = new Chart(ctx, {
+	    type: 'bar',
+	    data: {
+	      labels: [${}],
+	      datasets: [
+	        {
+	          label: '月',
+	          data: [[${total}]],
+	          backgroundColor: "rgba(219,39,91,0.5)"
+	        }
+	      ]
+	    },
+	    options: {
+	      title: {
+	        display: true,
+	        text: '合計'
+	      },
+	      scales: {
+	        yAxes: [{
+	          ticks: {
+	            suggestedMax: 100,
+	            suggestedMin: 0,
+	            stepSize: 10,
+	            callback: function(value, index, values){
+	              return  value +  '%'
+	            }
+	          }
+	        }]
+	      },
+	    }
+	  });
+</script>
+
+</body>
+</html>
