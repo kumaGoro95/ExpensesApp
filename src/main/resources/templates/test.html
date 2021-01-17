@@ -22,7 +22,7 @@
 
 	var ctx = document.getElementById("total");
 	  var myBarChart = new Chart(ctx, {
-	    type: 'bar',
+	    type: 'horizontalBar',
 	    data: {
 	      labels: [],
 	      datasets: [
@@ -43,7 +43,7 @@
 	        text: '合計'
 	      },
 	      scales: {
-	        yAxes: [{
+	       xAxes: [{
 	          ticks: {
 	            suggestedMax: 100,
 	            suggestedMin: 0,

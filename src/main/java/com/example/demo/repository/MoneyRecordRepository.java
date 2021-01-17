@@ -26,14 +26,48 @@ public interface MoneyRecordRepository extends JpaRepository<MoneyRecord, Long> 
 	public List<MoneyRecord> findByUsernameOrderByRecordDate(String username);
 
 	public List<MoneyRecord> findByRecordDateBetweenOrderByRecordDateAsc(LocalDate start, LocalDate end);
-	
-	@Query(value = "select record_id, record_date, income_and_expense, subcategory_name, record_note  "
-			+"from money_records M left join categories C on C.category_id = M.category_id "
-			+"where M.user_id = :username", nativeQuery = true)
-	public List<Object[]> getMoneyRecordList(@Param("username")String username);
-	
+
+	// 支出履歴一覧（日付降順）
+	@Query(value = "select record_id, record_date, concat(case when M.category_id not like '99%' then '-' else '' end, income_and_expense), "
+			+ "subcategory_name, record_note from money_records M left join categories C on C.category_id = M.category_id "
+			+ "where M.user_id = :username and M.category_id order by record_date desc", nativeQuery = true)
+	public List<Object[]> getMoneyRecordList(@Param("username") String username);
+
 	default List<MoneyRecordList> findMoneyRecordList(String username) {
 		return getMoneyRecordList(username).stream().map(MoneyRecordList::new).collect(Collectors.toList());
+	}
+
+	// 支出履歴一覧（日付昇順）
+	@Query(value = "select record_id, record_date, concat(case when M.category_id not like '99%' then '-' else '' end, income_and_expense), "
+			+ "subcategory_name, record_note from money_records M left join categories C on C.category_id = M.category_id "
+			+ "where M.user_id = :username and M.category_id order by record_date asc", nativeQuery = true)
+	public List<Object[]> getMoneyRecordListOrderByDateAsc(@Param("username") String username);
+
+	default List<MoneyRecordList> findMoneyRecordListOrderByDateAsc(String username) {
+		return getMoneyRecordListOrderByDateAsc(username).stream().map(MoneyRecordList::new)
+				.collect(Collectors.toList());
+	}
+
+	// 支出履歴一覧（金額降順）
+	@Query(value = "select record_id, record_date, concat(case when M.category_id not like '99%' then '-' else '' end, income_and_expense), "
+			+ "subcategory_name, record_note from money_records M left join categories C on C.category_id = M.category_id "
+			+ "where M.user_id = :username and M.category_id order by income_and_expense desc", nativeQuery = true)
+	public List<Object[]> getMoneyRecordListOrderByMoneyDesc(@Param("username") String username);
+
+	default List<MoneyRecordList> findMoneyRecordListOrderByMoneyDesc(String username) {
+		return getMoneyRecordListOrderByMoneyDesc(username).stream().map(MoneyRecordList::new)
+				.collect(Collectors.toList());
+	}
+
+	// 支出履歴一覧（金額昇順）
+	@Query(value = "select record_id, record_date, concat(case when M.category_id not like '99%' then '-' else '' end, income_and_expense), "
+			+ "subcategory_name, record_note from money_records M left join categories C on C.category_id = M.category_id "
+			+ "where M.user_id = :username and M.category_id order by income_and_expense asc", nativeQuery = true)
+	public List<Object[]> getMoneyRecordListOrderByMoneyAsc(@Param("username") String username);
+
+	default List<MoneyRecordList> findMoneyRecordListOrderByMoneyAsc(String username) {
+		return getMoneyRecordListOrderByMoneyAsc(username).stream().map(MoneyRecordList::new)
+				.collect(Collectors.toList());
 	}
 
 	// 月ごとの支出の合計を算出
@@ -81,16 +115,15 @@ public interface MoneyRecordRepository extends JpaRepository<MoneyRecord, Long> 
 		return getMonthAndCategorySummaries(username).stream().map(SummariesByMonthAndCategory::new)
 				.collect(Collectors.toList());
 	}
-	
-	//日ごとの支出合計を算出
+
+	// 日ごとの支出合計を算出
 	@Query(value = "select CAST(concat(sum(income_and_expense), '円') as char), DATE_FORMAT(record_date, '%Y-%m-%d') "
 			+ "from money_records where user_id = :username and category_id not like '99%' "
 			+ "group by record_date order by record_date asc", nativeQuery = true)
 	public List<Object[]> getDailySummaries(@Param("username") String username);
 
 	default List<DailySummary> findDailySummaries(String username) {
-		return getDailySummaries(username).stream().map(DailySummary::new)
-				.collect(Collectors.toList());
+		return getDailySummaries(username).stream().map(DailySummary::new).collect(Collectors.toList());
 	}
 
 }
