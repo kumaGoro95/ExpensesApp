@@ -1,6 +1,7 @@
 package com.example.demo.repository;
 
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -8,12 +9,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import com.example.demo.model.DailySummary;
 import com.example.demo.model.MoneyRecord;
-import com.example.demo.model.MoneyRecordList;
-import com.example.demo.model.MonthlySummary;
-import com.example.demo.model.SummariesByMonthAndCategory;
-import com.example.demo.model.SummaryByCategory;
+import com.example.demo.model.beans.MoneyRecordList;
+import com.example.demo.model.beans.MonthlySummary;
+import com.example.demo.model.beans.SummariesByMonthAndCategory;
+import com.example.demo.model.beans.SummaryByCategory;
+import com.example.demo.model.beans.DailySumGraph;
+import com.example.demo.model.beans.DailySummary;
 
 public interface MoneyRecordRepository extends JpaRepository<MoneyRecord, Long> {
 
@@ -124,6 +126,17 @@ public interface MoneyRecordRepository extends JpaRepository<MoneyRecord, Long> 
 
 	default List<DailySummary> findDailySummaries(String username) {
 		return getDailySummaries(username).stream().map(DailySummary::new).collect(Collectors.toList());
+	}
+	
+	//日別グラフ用
+	@Query(value = "select adddate(:firstDay ,number) as date, ifnull(sum(M.income_and_expense), 0) as money from numbers "
+			+ "N left join money_records M on adddate(:firstDay ,number) = M.record_date and M.user_id = :username "
+			+ "and M.category_id not like '99%' where adddate(:firstDay, number) between :firstDay and :lastDay "
+			+ "group by adddate(:firstDay, number)", nativeQuery = true)
+	public List<Object[]> getDailyGraph(@Param("username") String username, @Param("firstDay") LocalDate firstDay, @Param("lastDay") LocalDate lastDay);
+
+	default List<DailySumGraph> findDailyGraph(String username, LocalDate firstDay, LocalDate lastDay) {
+		return getDailyGraph(username, firstDay, lastDay).stream().map(DailySumGraph::new).collect(Collectors.toList());
 	}
 
 }

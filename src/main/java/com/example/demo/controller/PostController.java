@@ -21,8 +21,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.example.demo.dao.CategoryDaoImpl;
-import com.example.demo.model.CategoryName;
 import com.example.demo.model.MoneyRecord;
 import com.example.demo.model.Post;
 import com.example.demo.model.Like;
