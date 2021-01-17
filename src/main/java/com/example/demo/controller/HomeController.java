@@ -3,11 +3,15 @@ package com.example.demo.controller;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -32,13 +36,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.example.demo.dao.CategoryDaoImpl;
 import com.example.demo.util.CategoryCodeToName;
 import com.example.demo.model.Category;
-import com.example.demo.model.CategoryName;
 import com.example.demo.model.MoneyRecord;
 import com.example.demo.model.SiteUser;
-import com.example.demo.model.SummaryByCategory;
+import com.example.demo.model.beans.DailySumGraph;
+import com.example.demo.model.beans.SummaryByCategory;
 import com.example.demo.repository.SiteUserRepository;
 import com.example.demo.repository.MoneyRecordRepository;
 import com.example.demo.repository.CategoryRepository;
@@ -54,7 +57,6 @@ public class HomeController {
 	private final SiteUserRepository userRepository;
 	private final MoneyRecordRepository moneyRecordRepository;
 	private MoneyRecordDaoImpl mrDao;
-	private CategoryDaoImpl cDao;
 	private final CategoryRepository categoryRepository;
 	private final BCryptPasswordEncoder passwordEncoder;
 
@@ -64,7 +66,6 @@ public class HomeController {
 	@PostConstruct
 	public void init() {
 		mrDao = new MoneyRecordDaoImpl(em);
-		cDao = new CategoryDaoImpl(em);
 	}
 
 
@@ -328,6 +329,25 @@ public class HomeController {
 		LocalDate now = LocalDate.now();
 		String strNow = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 		String month = strNow.substring(0, 7);
+		//初日と末日を取得
+		String firstDayStr = month + "-01";
+		LocalDate firstDay = LocalDate.parse(firstDayStr, DateTimeFormatter.ISO_DATE);
+		LocalDate lastDay = YearMonth.now().atEndOfMonth();
+
+		List<DailySumGraph> dailySum = moneyRecordRepository.findDailyGraph(loginUser.getName(), firstDay, lastDay);
+		List<Integer> daysList = new ArrayList<Integer>(); 
+		for(int i = 1; i < dailySum.size()+1; i++) {
+			daysList.add(i);
+		}
+		Integer days[] = daysList.toArray(new Integer[dailySum.size()]);
+		List<BigDecimal> dailyAmmountList = new ArrayList<BigDecimal>();
+		for (int i = 0; i < dailySum.size(); i++) {
+			dailyAmmountList.add(dailySum.get(i).getSum());
+		}
+		BigDecimal dailyAmmount[] = dailyAmmountList.toArray(new BigDecimal[dailyAmmountList.size()]);
+			System.out.println(days[30]);
+		model.addAttribute("label", days);
+		model.addAttribute("data", dailyAmmount);
 
 		// 支出のカテゴリ一覧を設定
 		List<String> expenseCategory = new ArrayList<String>();

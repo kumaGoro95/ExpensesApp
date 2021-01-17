@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import com.example.demo.dao.MoneyRecordDaoImpl;
 import com.example.demo.model.Category;
 import com.example.demo.model.SiteUser;
-import com.example.demo.model.SummaryByCategory;
+import com.example.demo.model.beans.SummaryByCategory;
 import com.example.demo.repository.CategoryRepository;
 import com.example.demo.repository.MoneyRecordRepository;
 import com.example.demo.repository.SiteUserRepository;
