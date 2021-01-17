@@ -20,6 +20,15 @@
 	<div class="container">
 		<div class="row">
 			<div class="col s8">
+			<!-- Dropdown Trigger -->
+								<a class='dropdown-trigger btn' href='#' data-target='dropdown1'>月</a>
+
+								<!-- Dropdown Structure -->
+								<ul id='dropdown1' class='dropdown-content'>
+								<div th:each="month : ${months}" th:inline="text">
+									<li><a th:href="@{/analysis/__${month}__}">[[${month}]]</a></li>
+									</div>
+								</ul>
 				<canvas id="total"></canvas>
 			</div>
 		</div>
@@ -29,7 +38,7 @@
 		<a th:href="@{/logout}">ログアウト</a> <a th:href="@{/postmain}">投稿へ</a> <a
 			th:href="@{/test}">テスト</a>
 	</div>
-	<script type="text/javascript" th:inline="javascript">
+	<script type="text/javascript" th:inline="javascript">	
 	var ctx = document.getElementById("total");
 	  var myBarChart = new Chart(ctx, {
 	    type: 'bar',
@@ -72,6 +81,8 @@
 	      },
 	    }
 	  });
+	  
+	  $('.dropdown-trigger').dropdown();
 </script>
 
 </body>

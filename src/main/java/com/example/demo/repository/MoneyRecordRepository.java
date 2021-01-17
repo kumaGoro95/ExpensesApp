@@ -138,5 +138,9 @@ public interface MoneyRecordRepository extends JpaRepository<MoneyRecord, Long> 
 	default List<DailySumGraph> findDailyGraph(String username, LocalDate firstDay, LocalDate lastDay) {
 		return getDailyGraph(username, firstDay, lastDay).stream().map(DailySumGraph::new).collect(Collectors.toList());
 	}
+	
+	//最古の記録を取得する
+	@Query(value = "select record_date from money_records where user_id = :username order by record_date asc limit 1", nativeQuery = true)
+	public Object getOldestDate(@Param("username") String username);
 
 }
