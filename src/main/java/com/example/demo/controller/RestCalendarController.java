@@ -40,7 +40,7 @@ public class RestCalendarController {
             List<DailySummary> dailySummaries = moneyRecordRepository.findDailySummaries(loginUser.getName());
             for(int i = 0; i < dailySummaries.size(); i++) {
             	DailySummary ds = dailySummaries.get(i);
-            	String title = "<a th:href=\"@{/}\">" + ds.getTitle() + "</a>";
+            	String title = "<a href=\"/showRecords\">" + ds.getTitle() + "</a>";
             	ds.setTitle(title);
             	
             }
