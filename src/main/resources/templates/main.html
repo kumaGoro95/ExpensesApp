@@ -20,6 +20,7 @@
 </head>
 <body>
 	<div class="container">
+		<div class="row"></div>
 		<div class="row">
 			<div class="col s8">
 				<div class="exChart">
@@ -31,8 +32,8 @@
 					<canvas id="incomeChart"
 						style="display: block; height: 320px; width: 640px;" width="800"
 						height="400" class="chartjs-render-monitor"></canvas>
+						<h6>10000円</h6>
 				</div>
-				<p class="center">10000円</p>
 			</div>
 			<div class="col s4">
 				<div class="row card">
@@ -100,6 +101,7 @@
 			th:href="@{/test}">テスト</a>
 	</div>
 	<script type="text/javascript" th:inline="javascript">
+	$('#message').fadeOut( 2000 );
   var ctx = document.getElementById("expenseChart");
   var expenseChart = new Chart(ctx, {
     type: 'doughnut',

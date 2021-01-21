@@ -21,6 +21,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.demo.dao.MoneyRecordDaoImpl;
 import com.example.demo.model.Category;
@@ -56,7 +57,7 @@ public class SecurityController {
 	}
 
 	@PostMapping("/register")
-	public String process(@Validated @ModelAttribute("user") SiteUser user, BindingResult result) {
+	public String process(@Validated @ModelAttribute("user") SiteUser user, BindingResult result, RedirectAttributes redirectAttributes) {
 		// @Validatedで入力値チェック→BindingResultに結果が入る→result.hasErrors()でエラーがあるか確認
 
 		// 同名ユーザー、メールアドレスのアカウントが存在していないか確認
@@ -82,6 +83,8 @@ public class SecurityController {
 		LocalDateTime ldt = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
 		user.setCreatedAt(ldt);
 		userRepository.save(user);
+		
+		redirectAttributes.addFlashAttribute("flashMsg", "登録しました");
 
 		return "redirect:/login?register";
 	}

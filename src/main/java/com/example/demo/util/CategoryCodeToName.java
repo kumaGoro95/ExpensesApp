@@ -20,13 +20,11 @@ public class CategoryCodeToName {
 		categories.put(8, "健康・医療");
 		categories.put(9, "通信費");
 		categories.put(10, "水道・光熱費");
-		categories.put(11, "住宅");
-		categories.put(12, "自動車");
-		categories.put(13, "税金・保険");
-		categories.put(14, "大型出費");
-		categories.put(15, "その他");
-		categories.put(16, "貯金");
-		categories.put(17, "未分類");
+		categories.put(11, "家・クルマ");
+		categories.put(12, "税金・保険");
+		categories.put(13, "大型出費");
+		categories.put(14, "その他");
+		categories.put(15, "貯金");
 		categories.put(99, "収入");
 		
 		//Categoriesを変更不可にする

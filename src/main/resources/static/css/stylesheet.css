@@ -5,6 +5,35 @@
 	border-radius: 10px;
 }
 
+.messagebar{
+	height:50px;
+}
+
+.message{
+	border-radius: 5px;
+	opacity:0.6;
+}
 .expense {
 	color: red;
+}
+
+.income{
+	color:green;
+}
+
+.inChart {
+  position: relative;
+}
+
+.inChart h6 {
+   position: absolute;
+   top: 0;
+   left: 0;
+   margin: auto;
+   right: 0;
+   margin: auto;
+   text-align: center;
+   top: 60%;
+   -webkit-transform: translateY(-50%);
+   transform: translateY(-50%); 
 }

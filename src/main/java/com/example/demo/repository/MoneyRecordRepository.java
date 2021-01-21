@@ -71,17 +71,16 @@ public interface MoneyRecordRepository extends JpaRepository<MoneyRecord, Long> 
 		return getMoneyRecordListOrderByMoneyAsc(username).stream().map(MoneyRecordList::new)
 				.collect(Collectors.toList());
 	}
-	
-	// カレンダー用（日にちで取得）
-		@Query(value = "select record_id, record_date, concat(case when M.category_id not like '99%' then '-' else '' end, income_and_expense), "
-				+ "subcategory_name, record_note from money_records M left join categories C on C.category_id = M.category_id "
-				+ "where M.user_id = :username and M.record_date = :date order by record_date desc", nativeQuery = true)
-		public List<Object[]> getOneDayRecord(@Param("username") String username, @Param("date") String date);
 
-		default List<MoneyRecordList> findOneDayRecord(String username, String date) {
-			return getOneDayRecord(username, date).stream().map(MoneyRecordList::new).collect(Collectors.toList());
-		}
-	
+	// 履歴一覧用（日にちで取得）
+	@Query(value = "select record_id, record_date, concat(case when M.category_id not like '99%' then '-' else '' end, income_and_expense), "
+			+ "subcategory_name, record_note from money_records M left join categories C on C.category_id = M.category_id "
+			+ "where M.user_id = :username and M.record_date = :date order by record_date desc", nativeQuery = true)
+	public List<Object[]> getOneDayRecord(@Param("username") String username, @Param("date") String date);
+
+	default List<MoneyRecordList> findOneDayRecord(String username, String date) {
+		return getOneDayRecord(username, date).stream().map(MoneyRecordList::new).collect(Collectors.toList());
+	}
 
 	// 月ごとの支出の合計を算出
 	@Query(value = "SELECT DATE_FORMAT(record_date, '%Y%m'), sum(income_and_expense) FROM money_records "
@@ -129,28 +128,39 @@ public interface MoneyRecordRepository extends JpaRepository<MoneyRecord, Long> 
 				.collect(Collectors.toList());
 	}
 
-	// 日ごとの支出・合計を算出
+	// 日ごとの支出合計を算出（カレンダー用）
 	@Query(value = "select CAST(concat(sum(income_and_expense), '円') as char), DATE_FORMAT(record_date, '%Y-%m-%d') "
 			+ "from money_records where user_id = :username and category_id not like '99%' "
 			+ "group by record_date order by record_date asc", nativeQuery = true)
-	public List<Object[]> getDailySummaries(@Param("username") String username);
+	public List<Object[]> getDailyExpenseSummaries(@Param("username") String username);
 
-	default List<DailySummary> findDailySummaries(String username) {
-		return getDailySummaries(username).stream().map(DailySummary::new).collect(Collectors.toList());
+	default List<DailySummary> findDailyExpenseSummaries(String username) {
+		return getDailyExpenseSummaries(username).stream().map(DailySummary::new).collect(Collectors.toList());
 	}
-	
-	//日別グラフ用
+
+	// 日ごとの収入合計を算出（カレンダー用）
+	@Query(value = "select CAST(concat(sum(income_and_expense), '円') as char), DATE_FORMAT(record_date, '%Y-%m-%d') "
+			+ "from money_records where user_id = :username and category_id like '99%' "
+			+ "group by record_date order by record_date asc", nativeQuery = true)
+	public List<Object[]> getDailyIncomeSummaries(@Param("username") String username);
+
+	default List<DailySummary> findDailyIncomeSummaries(String username) {
+		return getDailyIncomeSummaries(username).stream().map(DailySummary::new).collect(Collectors.toList());
+	}
+
+	// 日別グラフ用
 	@Query(value = "select adddate(:firstDay ,number) as date, ifnull(sum(M.income_and_expense), 0) as money from numbers "
 			+ "N left join money_records M on adddate(:firstDay ,number) = M.record_date and M.user_id = :username "
 			+ "and M.category_id not like '99%' where adddate(:firstDay, number) between :firstDay and :lastDay "
 			+ "group by adddate(:firstDay, number)", nativeQuery = true)
-	public List<Object[]> getDailyGraph(@Param("username") String username, @Param("firstDay") LocalDate firstDay, @Param("lastDay") LocalDate lastDay);
+	public List<Object[]> getDailyGraph(@Param("username") String username, @Param("firstDay") LocalDate firstDay,
+			@Param("lastDay") LocalDate lastDay);
 
 	default List<DailySumGraph> findDailyGraph(String username, LocalDate firstDay, LocalDate lastDay) {
 		return getDailyGraph(username, firstDay, lastDay).stream().map(DailySumGraph::new).collect(Collectors.toList());
 	}
-	
-	//最古の記録を取得する
+
+	// 最古の記録を取得する
 	@Query(value = "select record_date from money_records where user_id = :username order by record_date asc limit 1", nativeQuery = true)
 	public Object getOldestDate(@Param("username") String username);
 

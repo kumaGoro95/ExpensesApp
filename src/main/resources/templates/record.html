@@ -33,7 +33,7 @@
 							//イベントの文字色を変える
 							
 							eventRender : function(event, element) {
-								element.css("font-size", "1em");
+								element.css("font-size", "0.9em");
 								element.css("padding", "5px");
 								element.find('span.fc-title').html(
 										element.find('span.fc-title').text());
@@ -56,12 +56,14 @@
 		var modal = $(this);
 		modal.find('.modal-footer p').text(objectName);
 	})
+		$('#message').fadeOut( 2000 );
 </script>
 
 </head>
 <body>
 	<div class="container">
-		<div class="row">
+	<div class="row"></div>
+		<div class="row card">
 			<div class="col s12">
 				<ul class="tabs">
 					<li class="tab col s6"><a href="#tab1">一覧</a></li>
@@ -124,18 +126,9 @@
 			<div id="tab2" class="col s12">
 				<div class="container">
 					<div class="row">
-						<div class="col s12">
-							<ul class="tabs">
-								<li class="tab col s6"><a href="#tab2-3">支出</a></li>
-								<li class="tab col s6"><a href="#tab2-4">収入</a></li>
-							</ul>
-						</div>
-						<div id="tab2-3" class="col s12">
 							<div class="card center">
 								<div class="calendar" id='calendar'></div>
-							</div>
 						</div>
-						<div id="tab2-4" class="col s12"></div>
 					</div>
 				</div>
 			</div>
@@ -154,6 +147,6 @@
 				class="modal-action modal-close waves-effect waves-red btn-flat ">キャンセル</a>
 		</div>
 	</div>
-
+<a onChange="M.toast({html: 'I am a toast'})" class="btn">Toast!</a>
 </body>
 </html>
