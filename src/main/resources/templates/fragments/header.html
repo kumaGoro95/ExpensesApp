@@ -24,10 +24,10 @@
 							<li><a th:href="@{/analysis}"><i
 									class="material-icons left">insert_chart</i>分析</a></li>
 							<li><a class="dropdown-trigger" href="#!"
-								data-target="dropdown1">[[${user.userNickname}]] <i
+								data-target="dropdown-header">[[${user.userNickname}]] <i
 									class="material-icons right">arrow_drop_down</i></a></li>
 						</ul>
-						<ul id="dropdown1" class="dropdown-content">
+						<ul id="dropdown-header" class="dropdown-content">
 							<li><a th:href="@{/setting}">マイページ</a></li>
 							<li><a th:href="@{/logout}">ログアウト</a></li>
 						</ul>
@@ -39,8 +39,21 @@
 					</span>
 				</div>
 			</nav>
-		</div>
 		<!-- End of Header -->
+		</div>
+		<div class="row messagebar">
+		<div class="col s12 m4 l3"></div>
+		<th:block th:if="${flashMsg != null}">
+		<div class="col s12 m4 l6 teal darken-2 message" id="message">
+		<h5 class="center-align white-text" th:text="${flashMsg}"></h5>
+		</div>
+		</th:block>
+		<th:block th:unless="${flashMsg != null}">
+		<div class="col s12 m4 l6">
+		</div>
+		</th:block>
+		<div class="col s12 m4 l3"></div>
+		</div>
 	</th:block>
 </body>
 </html>

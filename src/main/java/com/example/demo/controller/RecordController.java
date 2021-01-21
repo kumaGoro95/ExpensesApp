@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.demo.dao.MoneyRecordDaoImpl;
 import com.example.demo.model.Category;
@@ -73,7 +74,7 @@ public class RecordController {
 	// 出入金記録を登録
 	@PostMapping("/record")
 	public String process(@Validated @ModelAttribute("moneyRecord") MoneyRecord moneyRecord, BindingResult result,
-			Authentication loginUser) {
+			Authentication loginUser, RedirectAttributes redirectAttributes) {
 		if (result.hasErrors()) {
 			System.out.println(result);
 			return "redirect:/recordPost?recordPost";
@@ -82,6 +83,7 @@ public class RecordController {
 
 		moneyRecord.setCreatedAt(ldt);
 		moneyRecordRepository.save(moneyRecord);
+		redirectAttributes.addFlashAttribute("flashMsg", "投稿しました");
 
 		return "redirect:/?recordPost";
 	}
@@ -142,20 +144,22 @@ public class RecordController {
 	}
 
 	// カレンダーから一覧へ遷移
-	@GetMapping("/showRecords/{date}")
-	public String showRecord(@PathVariable("date") String date, Authentication loginUser, Model model) {
+	@GetMapping("/Records/{date}")
+	public String showRecordsByDate(@PathVariable("date") String date, Authentication loginUser, Model model) {
 		model.addAttribute("records", moneyRecordRepository.findOneDayRecord(loginUser.getName(), date));
 		model.addAttribute("user", userRepository.findByUsername(loginUser.getName()));
 		model.addAttribute("icon", "fas fa-utensils");
 
-		return "record";
+		return "refinedRecord";
 	}
 
 	// 出入金記録を削除
 	@Transactional
 	@GetMapping("/deleteRecord/{recordId}")
-	public String deleteRecord(@PathVariable("recordId") int recordId, Model model) {
+	public String deleteRecord(@PathVariable("recordId") int recordId, Model model, RedirectAttributes redirectAttributes) {
 		moneyRecordRepository.deleteByRecordId(recordId);
+		
+		redirectAttributes.addFlashAttribute("flashMsg", "削除しました");
 
 		return "redirect:/showRecords?showRecords";
 	}
@@ -175,7 +179,7 @@ public class RecordController {
 	// 出入金記録の編集を実行
 	@PostMapping("/updateRecord")
 	public String updateRecord(@Validated @ModelAttribute("moneyRecord") MoneyRecord moneyRecord, BindingResult result,
-			Authentication loginUser) {
+			Authentication loginUser, RedirectAttributes redirectAttributes) {
 		if (result.hasErrors()) {
 			return "/";
 		}
@@ -184,6 +188,7 @@ public class RecordController {
 		moneyRecord.setUpdatedAt(ldt);
 
 		moneyRecordRepository.save(moneyRecord);
+		redirectAttributes.addFlashAttribute("flashMsg", "変更しました");
 
 		return "redirect:/showRecords?editRecord";
 	}

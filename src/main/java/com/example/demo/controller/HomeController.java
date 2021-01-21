@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.demo.util.CategoryCodeToName;
 import com.example.demo.model.Category;
@@ -131,18 +132,18 @@ public class HomeController {
 		BigDecimal incomeData[] = incomeAmmount.toArray(new BigDecimal[incomeAmmount.size()]);
 
 		// 予算の取得
-		BigDecimal budget = currentUser.getBudget();
-		BigDecimal totalAmmount = mrDao.sumMonthExpense(currentUser.getUsername(), month);
-		BigDecimal percent = totalAmmount.divide(budget, 2, RoundingMode.HALF_UP);
-		String totalLabel = "月";
+		//BigDecimal budget = currentUser.getBudget();
+		//BigDecimal totalAmmount = mrDao.sumMonthExpense(currentUser.getUsername(), month);
+		//BigDecimal percent = totalAmmount.divide(budget, 2, RoundingMode.HALF_UP);
+		//String totalLabel = "月";
 
 		model.addAttribute("expenseLabel", expenseLabel);
 		model.addAttribute("expenseData", expenseData);
 		model.addAttribute("incomeLabel", incomeLabel);
 		model.addAttribute("incomeData", incomeData);
 
-		model.addAttribute("total", percent);
-		model.addAttribute("totalLabel", totalLabel);
+		//model.addAttribute("total", percent);
+		//model.addAttribute("totalLabel", totalLabel);
 
 		return "main";
 	}
@@ -166,7 +167,7 @@ public class HomeController {
 	// ユーザー設定変更を実行
 	@PostMapping("/setting")
 	public String process(@Validated @ModelAttribute("user") SiteUser user, BindingResult result,
-			Authentication loginUser) {
+			Authentication loginUser, RedirectAttributes redirectAttributes) {
 		// 同名ユーザー、メールアドレスのアカウントが存在していないか確認
 		SiteUser emailCheck = userRepository.findByUsername(loginUser.getName());
 		if (user.getEmail().equals(emailCheck.getEmail()) && userRepository.countByEmail(user.getEmail()) > 1) {
@@ -185,6 +186,8 @@ public class HomeController {
 		LocalDateTime ldt = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
 		user.setUpdatedAt(ldt);
 		userRepository.save(user);
+		
+		redirectAttributes.addFlashAttribute("flashMsg", "設定変更しました");
 
 		return "redirect:/?setting";
 	}
