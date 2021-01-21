@@ -24,7 +24,7 @@ public class Like {
 	@GeneratedValue(strategy = GenerationType.IDENTITY) 
 	@NotNull
 	@Column(name = "like_id")
-	private long likeId;
+	private int likeId;
 	
 	@NotNull
 	@Column(name = "user_id")
@@ -32,7 +32,7 @@ public class Like {
 	
 	@NotNull
 	@Column(name = "post_id")
-	private long postId;
+	private int postId;
 	
 	@Column(name = "created_at")
 	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")

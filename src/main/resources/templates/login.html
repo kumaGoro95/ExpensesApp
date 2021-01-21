@@ -10,11 +10,13 @@
 	th:src="@{/webjars/materializecss/1.0.0/js/materialize.min.js/}"></script>
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
 	rel="stylesheet">
+<link rel="stylesheet" th:href="@{/css/stylesheet.css}">
 <title>title</title>
 </head>
 <body>
 	<div class="container">
-		<div class="row card hoverable">
+	<div class="row"></div>
+		<div class="row card">
 			<div class="card-content">
 				<h3 class="center gray-text">ログイン画面</h3>
 				<div class="alert-danger" th:if="${param.error}">

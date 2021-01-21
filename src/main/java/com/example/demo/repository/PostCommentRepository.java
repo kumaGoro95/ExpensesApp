@@ -8,11 +8,11 @@ import com.example.demo.model.PostComment;
 
 public interface PostCommentRepository extends JpaRepository<PostComment, Long> {
 	
-	public List<PostComment> findByPostId(long postId);
+	public List<PostComment> findByPostId(int postId);
 	
-	public PostComment findByCommentId(long commentId);
+	public PostComment findByCommentId(int commentId);
 	
-	public void deleteByCommentId(Long commentId);
+	public void deleteByCommentId(int commentId);
 	
 
 }

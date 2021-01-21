@@ -31,18 +31,31 @@
 							//イベントの色を変える
 							eventColor : '#FFFFFF',
 							//イベントの文字色を変える
-							eventTextColor : '#FF0000',
+							
 							eventRender : function(event, element) {
-								element.css("font-size", "0.8em");
+								element.css("font-size", "1em");
 								element.css("padding", "5px");
-								element.find('span.fc-title').html(element.find('span.fc-title').text());
+								element.find('span.fc-title').html(
+										element.find('span.fc-title').text());
 							}
 						});
 
 				$('.tabs').tabs();
 
 				$('.dropdown-trigger').dropdown();
+
 			});
+	
+
+	$('#deleteAssignmentModal').on('click', function(event) {
+		var button = $(event.relatedTarget); // Button that triggered the modal
+		var objectName = button.data('object-name'); // Extract info from data-object-name attribute
+		console.log();
+
+		// Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+		var modal = $(this);
+		modal.find('.modal-footer p').text(objectName);
+	})
 </script>
 
 </head>
@@ -92,7 +105,11 @@
 												<td>[[${record.note}]]</td>
 												<td><a th:href="@{/editRecord/__${record.recordId}__}">編集</a>
 													<a th:href="@{/deleteRecord/__${record.recordId}__}">削除</a></td>
+												<td><a
+													class="waves-effect waves-light btn modal-trigger"
+													href="#modal1" th:attr="data-target='#deleteAssignmentModal', data-object-name='${record.recordId}'">Modal</a></td>
 											</tr>
+
 										</div>
 									</tbody>
 								</table>
@@ -115,7 +132,7 @@
 						</div>
 						<div id="tab2-3" class="col s12">
 							<div class="card center">
-								<div id='calendar'></div>
+								<div class="calendar" id='calendar'></div>
 							</div>
 						</div>
 						<div id="tab2-4" class="col s12"></div>
@@ -124,5 +141,19 @@
 			</div>
 		</div>
 	</div>
+
+	<div id="modal1" class="modal">
+		<div class="modal-content">
+			<h4>Modal Header</h4>
+			<p>削除しますか？</p>
+		</div>
+		<div class="modal-footer">
+		<p>テスト</p>
+			<a href="#" class="modal-close waves-effect waves-green btn-flat">削除する</a>
+			<a href="#"
+				class="modal-action modal-close waves-effect waves-red btn-flat ">キャンセル</a>
+		</div>
+	</div>
+
 </body>
 </html>

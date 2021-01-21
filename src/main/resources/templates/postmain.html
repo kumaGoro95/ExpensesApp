@@ -5,40 +5,48 @@
 <th:block th:insert="fragments/header :: header"></th:block>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script th:src="@{/webjars/jquery/3.5.1/jquery.min.js}"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+<script type="text/javascript"
+	th:src="@{/webjars/materializecss/1.0.0/js/materialize.min.js/}"></script>
 <link rel="stylesheet"
 	th:href="@{/webjars/materializecss/1.0.0/css/materialize.min.css}">
-	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+	rel="stylesheet">
+<link href="https://use.fontawesome.com/releases/v5.6.1/css/all.css"
+	rel="stylesheet">
+<link rel="stylesheet" th:href="@{/css/stylesheet.css}">
 <title>title</title>
 </head>
 <body>
 	<div class="row">
-    <div id="test1" class="col s12"><div class="record">
-		<h1>投稿一覧</h1>
-		<div th:each="post : ${posts}" th:inline="text">
-				<div class="row card">
-		<div class="card-content">
-		<a th:href="@{/userdetail/__${post.username}__}">[[${post.username}]]</a><br>
-		[[${post.postBody}]]<br>
-		<p th:text="*{#temporals.format(post.createdAt, 'yyyy/MM/dd')}"></p><br>
-		[[${post.updatedAt}]]<br>
-		<span th:if="${user.username == post.username}">
-                <a
-			th:href="@{/editPost/__${post.postId}__}">編集</a> <a
-			th:href="@{/deletePost/__${post.postId}__}">削除</a>
-            </span>
-		
-			<a th:href="@{/post/__${post.postId}__}"><i class="material-icons">comment</i></a>
+		<div id="test1" class="col s12">
+			<div class="record">
+				<h1>投稿一覧</h1>
+				<div th:each="post : ${posts}" th:inline="text">
+					<div class="row card">
+						<div class="card-content">
+							<a th:href="@{/userdetail/__${post.username}__}">[[${post.username}]]</a><br>
+							[[${post.postBody}]]<br>
+							<p th:text="*{#temporals.format(post.createdAt, 'yyyy/MM/dd')}"></p>
+							<br> [[${post.updatedAt}]]<br> <span
+								th:if="${user.username == post.username}"> <a
+								th:href="@{/editPost/__${post.postId}__}">編集</a> <a
+								th:href="@{/deletePost/__${post.postId}__}">削除</a>
+							</span> <a th:href="@{/post/__${post.postId}__}"><i
+								class="material-icons">comment</i>[[${commentCount.get(post.postId)}]]</a>
+						</div>
+					</div>
 				</div>
-				</div>
-	</div></div>
-    
-  </div>
-  <div class="container">
-		<a th:href="@{/}">メインへ</a> <a th:href="@{/post}">投稿へ</a>
-	</div>
-	
-<script>  
-</script>
+			</div>
+
+		</div>
+		<div class="container">
+			<a th:href="@{/}">メインへ</a> <a th:href="@{/post}">投稿へ</a>
+		</div>
+
+		<script>
+			$(document).ready(function() {
+				$(".dropdown-trigger").dropdown();
+			});
+		</script>
 </body>
 </html>

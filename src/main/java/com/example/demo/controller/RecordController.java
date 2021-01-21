@@ -32,6 +32,7 @@ import com.example.demo.model.Category;
 import com.example.demo.model.MoneyRecord;
 import com.example.demo.model.SiteUser;
 import com.example.demo.model.beans.DailySumGraph;
+import com.example.demo.model.beans.MoneyRecordList;
 import com.example.demo.model.beans.SummaryByCategory;
 import com.example.demo.repository.CategoryRepository;
 import com.example.demo.repository.MoneyRecordRepository;
@@ -88,8 +89,14 @@ public class RecordController {
 	// 履歴画面へ遷移(日付降順)
 	@GetMapping("/showRecords")
 	public String showRecords(Authentication loginUser, Model model) {
+		List<MoneyRecordList> records = moneyRecordRepository.findMoneyRecordList(loginUser.getName());
+		for(int i = 0; i < records.size(); i++) {
+			if(records.get(i).getNote().length() > 13) {
+				records.get(i).setNote(records.get(i).getNote().substring(0, 10) + "…");
+			}
+		}
 		model.addAttribute("user", userRepository.findByUsername(loginUser.getName()));
-		model.addAttribute("records", moneyRecordRepository.findMoneyRecordList(loginUser.getName()));
+		model.addAttribute("records", records);
 		model.addAttribute("icon", "fas fa-utensils");
 		return "record";
 	}
@@ -97,38 +104,58 @@ public class RecordController {
 	// 履歴画面へ遷移(日付降順)
 	@GetMapping("/showRecordsOrderByDateAsc")
 	public String showRecordsOrderByDateAsc(Authentication loginUser, Model model) {
+		List<MoneyRecordList> records = moneyRecordRepository.findMoneyRecordListOrderByDateAsc(loginUser.getName());
+		for(int i = 0; i < records.size(); i++) {
+			if(records.get(i).getNote().length() > 13) {
+				records.get(i).setNote(records.get(i).getNote().substring(0, 10) + "…");
+			}
+		}
 		model.addAttribute("user", userRepository.findByUsername(loginUser.getName()));
-		model.addAttribute("records", moneyRecordRepository.findMoneyRecordListOrderByDateAsc(loginUser.getName()));
+		model.addAttribute("records", records);
 		return "record";
 	}
 
 	@GetMapping("/showRecordsOrderByMoneyDesc")
 	public String showRecordsOrderByMoneyDesc(Authentication loginUser, Model model) {
+		List<MoneyRecordList> records = moneyRecordRepository.findMoneyRecordListOrderByMoneyDesc(loginUser.getName());
+		for(int i = 0; i < records.size(); i++) {
+			if(records.get(i).getNote().length() > 13) {
+				records.get(i).setNote(records.get(i).getNote().substring(0, 10) + "…");
+			}
+		}
 		model.addAttribute("user", userRepository.findByUsername(loginUser.getName()));
-		model.addAttribute("records", moneyRecordRepository.findMoneyRecordListOrderByMoneyDesc(loginUser.getName()));
+		model.addAttribute("records", records);
 		return "record";
 	}
 
 	@GetMapping("/showRecordsOrderByMoneyAsc")
 	public String showRecordsOrderByMoneyAsc(Authentication loginUser, Model model) {
+		List<MoneyRecordList> records = moneyRecordRepository.findMoneyRecordListOrderByMoneyAsc(loginUser.getName());
+		for(int i = 0; i < records.size(); i++) {
+			if(records.get(i).getNote().length() > 13) {
+				records.get(i).setNote(records.get(i).getNote().substring(0, 10) + "…");
+			}
+		}
 		model.addAttribute("user", userRepository.findByUsername(loginUser.getName()));
-		model.addAttribute("records", moneyRecordRepository.findMoneyRecordListOrderByMoneyAsc(loginUser.getName()));
+		model.addAttribute("records", records);
 		return "record";
 	}
 
-	// 出入金記録詳細画面へ遷移
-	@RequestMapping("/record/{recordId}")
-	public String showRecord(@PathVariable("recordId") int recordId, Model model) {
-		model.addAttribute("record", moneyRecordRepository.findByRecordId(recordId));
+	// カレンダーから一覧へ遷移
+	@GetMapping("/showRecords/{date}")
+	public String showRecord(@PathVariable("date") String date, Authentication loginUser, Model model) {
+		model.addAttribute("records", moneyRecordRepository.findOneDayRecord(loginUser.getName(), date));
+		model.addAttribute("user", userRepository.findByUsername(loginUser.getName()));
+		model.addAttribute("icon", "fas fa-utensils");
 
-		return "";
+		return "record";
 	}
 
 	// 出入金記録を削除
 	@Transactional
 	@GetMapping("/deleteRecord/{recordId}")
-	public String deleteRecord(@PathVariable("recordId") Long recordId, Model model) {
-		moneyRecordRepository.deleteById(recordId);
+	public String deleteRecord(@PathVariable("recordId") int recordId, Model model) {
+		moneyRecordRepository.deleteByRecordId(recordId);
 
 		return "redirect:/showRecords?showRecords";
 	}

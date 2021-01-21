@@ -1,7 +1,9 @@
 package com.example.demo.controller;
 
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.Map;
 
 import javax.transaction.Transactional;
 import org.springframework.security.core.Authentication;
@@ -38,6 +40,8 @@ public class PostController {
 	// 投稿系ホーム画面
 	@GetMapping("/postmain")
 	public String goToPost(@ModelAttribute("posts") Post post, Authentication loginUser, Model model) {
+		Map<Integer, BigInteger> result = postRepository.findCommentCount();
+		model.addAttribute("commentCount", result);
 		model.addAttribute("user", userRepository.findByUsername(loginUser.getName()));
 		model.addAttribute("posts", postRepository.findAll());
 
@@ -75,7 +79,7 @@ public class PostController {
 
 	// 投稿内容詳細画面へ遷移
 	@RequestMapping("/post/{postId}")
-	public String showPost(@PathVariable("postId") Long postId, @ModelAttribute("comment") PostComment comment,
+	public String showPost(@PathVariable("postId") int postId, @ModelAttribute("comment") PostComment comment,
 			Authentication loginUser, Model model) {
 		model.addAttribute("user", userRepository.findByUsername(loginUser.getName()));
 		model.addAttribute("post", postRepository.findByPostId(postId));
@@ -110,7 +114,7 @@ public class PostController {
 
 	// いいね実行
 	@RequestMapping("/like/{postId}")
-	public String Like(@PathVariable("postId") Long postId, @ModelAttribute("like") Like like, Authentication loginUser,
+	public String Like(@PathVariable("postId") int postId, @ModelAttribute("like") Like like, Authentication loginUser,
 			Model model) {
 		if(likeRepository.existsByUsernameAndPostId(loginUser.getName(), postId) == true) {
 			likeRepository.deleteByUsernameAndPostId(loginUser.getName(), postId);
@@ -127,7 +131,7 @@ public class PostController {
 
 	// いいね一覧を表示
 	@RequestMapping("/likesList/{postId}")
-	public String showLikes(@PathVariable("postId") Long postId, @ModelAttribute("likes") Like like,
+	public String showLikes(@PathVariable("postId") int postId, @ModelAttribute("likes") Like like,
 			Authentication loginUser, Model model) {
 		model.addAttribute("likes", likeRepository.findByPostId(postId));
 
@@ -137,7 +141,7 @@ public class PostController {
 	// コメント削除
 	@Transactional
 	@GetMapping("/deleteComment/{commentId}")
-	public String deleteComment(@PathVariable("commentId") Long commentId, Model model) {
+	public String deleteComment(@PathVariable("commentId") int commentId, Model model) {
 		commentRepository.deleteByCommentId(commentId);
 
 		return "redirect:/postmain?postdetail";
@@ -145,7 +149,7 @@ public class PostController {
 
 	// コメント編集画面へ遷移
 	@GetMapping("/editComment/{commentId}")
-	public String editComment(@PathVariable("commentId") Long commentId, Authentication loginUser, Model model) {
+	public String editComment(@PathVariable("commentId") int commentId, Authentication loginUser, Model model) {
 		model.addAttribute("comment", commentRepository.findByCommentId(commentId));
 		model.addAttribute("user", userRepository.findByUsername(loginUser.getName()));
 
@@ -171,7 +175,7 @@ public class PostController {
 	// 投稿削除
 	@Transactional
 	@GetMapping("/deletePost/{postId}")
-	public String deletePost(@PathVariable("postId") Long postId, Model model) {
+	public String deletePost(@PathVariable("postId") int postId, Model model) {
 		postRepository.deleteByPostId(postId);
 
 		return "redirect:/postmain?postdetail";
@@ -179,7 +183,7 @@ public class PostController {
 
 	// 投稿編集画面へ遷移
 	@GetMapping("/editPost/{postId}")
-	public String editPost(@PathVariable("postId") Long postId, Authentication loginUser, Model model) {
+	public String editPost(@PathVariable("postId") int postId, Authentication loginUser, Model model) {
 		model.addAttribute("post", postRepository.findByPostId(postId));
 		model.addAttribute("user", userRepository.findByUsername(loginUser.getName()));
 
