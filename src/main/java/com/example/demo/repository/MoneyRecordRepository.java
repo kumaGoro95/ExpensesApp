@@ -71,6 +71,17 @@ public interface MoneyRecordRepository extends JpaRepository<MoneyRecord, Long> 
 		return getMoneyRecordListOrderByMoneyAsc(username).stream().map(MoneyRecordList::new)
 				.collect(Collectors.toList());
 	}
+	
+	// カレンダー用（日にちで取得）
+		@Query(value = "select record_id, record_date, concat(case when M.category_id not like '99%' then '-' else '' end, income_and_expense), "
+				+ "subcategory_name, record_note from money_records M left join categories C on C.category_id = M.category_id "
+				+ "where M.user_id = :username and M.record_date = :date order by record_date desc", nativeQuery = true)
+		public List<Object[]> getOneDayRecord(@Param("username") String username, @Param("date") String date);
+
+		default List<MoneyRecordList> findOneDayRecord(String username, String date) {
+			return getOneDayRecord(username, date).stream().map(MoneyRecordList::new).collect(Collectors.toList());
+		}
+	
 
 	// 月ごとの支出の合計を算出
 	@Query(value = "SELECT DATE_FORMAT(record_date, '%Y%m'), sum(income_and_expense) FROM money_records "
@@ -118,7 +129,7 @@ public interface MoneyRecordRepository extends JpaRepository<MoneyRecord, Long> 
 				.collect(Collectors.toList());
 	}
 
-	// 日ごとの支出合計を算出
+	// 日ごとの支出・合計を算出
 	@Query(value = "select CAST(concat(sum(income_and_expense), '円') as char), DATE_FORMAT(record_date, '%Y-%m-%d') "
 			+ "from money_records where user_id = :username and category_id not like '99%' "
 			+ "group by record_date order by record_date asc", nativeQuery = true)

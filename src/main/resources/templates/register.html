@@ -11,34 +11,39 @@
 <script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
 	rel="stylesheet">
+<link rel="stylesheet" th:href="@{/css/stylesheet.css}">
 <title>title</title>
 </head>
 <body>
-	<div class="main">
-		<h1>ユーザー登録</h1>
-		<p>必要事項を入力してください。 *必須
-		<form th:action="@{/register}" th:object="${user}" method="post"
-			novalidate>
-			<div class="form-group">
-				<label for="name"> ユーザーID* </label> <input type="text"
-					th:errorclass="is-invalid" th:field="*{username}">
-				<div class="invalid-feedback" th:errors="*{username}"></div>
-			</div>
-			<div class="form-group">
-				<label for="email"> メールアドレス* </label> <input type="email"
-					th:errorclass="is-invalid" th:field="*{email}">
-				<div class="invalid-feedback" th:errors="*{email}"></div>
-			</div>
-			<div class="form-group">
-				<label for="password"> パスワード* </label> <input type="password"
-					th:errorclass="is-invalid" th:field="*{password}">
-				<div class="invalid-feedback" th:errors="*{password}"></div>
-			</div>
-			<div class="form-check"></div>
-			<button class="btn">登録</button>
-		</form>
+	<div class="container">
+		<div class="row"></div>
+		<div class="row card">
+			<div class="card-content">
+				<h3 class="center gray-text">ユーザー登録</h3>
+				<p>必要事項を入力してください。 *必須
+				<form th:action="@{/register}" th:object="${user}" method="post"
+					novalidate>
+					<div class="form-group">
+						<label for="name"> ユーザーID* </label> <input type="text"
+							th:errorclass="is-invalid" th:field="*{username}">
+						<div class="invalid-feedback" th:errors="*{username}"></div>
+					</div>
+					<div class="form-group">
+						<label for="email"> メールアドレス* </label> <input type="email"
+							th:errorclass="is-invalid" th:field="*{email}">
+						<div class="invalid-feedback" th:errors="*{email}"></div>
+					</div>
+					<div class="form-group">
+						<label for="password"> パスワード* </label> <input type="password"
+							th:errorclass="is-invalid" th:field="*{password}">
+						<div class="invalid-feedback" th:errors="*{password}"></div>
+					</div>
+					<div class="form-check"></div>
+					<button class="btn">登録</button>
+				</form>
 
-
+			</div>
+		</div>
 	</div>
 </body>
 </html>

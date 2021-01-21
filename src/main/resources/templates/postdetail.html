@@ -4,13 +4,16 @@
 <meta charset="UTF-8">
 <th:block th:insert="fragments/header :: header"></th:block>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet"
-	th:href="@{/webjars/materializecss/1.0.0/css/materialize.min.css}">
+<script th:src="@{/webjars/jquery/3.5.1/jquery.min.js}"></script>
 <script type="text/javascript"
 	th:src="@{/webjars/materializecss/1.0.0/js/materialize.min.js/}"></script>
-<script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
-<link href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" rel="stylesheet">
-	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<link rel="stylesheet"
+	th:href="@{/webjars/materializecss/1.0.0/css/materialize.min.css}">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+	rel="stylesheet">
+<link href="https://use.fontawesome.com/releases/v5.6.1/css/all.css"
+	rel="stylesheet">
+<link rel="stylesheet" th:href="@{/css/stylesheet.css}">
 <title>title</title>
 </head>
 <body>
@@ -18,35 +21,36 @@
 		<h1>投稿</h1>
 		<span th:inline="text"> ユーザー:[[${post.username}]] -
 			内容:[[${post.postBody}]] - 登録日時:[[${post.createdAt}]] -
-			更新日時:[[${post.updatedAt}]] </span> 
-			 <span th:if="${user.username == post.username}">
-                <a
+			更新日時:[[${post.updatedAt}]] </span> <span
+			th:if="${user.username == post.username}"> <a
 			th:href="@{/editPost/__${post.postId}__}">編集</a> <a
 			th:href="@{/deletePost/__${post.postId}__}">削除</a>
-            </span>
-			
+		</span>
+
 		<h1>コメント</h1>
 		<div th:each="comment : ${comments}" th:inline="text">
 			ユーザー:[[${comment.username}]] - 内容:[[${comment.commentBody}]] -
-			登録日時:[[${comment.createdAt}]] - 更新日時:[[${comment.updatedAt}]] 
-			<span th:if="${user.username == comment.username}">
-			<a
+			登録日時:[[${comment.createdAt}]] - 更新日時:[[${comment.updatedAt}]] <span
+				th:if="${user.username == comment.username}"> <a
 				th:href="@{/editComment/__${comment.commentId}__}">編集</a> <a
 				th:href="@{/deleteComment/__${comment.commentId}__}">削除</a>
-				</span>
+			</span>
 		</div>
 		<section class="post" data-postid="${post.postId}">
-		<div class="btn-good"><i class="fa-heart fa-lg px-16
+			<div class="btn-good">
+				<i
+					class="fa-heart fa-lg px-16
         <th:if(isGood($_SESSION['user_id'],$dbPostData['id'])){ //いいね押したらハートが塗りつぶされる
                 echo ' active fas';
             }else{ //いいねを取り消したらハートのスタイルが取り消される
                 echo ' far';
-            }; ?>"></i><span><?php echo $dbPostGoodNum; ?></span>
+            }; ?>"></i><span>
+					<?php echo $dbPostGoodNum; ?>
+				</span>
 		</section>
-		
-		
-		 <a
-			th:href="@{/likesList/__${post.postId}__}"><p
+
+
+		<a th:href="@{/likesList/__${post.postId}__}"><p
 				th:text="${theNumberOfLikes}"></p></a>
 	</div>
 	<div class="comment">
@@ -66,8 +70,11 @@
 			<button class="btn">登録</button>
 		</form>
 	</div>
-	</div>
 	<script>
+	$(document).ready(function() {
+		$(".dropdown-trigger").dropdown();
+	});
+	
 	$(function(){
 	    var $good = $('.btn-good'), //いいねボタンセレクタ
 	                goodPostId; //投稿ID

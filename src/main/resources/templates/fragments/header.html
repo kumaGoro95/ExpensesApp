@@ -4,29 +4,43 @@
 <meta charset="UTF-8">
 </head>
 <body>
-<th:block th:fragment="header">
-<!-- Header -->
-<div class="navbar-fixed">
-<nav>
-    <div class="nav-wrapper">
-      <a th:href="@{/}" class="brand-logo">Logo</a>
-      <ul id="nav-mobile" class="right hide-on-med-and-down">
-      <span th:if="${user.username != null}">
-        <li><a th:href="@{/record}" class="waves-effect waves-light btn">入力 <i class="material-icons right">note_add</i></a></li>
-        <li><a th:href="@{/postmain}"><i class="material-icons left">people_outline</i>家計簿公開</a></li>
-        <li><a th:href="@{/showRecords}"><i class="material-icons left">history</i>履歴</a></li>
-        <li><a th:href="@{/analysis}"><i class="material-icons left">insert_chart</i>分析</a></li>
-        <li><a th:href="@{/setting}"><i class="material-icons left">settings</i>設定</a></li>
-        </span>
-        <span th:if="${user.username == null}">
-        <li><a th:href="@{/login}">ログイン</a></li>
-        <li><a th:href="@{/register}">会員登録</a></li>
-        </span>
-      </ul>
-    </div>
-  </nav>
-  </div>
-<!-- End of Header -->
-</th:block>
+	<th:block th:fragment="header">
+		<!-- Header -->
+		<div class="navbar-fixed">
+			<nav>
+				<div class="nav-wrapper">
+					<a th:href="@{/}" class="brand-logo">Logo</a> 
+					<span
+						th:if="${user.username != null}" th:inline="text">
+						<ul id="nav-mobile" class="right hide-on-med-and-down">
+
+							<li><a th:href="@{/record}"
+								class="waves-effect waves-light btn">入力 <i
+									class="material-icons right">note_add</i></a></li>
+							<li><a th:href="@{/postmain}"><i
+									class="material-icons left">people_outline</i>家計簿公開</a></li>
+							<li><a th:href="@{/showRecords}"><i
+									class="material-icons left">history</i>履歴</a></li>
+							<li><a th:href="@{/analysis}"><i
+									class="material-icons left">insert_chart</i>分析</a></li>
+							<li><a class="dropdown-trigger" href="#!"
+								data-target="dropdown1">[[${user.userNickname}]] <i
+									class="material-icons right">arrow_drop_down</i></a></li>
+						</ul>
+						<ul id="dropdown1" class="dropdown-content">
+							<li><a th:href="@{/setting}">マイページ</a></li>
+							<li><a th:href="@{/logout}">ログアウト</a></li>
+						</ul>
+					</span> <span th:if="${user.username == null}">
+					<ul id="nav-mobile" class="right hide-on-med-and-down">
+						<li><a th:href="@{/login}">ログイン</a></li>
+						<li><a th:href="@{/register}">会員登録</a></li>
+					</ul>
+					</span>
+				</div>
+			</nav>
+		</div>
+		<!-- End of Header -->
+	</th:block>
 </body>
 </html>

@@ -26,7 +26,7 @@ public class PostComment {
 	@GeneratedValue(strategy = GenerationType.IDENTITY) 
 	@NotNull
 	@Column(name = "comment_id")
-	private long commentId;
+	private int commentId;
 	
 	@NotNull
 	@Column(name = "user_id")
@@ -34,7 +34,7 @@ public class PostComment {
 	
 	@NotNull
 	@Column(name = "post_id")
-	private long postId;
+	private int postId;
 	
 	@Length(min=0, max=500)
 	@Column(name = "comment_body")
