@@ -46,10 +46,12 @@ public class SecurityController {
 	private final CategoryRepository categoryRepository;
 
 	@GetMapping("/login")
-	public String login(@ModelAttribute("user") SiteUser user) {
+	public String login(@ModelAttribute("user") SiteUser user, Authentication loginUser) {
+		if (loginUser != null) {
+			return "redirect:/?login";
+		}
 		return "login";
 	}
-
 
 	@GetMapping("/register")
 	public String register(@ModelAttribute("user") SiteUser user) {
@@ -57,7 +59,8 @@ public class SecurityController {
 	}
 
 	@PostMapping("/register")
-	public String process(@Validated @ModelAttribute("user") SiteUser user, BindingResult result, RedirectAttributes redirectAttributes) {
+	public String process(@Validated @ModelAttribute("user") SiteUser user, BindingResult result,
+			RedirectAttributes redirectAttributes) {
 		// @Validatedで入力値チェック→BindingResultに結果が入る→result.hasErrors()でエラーがあるか確認
 
 		// 同名ユーザー、メールアドレスのアカウントが存在していないか確認
@@ -83,7 +86,7 @@ public class SecurityController {
 		LocalDateTime ldt = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
 		user.setCreatedAt(ldt);
 		userRepository.save(user);
-		
+
 		redirectAttributes.addFlashAttribute("flashMsg", "登録しました");
 
 		return "redirect:/login?register";
