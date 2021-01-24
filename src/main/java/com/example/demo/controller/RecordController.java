@@ -38,6 +38,8 @@ import com.example.demo.model.beans.SummaryByCategory;
 import com.example.demo.repository.CategoryRepository;
 import com.example.demo.repository.MoneyRecordRepository;
 import com.example.demo.repository.SiteUserRepository;
+import com.example.demo.service.DateService;
+import com.example.demo.service.MoneyRecordService;
 import com.example.demo.util.CategoryCodeToName;
 
 import lombok.RequiredArgsConstructor;
@@ -49,6 +51,8 @@ public class RecordController {
 	// DI
 	private final SiteUserRepository userRepository;
 	private final MoneyRecordRepository moneyRecordRepository;
+	private final MoneyRecordService mrService;
+	private final DateService dService;
 	private MoneyRecordDaoImpl mrDao;
 	private final CategoryRepository categoryRepository;
 	@PersistenceContext
@@ -92,8 +96,8 @@ public class RecordController {
 	@GetMapping("/showRecords")
 	public String showRecords(Authentication loginUser, Model model) {
 		List<MoneyRecordList> records = moneyRecordRepository.findMoneyRecordList(loginUser.getName());
-		for(int i = 0; i < records.size(); i++) {
-			if(records.get(i).getNote().length() > 13) {
+		for (int i = 0; i < records.size(); i++) {
+			if (records.get(i).getNote().length() > 13) {
 				records.get(i).setNote(records.get(i).getNote().substring(0, 10) + "…");
 			}
 		}
@@ -107,8 +111,8 @@ public class RecordController {
 	@GetMapping("/showRecordsOrderByDateAsc")
 	public String showRecordsOrderByDateAsc(Authentication loginUser, Model model) {
 		List<MoneyRecordList> records = moneyRecordRepository.findMoneyRecordListOrderByDateAsc(loginUser.getName());
-		for(int i = 0; i < records.size(); i++) {
-			if(records.get(i).getNote().length() > 13) {
+		for (int i = 0; i < records.size(); i++) {
+			if (records.get(i).getNote().length() > 13) {
 				records.get(i).setNote(records.get(i).getNote().substring(0, 10) + "…");
 			}
 		}
@@ -120,8 +124,8 @@ public class RecordController {
 	@GetMapping("/showRecordsOrderByMoneyDesc")
 	public String showRecordsOrderByMoneyDesc(Authentication loginUser, Model model) {
 		List<MoneyRecordList> records = moneyRecordRepository.findMoneyRecordListOrderByMoneyDesc(loginUser.getName());
-		for(int i = 0; i < records.size(); i++) {
-			if(records.get(i).getNote().length() > 13) {
+		for (int i = 0; i < records.size(); i++) {
+			if (records.get(i).getNote().length() > 13) {
 				records.get(i).setNote(records.get(i).getNote().substring(0, 10) + "…");
 			}
 		}
@@ -133,8 +137,8 @@ public class RecordController {
 	@GetMapping("/showRecordsOrderByMoneyAsc")
 	public String showRecordsOrderByMoneyAsc(Authentication loginUser, Model model) {
 		List<MoneyRecordList> records = moneyRecordRepository.findMoneyRecordListOrderByMoneyAsc(loginUser.getName());
-		for(int i = 0; i < records.size(); i++) {
-			if(records.get(i).getNote().length() > 13) {
+		for (int i = 0; i < records.size(); i++) {
+			if (records.get(i).getNote().length() > 13) {
 				records.get(i).setNote(records.get(i).getNote().substring(0, 10) + "…");
 			}
 		}
@@ -156,9 +160,10 @@ public class RecordController {
 	// 出入金記録を削除
 	@Transactional
 	@GetMapping("/deleteRecord/{recordId}")
-	public String deleteRecord(@PathVariable("recordId") int recordId, Model model, RedirectAttributes redirectAttributes) {
+	public String deleteRecord(@PathVariable("recordId") int recordId, Model model,
+			RedirectAttributes redirectAttributes) {
 		moneyRecordRepository.deleteByRecordId(recordId);
-		
+
 		redirectAttributes.addFlashAttribute("flashMsg", "削除しました");
 
 		return "redirect:/showRecords?showRecords";
@@ -199,124 +204,102 @@ public class RecordController {
 			Model model) {
 		SiteUser currentUser = userRepository.findByUsername(loginUser.getName());
 		model.addAttribute("user", currentUser);
+
+		// カテゴリ一覧を登録
 		model.addAttribute("subcategories", categoryRepository.findAll());
 		Map<Integer, String> categories = CategoryCodeToName.Categories;
 		model.addAttribute("categories", categories);
-		
-		//記録の内一番古いものを獲得
-		Object a = moneyRecordRepository.getOldestDate(loginUser.getName());
-		String oldDate = a.toString();
-		String month = oldDate.substring(0, 7);
-		//※古いものを取得して、現在までの年月一覧を取得したいのだが・・・
-		
-		
+
+		// 月一覧を取得
+		String[] allMonths = dService.getAllMonths(loginUser.getName());
 
 		// 現在の月を取得
 		LocalDate now = LocalDate.now();
 		String strNow = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 		String currentMonth = strNow.substring(0, 7);
-		// 初日と末日を取得
-		String firstDayStr = currentMonth + "-01";
-		LocalDate firstDay = LocalDate.parse(firstDayStr, DateTimeFormatter.ISO_DATE);
-		LocalDate lastDay = YearMonth.now().atEndOfMonth();
-
-		// グラフに代入する数値を用意
-		List<DailySumGraph> dailySum = moneyRecordRepository.findDailyGraph(loginUser.getName(), firstDay, lastDay);
-		List<Integer> daysList = new ArrayList<Integer>();
-		for (int i = 1; i < dailySum.size() + 1; i++) {
-			daysList.add(i);
-		}
-		Integer days[] = daysList.toArray(new Integer[dailySum.size()]);
-		List<BigDecimal> dailyAmmountList = new ArrayList<BigDecimal>();
-		for (int i = 0; i < dailySum.size(); i++) {
-			dailyAmmountList.add(dailySum.get(i).getSum());
-		}
-		BigDecimal dailyAmmount[] = dailyAmmountList.toArray(new BigDecimal[dailyAmmountList.size()]);
-		model.addAttribute("label", days);
-		model.addAttribute("data", dailyAmmount);
-
-		// 支出のカテゴリ一覧を設定
-		List<String> expenseCategory = new ArrayList<String>();
-		for (int i = 1; i < CategoryCodeToName.Categories.size(); i++) {
-			expenseCategory.add(CategoryCodeToName.Categories.get(i));
-		}
-		String expenseLabel[] = expenseCategory.toArray(new String[expenseCategory.size()]);
-
-		// 支出のカテゴリ毎の合計を設定
-		List<SummaryByCategory> expenseByCategory = moneyRecordRepository.findCategorySummaries(loginUser.getName(),
-				currentMonth);
-		List<BigDecimal> expenseAmmount = new ArrayList<BigDecimal>();
-		for (int i = 0; i < expenseByCategory.size() - 1; i++) {
-			expenseAmmount.add(expenseByCategory.get(i).getSum());
-		}
-		BigDecimal expenseData[] = expenseAmmount.toArray(new BigDecimal[expenseAmmount.size()]);
-
-		// 収入のカテゴリ一覧を設定
-		List<Category> incomeCategories = categoryRepository.findBycategoryCode(99);
-		List<String> incomeCategoriesStr = new ArrayList<String>();
-		for (int i = 0; i < incomeCategories.size(); i++) {
-			incomeCategoriesStr.add(incomeCategories.get(i).getSubcategoryName());
-		}
-		String incomeLabel[] = incomeCategoriesStr.toArray(new String[incomeCategoriesStr.size()]);
-
-		// 収入のカテゴリ毎の合計を設定
-		List<SummaryByCategory> incomeByCategory = moneyRecordRepository.findSubcategorySummaries(loginUser.getName(),
-				currentMonth, 99);
-		List<BigDecimal> incomeAmmount = new ArrayList<BigDecimal>();
-		for (int i = 0; i < incomeByCategory.size(); i++) {
-			incomeAmmount.add(incomeByCategory.get(i).getSum());
-		}
-		BigDecimal incomeData[] = incomeAmmount.toArray(new BigDecimal[incomeAmmount.size()]);
 
 		// 予算の取得
-		BigDecimal budget = currentUser.getBudget();
-		BigDecimal totalAmmount = mrDao.sumMonthExpense(currentUser.getUsername(), month);
-		BigDecimal percent = totalAmmount.divide(budget, 2, RoundingMode.HALF_UP);
-		String totalLabel = "月";
-		
-		//今までの月を取得
-		Object oldestDateobj = moneyRecordRepository.getOldestDate(loginUser.getName());
-		String oldestDateStr = oldestDateobj.toString().substring(0, 7) + "-01";
-		LocalDate oldestDate = LocalDate.parse(oldestDateStr, DateTimeFormatter.ISO_DATE);
-		List<String> months = new ArrayList<String>();
-		/*DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy年M月d日");
-        LocalDate dt = LocalDate.of(2000, 1, 1);
+		// BigDecimal budget = currentUser.getBudget();
+		// BigDecimal totalAmmount = mrDao.sumMonthExpense(currentUser.getUsername(),
+		// month);
+		// BigDecimal percent = totalAmmount.divide(budget, 2, RoundingMode.HALF_UP);
+		// String totalLabel = "月";
 
-        System.out.println(dt.format(dtf));
+		// 日ごとグラフ用のパラメータ
+		BigDecimal dailyAmmount[] = mrService.getDailyAmmount(loginUser.getName(), currentMonth);
+		Integer days[] = mrService.getDays(loginUser.getName(), currentMonth);
 
-        dt = dt.plusDays(1);
+		// 収支別円グラフパラメータ
+		String expenseLabel[] = mrService.getExpenseLabel();
+		BigDecimal expenseData[] = mrService.getExpenseData(loginUser.getName(), currentMonth);
+		String incomeLabel[] = mrService.getIncomeLabel();
+		BigDecimal incomeData[] = mrService.getIncomeData(loginUser.getName(), currentMonth);
 
-        System.out.println(dt.format(dtf));*/
-
+		// 収支別円グラフ
 		model.addAttribute("expenseLabel", expenseLabel);
 		model.addAttribute("expenseData", expenseData);
 		model.addAttribute("incomeLabel", incomeLabel);
 		model.addAttribute("incomeData", incomeData);
 
-		model.addAttribute("total", percent);
-		model.addAttribute("totalLabel", totalLabel);
+		// 日ごとグラフ
+		model.addAttribute("label", days);
+		model.addAttribute("data", dailyAmmount);
+
+		// 月切り替え用パラメータ
+		model.addAttribute("months", allMonths);
 		
+		//　現在の月をドロップダウンに表示
+		model.addAttribute("currentMonth", currentMonth);
+
+		// model.addAttribute("total", percent);
+		// model.addAttribute("totalLabel", totalLabel);
 
 		return "analysis";
 	}
 
 	@GetMapping("/analysis/{month}")
 	// Authentication・・・認証済みのユーザー情報を取得
-	public String analysisByMonth(@PathVariable("month") String month, Authentication loginUser,
-			Model model) {
+	public String analysisByMonth(@PathVariable("month") String month, Authentication loginUser, Model model) {
 		SiteUser currentUser = userRepository.findByUsername(loginUser.getName());
 		model.addAttribute("user", currentUser);
 		model.addAttribute("subcategories", categoryRepository.findAll());
 		Map<Integer, String> categories = CategoryCodeToName.Categories;
 		model.addAttribute("categories", categories);
+
+
+		// 月一覧を取得
+		String[] allMonths = dService.getAllMonths(loginUser.getName());
+
+		// 日ごとグラフ用のパラメータ
+		BigDecimal dailyAmmount[] = mrService.getDailyAmmount(loginUser.getName(), month);
+		Integer days[] = mrService.getDays(loginUser.getName(), month);
+
+		// 収支別円グラフパラメータ
+		String expenseLabel[] = mrService.getExpenseLabel();
+		BigDecimal expenseData[] = mrService.getExpenseData(loginUser.getName(), month);
+		String incomeLabel[] = mrService.getIncomeLabel();
+		BigDecimal incomeData[] = mrService.getIncomeData(loginUser.getName(), month);
+
+		// 収支別円グラフ
+		model.addAttribute("expenseLabel", expenseLabel);
+		model.addAttribute("expenseData", expenseData);
+		model.addAttribute("incomeLabel", incomeLabel);
+		model.addAttribute("incomeData", incomeData);
+
+		// 日ごとグラフ
+		model.addAttribute("label", days);
+		model.addAttribute("data", dailyAmmount);
+
+		// 月切り替え用パラメータ
+		model.addAttribute("months", allMonths);
 		
-		//記録の内一番古いものを獲得
-		Object a = moneyRecordRepository.getOldestDate(loginUser.getName());
-		String oldDate = a.toString();
-		String firstDay = oldDate.substring(0, 7);
-		
-		
-		return "hoge";
+		//ドロップダウン用
+		model.addAttribute("currentMonth", month);
+
+		// model.addAttribute("total", percent);
+		// model.addAttribute("totalLabel", totalLabel);
+
+		return "analysis";
 
 	}
 }
