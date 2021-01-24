@@ -1,8 +1,17 @@
+	
+body{
+	background-color: #efebe9;
+}
+
 .fa-utensils{
 	color:blue;
 }
 .card{
 	border-radius: 10px;
+}
+
+.calendar{
+	padding:10px;
 }
 
 .messagebar{
@@ -11,7 +20,7 @@
 
 .message{
 	border-radius: 5px;
-	opacity:0.6;
+	opacity:0.8;
 }
 .expense {
 	color: red;

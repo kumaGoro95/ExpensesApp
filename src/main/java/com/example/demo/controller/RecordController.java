@@ -273,6 +273,20 @@ public class RecordController {
 		BigDecimal totalAmmount = mrDao.sumMonthExpense(currentUser.getUsername(), month);
 		BigDecimal percent = totalAmmount.divide(budget, 2, RoundingMode.HALF_UP);
 		String totalLabel = "月";
+		
+		//今までの月を取得
+		Object oldestDateobj = moneyRecordRepository.getOldestDate(loginUser.getName());
+		String oldestDateStr = oldestDateobj.toString().substring(0, 7) + "-01";
+		LocalDate oldestDate = LocalDate.parse(oldestDateStr, DateTimeFormatter.ISO_DATE);
+		List<String> months = new ArrayList<String>();
+		/*DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy年M月d日");
+        LocalDate dt = LocalDate.of(2000, 1, 1);
+
+        System.out.println(dt.format(dtf));
+
+        dt = dt.plusDays(1);
+
+        System.out.println(dt.format(dtf));*/
 
 		model.addAttribute("expenseLabel", expenseLabel);
 		model.addAttribute("expenseData", expenseData);
@@ -281,6 +295,7 @@ public class RecordController {
 
 		model.addAttribute("total", percent);
 		model.addAttribute("totalLabel", totalLabel);
+		
 
 		return "analysis";
 	}
@@ -299,6 +314,7 @@ public class RecordController {
 		Object a = moneyRecordRepository.getOldestDate(loginUser.getName());
 		String oldDate = a.toString();
 		String firstDay = oldDate.substring(0, 7);
+		
 		
 		return "hoge";
 
