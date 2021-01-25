@@ -59,7 +59,7 @@ public class HomeController {
 
 
 	// テスト
-	@GetMapping("/test")
+	@GetMapping("/upload")
 	public String test(Authentication loginUser, Model model) {
 		model.addAttribute("user", userRepository.findByUsername(loginUser.getName()));
 
