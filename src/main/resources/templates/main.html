@@ -23,19 +23,19 @@
 		<div class="row"></div>
 		<div class="row">
 			<div class="col s8">
-			<div class="card">
-				<div class="exChart">
-					<canvas id="expenseChart"
-						style="display: block; height: 320px; width: 640px;" width="800"
-						height="400" class="chartjs-render-monitor"></canvas>
-				</div>
-				<div class="inChart">
-					<canvas id="incomeChart"
-						style="display: block; height: 320px; width: 640px;" width="800"
-						height="400" class="chartjs-render-monitor"></canvas>
+				<div class="card">
+					<div class="exChart">
+						<canvas id="expenseChart"
+							style="display: block; height: 320px; width: 640px;" width="800"
+							height="400" class="chartjs-render-monitor"></canvas>
+					</div>
+					<div class="inChart">
+						<canvas id="incomeChart"
+							style="display: block; height: 320px; width: 640px;" width="800"
+							height="400" class="chartjs-render-monitor"></canvas>
 						<h6>10000円</h6>
+					</div>
 				</div>
-			</div>
 			</div>
 			<div class="col s4">
 				<div class="row card">
@@ -99,8 +99,7 @@
 
 
 		<!-- CDN -->
-		<a th:href="@{/logout}">ログアウト</a> <a th:href="@{/analysis}">分析へ</a> <a
-			th:href="@{/test}">テスト</a>
+		<a th:href="@{/upload}">テスト</a>
 	</div>
 	<script type="text/javascript" th:inline="javascript">
 	$('#message').fadeOut( 8000 );
