@@ -14,6 +14,8 @@ import org.springframework.stereotype.Repository;
 
 import com.example.demo.model.Post;
 import com.example.demo.model.beans.DailySumGraph;
+import com.example.demo.model.beans.MoneyRecordList;
+import com.example.demo.model.beans.PostByNickname;
 
 @Repository
 public interface PostRepository extends JpaRepository<Post, Long> {
@@ -22,6 +24,10 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 	
 	public void deleteByPostId(int postId);
 	
+	public List<Post> findByUsername(String username);
+
+	
+	//コメント数を集計
 	@Query(value = "select post_id, count(*) from comments group by post_id", nativeQuery = true)
 	public List<Object[]> getCommentCount();
 	
@@ -34,5 +40,13 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 		}
 		return map;
 	}
-
+	
+	@Query(value = "select post_id, U.user_id, U.user_name, post_body, P.created_at, P.updated_at "
+			+ "from posts P left join users U on P.user_id = U.user_id", nativeQuery = true)
+	public List<Object[]> getAllPosts();
+	
+	default List<PostByNickname> findAllPosts(){
+		return getAllPosts().stream().map(PostByNickname::new).collect(Collectors.toList());
+	}
+	
 }

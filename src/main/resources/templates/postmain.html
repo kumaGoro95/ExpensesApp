@@ -20,36 +20,54 @@
 	<div class="row">
 		<div id="test1" class="col s12">
 			<div class="record">
-				<h1>投稿一覧</h1>
-				
+				<h3>投稿一覧</h3>
+
 				<div th:each="post : ${posts}" th:inline="text">
-				<div class="col s3"></div>
-					<div class="col s9 card">
-						<div class="card-content">
-							<a th:href="@{/userdetail/__${post.username}__}">[[${post.username}]]</a><br>
-							[[${post.postBody}]]<br>
-							<p th:text="*{#temporals.format(post.createdAt, 'yyyy/MM/dd')}"></p>
-							<br> [[${post.updatedAt}]]<br> <span
-								th:if="${user.username == post.username}"> <a
-								th:href="@{/editPost/__${post.postId}__}">編集</a> <a
-								th:href="@{/deletePost/__${post.postId}__}">削除</a>
-							</span> <a th:href="@{/post/__${post.postId}__}"><i
-								class="material-icons">comment</i>[[${commentCount.get(post.postId)}]]</a>
+					<div class="col s9">
+						<div class="card">
+							<div class="card-content">
+								<div class="right">
+									<span th:if="${user.username == post.username}"> <a
+										class="dropdown-trigger" href="#!" data-target="dropdown-post"><i
+											class="material-icons small">expand_more</i></a>
+
+										<ul id="dropdown-post" class="dropdown-content">
+											<li><a th:href="@{/editPost/__${post.postId}__}">編集</a></li>
+											<li><a th:href="@{/deletePost/__${post.postId}__}">削除</a></li>
+										</ul></span>
+								</div>
+								<div class="left">
+						<i class="medium material-icons">face</i>
+					</div>
+								<a th:href="@{/userdetail/__${post.username}__}"><h5>[[${post.userNickname}]]</h5></a><p th:text="${post.createdAt}"></p>
+								<div class="row postbody">[[${post.postBody}]]</div>
+								<div class="divider"></div>
+
+
+								<div class="right">
+									<a th:href="@{/post/__${post.postId}__}"> <i
+										class="far fa-comment-dots fa-2x"></i>[[${commentCount.get(post.postId)}]]
+									</a> 
+									<th:block th:if="${myLikes.contains(post.postId) == true}">
+									<a th:href="@{/like/__${post.postId}__}"><i class="fas fa-heart fa-2x pink-text text-accent-2"></i></a>[[${likeCount.get(post.postId)}]]
+									</th:block>
+									<th:block th:unless="${myLikes.contains(post.postId) == true}">
+									<a th:href="@{/like/__${post.postId}__}"><i class="far fa-heart fa-2x pink-text text-accent-2"></i></a>[[${likeCount.get(post.postId)}]]
+									</th:block>
+								</div>
+							</div>
 						</div>
+
 					</div>
 				</div>
 			</div>
+<a th:href="@{/post}">投稿</a>
 		</div>
 
-	</div>
-	<div class="container">
-		<a th:href="@{/}">メインへ</a> <a th:href="@{/post}">投稿へ</a>
-	</div>
-
-	<script>
-		$(document).ready(function() {
-			$(".dropdown-trigger").dropdown();
-		});
-	</script>
+		<script>
+			$(document).ready(function() {
+				$(".dropdown-trigger").dropdown();
+			});
+		</script>
 </body>
 </html>

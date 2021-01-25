@@ -19,23 +19,23 @@
 <title>title</title>
 </head>
 <body>
-	<div class="container">
+	<div class="container" th:inline="text">
 		<div class="row"></div>
 		<div class="row">
 			<div class="col s8">
 				<div class="card">
+				<div class="card-content">
+				<div class="card-title">予算：[[${user.budget}]]円　－　支出：[[${totalAmmount}]]円  = 残り[[${balance}]]円　使えます</div>
 					<div class="exChart">
 						<canvas id="expenseChart"
 							style="display: block; height: 320px; width: 640px;" width="800"
 							height="400" class="chartjs-render-monitor"></canvas>
-					</div>
-					<div class="inChart">
-						<canvas id="incomeChart"
-							style="display: block; height: 320px; width: 640px;" width="800"
-							height="400" class="chartjs-render-monitor"></canvas>
-						<h6>10000円</h6>
+							<div class="center">
+							<span th:if="${expenseData == checknull}"><h6>表示できるデータがありません</h6></span>
+							</div>
 					</div>
 				</div>
+			</div>
 			</div>
 			<div class="col s4">
 				<div class="row card">
@@ -139,28 +139,6 @@
     }
   });
   
-  var ctx = document.getElementById("incomeChart");
-  var incomeChart = new Chart(ctx, {
-    type: 'doughnut',
-    data: {
-      labels: [[ ${incomeLabel} ]],
-      datasets: [{
-          backgroundColor: [
-              "#BB5179",
-              "#FAFF67",
-              "#58A27C",
-              "#3C00FF"
-          ],
-          data:[[${incomeData}]],
-      }]
-    },
-    options: {
-      title: {
-        display: true,
-        text: '収入'
-      }
-    }
-  });
 
 var ctx = document.getElementById("total");
 var data = {

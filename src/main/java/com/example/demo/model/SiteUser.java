@@ -57,7 +57,8 @@ public class SiteUser{
 	@Max(100)
 	@Column(name = "user_icon")
 	private String icon;
-
+    
+	@NotNull
 	@Column(name = "budget")
 	private BigDecimal budget;
 	
