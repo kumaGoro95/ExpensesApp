@@ -28,6 +28,9 @@
 					<input type="hidden" name="username" th:value="*{username}" /> <input
 						type="hidden" name="createdAt" th:value="*{createdAt}" /> <input
 						type="hidden" name="role" th:value="*{role}" />
+						<input
+					type="hidden" name="password"
+					th:value="*{password}" />
 					<div class="form-group">
 						<label for="name"> ユーザー名* </label> <input type="text"
 							th:errorclass="is-invalid" th:field="*{userNickname}">
@@ -38,11 +41,7 @@
 							th:errorclass="is-invalid" th:field="*{email}">
 						<div class="invalid-feedback" th:errors="*{email}"></div>
 					</div>
-					<div class="form-group">
-						<label for="password"> パスワード* </label> <input type="password"
-							th:errorclass="is-invalid" th:field="*{password}">
-						<div class="invalid-feedback" th:errors="*{password}"></div>
-					</div>
+					
 					<div class="form-group">
 						<label for="gender"> 性別 </label>
 						<div
@@ -72,7 +71,7 @@
 						<div class="invalid-feedback" th:errors="*{budget}"></div>
 					</div>
 
-					<button class="btn">更新</button>
+					<button class="btn">更新</button> <a th:href="@{/passwordSetting}">パスワード変更</a>
 				</form>
 			</div>
 		</div>

@@ -1,5 +1,7 @@
 package com.example.demo.service;
 
+import java.time.LocalDate;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +21,12 @@ public class DateService {
 	}
 	
 	public String[] getAllMonths(String username) {
-		String oldestDate = moneyRecordRepository.getOldestDate(username).toString();
+		String oldestDate = "";
+		if(moneyRecordRepository.getOldestDate(username) != null) {
+		oldestDate = moneyRecordRepository.getOldestDate(username).toString();
+		}else {
+		oldestDate = LocalDate.now().toString();
+		}
 		String months[] = dateRepository.findAllMonths(oldestDate);
 		
 		return months;

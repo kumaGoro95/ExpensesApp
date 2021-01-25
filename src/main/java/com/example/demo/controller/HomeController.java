@@ -191,6 +191,40 @@ public class HomeController {
 
 		return "redirect:/?setting";
 	}
+	
+	// パスワード変更画面へ遷移
+		@GetMapping("/passwordSetting")
+		public String passwordSetting(Authentication loginUser, Model model) {
+			model.addAttribute("user", userRepository.findByUsername(loginUser.getName()));
+			return "passwordSetting";
+		}
+		
+		// パスワード変更を実行
+		@PostMapping("/passwordSetting")
+		public String ChangePass(@Validated @ModelAttribute("user") SiteUser user, BindingResult result,
+				Authentication loginUser, RedirectAttributes redirectAttributes) {
+			// 同名ユーザー、メールアドレスのアカウントが存在していないか確認
+			SiteUser emailCheck = userRepository.findByUsername(loginUser.getName());
+			if (user.getEmail().equals(emailCheck.getEmail()) && userRepository.countByEmail(user.getEmail()) > 1) {
+				return "redirect:/setting?setting";
+			}
+			if (user.getEmail().equals(emailCheck.getEmail()) == false
+					&& userRepository.countByEmail(user.getEmail()) == 1) {
+				return "redirect:/setting?setting";
+			}
+
+			// @Validatedで入力値チェック→BindingResultに結果が入る→result.hasErrors()でエラーがあるか確認
+			if (result.hasErrors()) {
+				return "main";
+			}
+			LocalDateTime ldt = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
+			user.setUpdatedAt(ldt);
+			userRepository.save(user);
+			
+			redirectAttributes.addFlashAttribute("flashMsg", "設定変更しました");
+
+			return "redirect:/?setting";
+		}
 
 	// ユーザーを削除
 	@Transactional
@@ -198,7 +232,7 @@ public class HomeController {
 	public String deleteUser(Authentication loginUser) {
 		userRepository.deleteByUsername(loginUser.getName());
 
-		return "login";
+		return "redirect:/logout?setting";
 	}
 
 	
