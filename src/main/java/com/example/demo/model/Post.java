@@ -14,15 +14,14 @@ import org.hibernate.validator.constraints.Length;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
+@Data
 @Entity
 @Table(name="posts")
-public class Post {
+public class Post{
 	
+
 	@Id //主キー
 	//DBのidentity列を使用して、キーを自動採番(strategyが無いとautoになる)
 	@GeneratedValue(strategy = GenerationType.IDENTITY) 
@@ -45,5 +44,5 @@ public class Post {
 	@Column(name = "updatedAt")
 	@DateTimeFormat(iso = ISO.DATE_TIME)
 	private LocalDateTime updatedAt;
-
+	
 }

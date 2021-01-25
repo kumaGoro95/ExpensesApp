@@ -107,9 +107,7 @@
 												<td>[[${record.note}]]</td>
 												<td><a th:href="@{/editRecord/__${record.recordId}__}">編集</a>
 													<a th:href="@{/deleteRecord/__${record.recordId}__}">削除</a></td>
-												<td><a
-													class="waves-effect waves-light btn modal-trigger"
-													href="#modal1" th:attr="data-target='#deleteAssignmentModal', data-object-name='${record.recordId}'">Modal</a></td>
+												
 											</tr>
 
 										</div>
@@ -135,17 +133,5 @@
 		</div>
 	</div>
 
-	<div id="modal1" class="modal">
-		<div class="modal-content">
-			<h4>Modal Header</h4>
-			<p>削除しますか？</p>
-		</div>
-		<div class="modal-footer">
-		<p>テスト</p>
-			<a href="#" class="modal-close waves-effect waves-green btn-flat">削除する</a>
-			<a href="#"
-				class="modal-action modal-close waves-effect waves-red btn-flat ">キャンセル</a>
-		</div>
-	</div>
 </body>
 </html>

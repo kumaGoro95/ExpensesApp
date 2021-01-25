@@ -17,12 +17,43 @@
 <title>title</title>
 </head>
 <body>
-	<div class="list">
-		<h1>投稿</h1>
-		<span th:inline="text"> <i class="medium material-icons">face</i>ユーザー:[[${thisUser.username}]]
-			- 内容:[[${thisUser.dateOfBirth}]] - 登録日時:[[${thisUser.createdAt}]] -
-			更新日時:[[${thisUser.updatedAt}]]
-		</span>
+	<div class="container">
+		<div class="row card">
+			<div class="list">
+				<span th:inline="text">
+					<div class="center">
+						<i class="medium material-icons">face</i>
+					</div>
+					<h4 class="center">[[${user.userNickname}]]</h4>
+					<div class="center">
+						<span class="grey-text">@[[${user.username}]]</span>
+					</div>
+					<div class="row"></div>
+					<div class="center"><a th:href="@{/setting}" class="waves-effect waves-light btn"><i class="material-icons right">settings</i>プロフィール編集</a></div>
+				</span>
+			</div>
+		</div>
+		<h3>投稿</h3>
+		<div th:each="post : ${posts}" th:inline="text">
+					<div class="row card">
+						<div class="card-content">
+						<div class="right">
+									<span th:if="${user.username == post.username}"> <a
+										class="dropdown-trigger" href="#!" data-target="dropdown-post"><i
+											class="material-icons small">expand_more</i></a>
+
+										<ul id="dropdown-post" class="dropdown-content">
+											<li><a th:href="@{/editPost/__${post.postId}__}">編集</a></li>
+											<li><a th:href="@{/deletePost/__${post.postId}__}">削除</a></li>
+										</ul></span>
+								</div>
+							[[${post.username}]]<br>
+							[[${post.postBody}]]<br>
+							<p th:text="*{#temporals.format(post.createdAt, 'yyyy/MM/dd')}"></p>
+							<br> [[${post.updatedAt}]]<br>  <a th:href="@{/post/__${post.postId}__}"><i
+								class="material-icons">comment</i>[[${commentCount.get(post.postId)}]]</a>
+					</div>
+				</div>
 	</div>
 	<script>
 		$(document).ready(function() {

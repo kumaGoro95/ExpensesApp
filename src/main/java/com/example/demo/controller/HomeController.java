@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -33,7 +34,9 @@ import com.example.demo.model.SiteUser;
 import com.example.demo.model.beans.SummaryByCategory;
 import com.example.demo.repository.SiteUserRepository;
 import com.example.demo.repository.MoneyRecordRepository;
+import com.example.demo.repository.PostRepository;
 import com.example.demo.repository.CategoryRepository;
+import com.example.demo.repository.LikeRepository;
 import com.example.demo.dao.MoneyRecordDaoImpl;
 
 import lombok.RequiredArgsConstructor;
@@ -47,7 +50,9 @@ public class HomeController {
 	private final MoneyRecordRepository moneyRecordRepository;
 	private MoneyRecordDaoImpl mrDao;
 	private final CategoryRepository categoryRepository;
+	private final PostRepository postRepository;
 	private final BCryptPasswordEncoder passwordEncoder;
+	private final LikeRepository likeRepository;
 
 	@PersistenceContext
 	EntityManager em;
@@ -113,34 +118,28 @@ public class HomeController {
 			expenseAmmount.add(expenseByCategory.get(i).getSum());
 		}
 		BigDecimal expenseData[] = expenseAmmount.toArray(new BigDecimal[expenseAmmount.size()]);
-
-		// 収入のカテゴリ一覧を設定
-		List<Category> incomeCategories = categoryRepository.findBycategoryCode(99);
-		List<String> incomeCategoriesStr = new ArrayList<String>();
-		for (int i = 0; i < incomeCategories.size(); i++) {
-			incomeCategoriesStr.add(incomeCategories.get(i).getSubcategoryName());
+		
+		List<BigDecimal> checknullList = new ArrayList<BigDecimal>();
+		for(int i = 0; i < 15; i++) {
+			checknullList.add(BigDecimal.valueOf(0));
 		}
-		String incomeLabel[] = incomeCategoriesStr.toArray(new String[incomeCategoriesStr.size()]);
+		BigDecimal checknull[] = checknullList.toArray(new BigDecimal[checknullList.size()]);
 
-		// 収入のカテゴリ毎の合計を設定
-		List<SummaryByCategory> incomeByCategory = moneyRecordRepository.findSubcategorySummaries(loginUser.getName(),
-				month, 99);
-		List<BigDecimal> incomeAmmount = new ArrayList<BigDecimal>();
-		for (int i = 0; i < incomeByCategory.size(); i++) {
-			incomeAmmount.add(incomeByCategory.get(i).getSum());
+		//支出合計を算出
+		BigDecimal totalAmmount = new BigDecimal(0.0);
+		for(int i = 0; i < expenseByCategory.size() ; i++) {
+			totalAmmount = totalAmmount.add(expenseByCategory.get(i).getSum());
 		}
-		BigDecimal incomeData[] = incomeAmmount.toArray(new BigDecimal[incomeAmmount.size()]);
-
-		// 予算の取得
-		//BigDecimal budget = currentUser.getBudget();
-		//BigDecimal totalAmmount = mrDao.sumMonthExpense(currentUser.getUsername(), month);
-		//BigDecimal percent = totalAmmount.divide(budget, 2, RoundingMode.HALF_UP);
-		//String totalLabel = "月";
+		
+		//予算－支出を計算
+		BigDecimal balance = currentUser.getBudget().subtract(totalAmmount);
 
 		model.addAttribute("expenseLabel", expenseLabel);
 		model.addAttribute("expenseData", expenseData);
-		model.addAttribute("incomeLabel", incomeLabel);
-		model.addAttribute("incomeData", incomeData);
+
+		model.addAttribute("checknull", checknull);
+		model.addAttribute("totalAmmount", totalAmmount);
+		model.addAttribute("balance", balance);
 
 		//model.addAttribute("total", percent);
 		//model.addAttribute("totalLabel", totalLabel);
@@ -151,8 +150,25 @@ public class HomeController {
 	//ユーザー詳細画面へ遷移
 	@GetMapping("/userdetail/{username}")
 	public String userDetail(@PathVariable("username") String username, Authentication loginUser, Model model) {
+		Map<Integer, BigInteger> result = postRepository.findCommentCount();
+		model.addAttribute("commentCount", result);
 		model.addAttribute("user", userRepository.findByUsername(loginUser.getName()));
 		model.addAttribute("thisUser", userRepository.findByUsername(username));
+		model.addAttribute("posts", postRepository.findByUsername(username));
+		
+		return "userdetail";
+	}
+	
+	//マイページへ遷移
+	@GetMapping("/mypage")
+	public String mypage(Authentication loginUser, Model model) {
+		Map<Integer, BigInteger> likeCount = likeRepository.findLikeCount();
+		Map<Integer, BigInteger> result = postRepository.findCommentCount();
+		model.addAttribute("user", userRepository.findByUsername(loginUser.getName()));
+		model.addAttribute("commentCount", result);
+		model.addAttribute("posts", postRepository.findByUsername(loginUser.getName()));
+		model.addAttribute("likeCount", likeCount);
+		model.addAttribute("myLikes", likeRepository.findMyLikes(loginUser.getName()));
 		
 		return "userdetail";
 	}

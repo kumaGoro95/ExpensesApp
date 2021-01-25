@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 import java.util.Map;
 
 import javax.transaction.Transactional;
@@ -40,10 +41,15 @@ public class PostController {
 	// 投稿系ホーム画面
 	@GetMapping("/postmain")
 	public String goToPost(@ModelAttribute("posts") Post post, Authentication loginUser, Model model) {
-		Map<Integer, BigInteger> result = postRepository.findCommentCount();
-		model.addAttribute("commentCount", result);
+		Map<Integer, BigInteger> commentCount = postRepository.findCommentCount();
+		Map<Integer, BigInteger> likeCount = likeRepository.findLikeCount();
+		model.addAttribute("commentCount", commentCount);
 		model.addAttribute("user", userRepository.findByUsername(loginUser.getName()));
-		model.addAttribute("posts", postRepository.findAll());
+		model.addAttribute("posts", postRepository.findAllPosts());
+		model.addAttribute("likeCount", likeCount);
+		model.addAttribute("myLikes", likeRepository.findMyLikes(loginUser.getName()));
+
+	
 
 		return "postmain";
 	}
@@ -114,6 +120,7 @@ public class PostController {
 
 	// いいね実行
 	@RequestMapping("/like/{postId}")
+	@Transactional
 	public String Like(@PathVariable("postId") int postId, @ModelAttribute("like") Like like, Authentication loginUser,
 			Model model) {
 		if(likeRepository.existsByUsernameAndPostId(loginUser.getName(), postId) == true) {

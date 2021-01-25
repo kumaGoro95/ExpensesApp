@@ -9,7 +9,7 @@
 		<div class="navbar-fixed">
 			<nav>
 				<div class="nav-wrapper">
-					<a th:href="@{/}" class="brand-logo">Logo</a> 
+					<a th:href="@{/}" class="brand-logo">Piggy Bank<i class="fas fa-piggy-bank fa-lg right"></i></a> 
 					<span
 						th:if="${user.username != null}" th:inline="text">
 						<ul id="nav-mobile" class="right hide-on-med-and-down">
@@ -28,7 +28,7 @@
 									class="material-icons right">arrow_drop_down</i></a></li>
 						</ul>
 						<ul id="dropdown-header" class="dropdown-content">
-							<li><a th:href="@{/setting}">マイページ</a></li>
+							<li><a th:href="@{/mypage}">マイページ</a></li>
 							<li><a th:href="@{/logout}">ログアウト</a></li>
 						</ul>
 					</span> <span th:if="${user.username == null}">
