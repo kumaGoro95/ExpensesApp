@@ -103,7 +103,7 @@
 											<tr>
 												<td>[[${record.recordDate}]]</td>
 												<td>[[${record.incomeAndExpense}]]円</td>
-												<td><i th:class="${icon}"></i>[[${record.subcategoryName}]]</td>
+												<td><i th:class="${categoriesToIcon.get(record.categoryCode)}+' fa-lg'"></i>[[${record.subcategoryName}]]</td>
 												<td>[[${record.note}]]</td>
 												<td><a th:href="@{/editRecord/__${record.recordId}__}">編集</a>
 													<a th:href="@{/deleteRecord/__${record.recordId}__}">削除</a></td>

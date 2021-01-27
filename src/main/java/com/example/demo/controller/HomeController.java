@@ -27,10 +27,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.example.demo.util.CategoryCodeToIcon;
 import com.example.demo.util.CategoryCodeToName;
 import com.example.demo.model.Category;
 import com.example.demo.model.MoneyRecord;
 import com.example.demo.model.SiteUser;
+import com.example.demo.model.beans.MoneyRecordList;
 import com.example.demo.model.beans.SummaryByCategory;
 import com.example.demo.repository.SiteUserRepository;
 import com.example.demo.repository.MoneyRecordRepository;
@@ -75,7 +77,7 @@ public class HomeController {
 		String month = strNow.substring(0, 7);
 
 		// 予算の取得
-		BigDecimal budget = currentUser.getBudget();
+		BigDecimal budget = currentUser.getBudget().setScale(1, RoundingMode.DOWN);
 		BigDecimal totalAmmount = mrDao.sumMonthExpense(currentUser.getUsername(), month);
 		BigDecimal percent = totalAmmount.divide(budget, 2, RoundingMode.HALF_UP);
 		BigDecimal a = new BigDecimal(100);
@@ -93,16 +95,21 @@ public class HomeController {
 	// Authentication・・・認証済みのユーザー情報を取得
 	public String loginProcess(@ModelAttribute("moneyRecord") MoneyRecord moneyRecord, Authentication loginUser, Model model) {
 		SiteUser currentUser = userRepository.findByUsername(loginUser.getName());
-		model.addAttribute("user", currentUser);
-		model.addAttribute("subcategories", categoryRepository.findAll());
+		
+		//カテゴリ一覧を取得
 		Map<Integer, String> categories = CategoryCodeToName.Categories;
-		model.addAttribute("categories", categories);
 
 		// 現在の月を取得
 		LocalDate now = LocalDate.now();
 		String strNow = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-		String month = strNow.substring(0, 7);
+		String currentMonth = strNow.substring(0, 7);
+		String year = currentMonth.substring(0, 4);
+		String month = currentMonth.substring(5, 7);
+		
 
+		
+		/*円グラフ用*/
+		
 		// 支出のカテゴリ一覧を設定
 		List<String> expenseCategory = new ArrayList<String>();
 		for (int i = 1; i < CategoryCodeToName.Categories.size(); i++) {
@@ -112,37 +119,58 @@ public class HomeController {
 
 		// 支出のカテゴリ毎の合計を設定
 		List<SummaryByCategory> expenseByCategory = moneyRecordRepository.findCategorySummaries(loginUser.getName(),
-				month);
+				currentMonth);
 		List<BigDecimal> expenseAmmount = new ArrayList<BigDecimal>();
 		for (int i = 0; i < expenseByCategory.size() - 1; i++) {
 			expenseAmmount.add(expenseByCategory.get(i).getSum());
 		}
 		BigDecimal expenseData[] = expenseAmmount.toArray(new BigDecimal[expenseAmmount.size()]);
 		
+		//円グラフに表示するデータがあるか確認
 		List<BigDecimal> checknullList = new ArrayList<BigDecimal>();
 		for(int i = 0; i < 15; i++) {
 			checknullList.add(BigDecimal.valueOf(0));
 		}
 		BigDecimal checknull[] = checknullList.toArray(new BigDecimal[checknullList.size()]);
 
+		
+		/*最近の履歴表示用*/
+		List<MoneyRecordList> recordsLimit10 = moneyRecordRepository.findMoneyRecordListLimit10(loginUser.getName());
+		Map<Integer, String> categoriesToIcon = CategoryCodeToIcon.CategoriesToIcon;
+
+		/*予算-収入=残金用*/
+		
 		//支出合計を算出
 		BigDecimal totalAmmount = new BigDecimal(0.0);
 		for(int i = 0; i < expenseByCategory.size() ; i++) {
 			totalAmmount = totalAmmount.add(expenseByCategory.get(i).getSum());
 		}
 		
+		//予算を取得
+		BigDecimal budget = currentUser.getBudget().setScale(0, RoundingMode.DOWN);
 		//予算－支出を計算
-		BigDecimal balance = currentUser.getBudget().subtract(totalAmmount);
-
+		BigDecimal balance = budget.subtract(totalAmmount);
+		
+		
+		/*model*/
+		
+		model.addAttribute("user", currentUser);
+		model.addAttribute("subcategories", categoryRepository.findAll());
+		model.addAttribute("categories", categories);
+		//円グラフ
 		model.addAttribute("expenseLabel", expenseLabel);
 		model.addAttribute("expenseData", expenseData);
-
+		//〇年〇月の状況　用
+		model.addAttribute("year", year);
+		model.addAttribute("month", month);
+		//予算-収入＝残金
 		model.addAttribute("checknull", checknull);
+		model.addAttribute("budget", budget);
 		model.addAttribute("totalAmmount", totalAmmount);
 		model.addAttribute("balance", balance);
-
-		//model.addAttribute("total", percent);
-		//model.addAttribute("totalLabel", totalLabel);
+		//履歴10件
+		model.addAttribute("recordsLimit10", recordsLimit10);
+		model.addAttribute("categoriesToIcon", categoriesToIcon);
 
 		return "main";
 	}
@@ -246,6 +274,7 @@ public class HomeController {
 	@Transactional
 	@GetMapping("/deleteUser")
 	public String deleteUser(Authentication loginUser) {
+		moneyRecordRepository.deleteByUsername(loginUser.getName());
 		userRepository.deleteByUsername(loginUser.getName());
 
 		return "redirect:/logout?setting";

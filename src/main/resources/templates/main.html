@@ -24,18 +24,97 @@
 		<div class="row">
 			<div class="col s8">
 				<div class="card">
-				<div class="card-content">
-				<div class="card-title">予算：[[${user.budget}]]円　－　支出：[[${totalAmmount}]]円  = 残り[[${balance}]]円　使えます</div>
-					<div class="exChart">
-						<canvas id="expenseChart"
-							style="display: block; height: 320px; width: 640px;" width="800"
-							height="400" class="chartjs-render-monitor"></canvas>
-							<div class="center">
-							<span th:if="${expenseData == checknull}"><h6>表示できるデータがありません</h6></span>
+					<div class="card-content">
+						<div class="row">
+							<div class="col s12 center">
+								<h4>[[${year}]]年[[${month}]]月の状況</h4>
 							</div>
+						</div>
+						<div class="row"></div>
+						<div class="card-title">
+							<div class="col s3 center">
+								<div class="cell">
+									<p class="frame">
+										<span class="moneylabel">予算</span><br>
+										<span class="money"><h5>[[${budget}]]円</h5></span>
+									</p>
+								</div>
+							</div>
+							<div class="col s1 center">
+								<br>
+								<h5>－</h5>
+							</div>
+							<div class="col s3 center">
+								<div class="cell">
+									<p class="frame">
+										<span class="moneylabel">支出</span><br>
+										<span class="money"><h5>[[${totalAmmount}]]円</h5></span>
+									</p>
+								</div>
+							</div>
+							<div class="col s1 center">
+								<br>
+								<h5>=</h5>
+							</div>
+							<div class="col s3 center">
+								<div class="cell">
+									<p class="frame">
+										<span class="moneylabel">残り</span><br> <span
+											class="money"><h5>[[${balance}]]円</h5></span> <span
+											class="moneylabel">使えます</span>
+									</p>
+								</div>
+							</div>
+						</div>
+<div class="row"></div>
+						<div class="exChart">
+							<canvas id="expenseChart"
+								style="display: block; height: 320px; width: 640px;" width="800"
+								height="400" class="chartjs-render-monitor"></canvas>
+							<div class="center">
+								<span th:if="${expenseData == checknull}"><h6>表示できるデータがありません</h6></span>
+							</div>
+						</div>
 					</div>
 				</div>
-			</div>
+				<div class="card">
+					<div class="card-content">
+						<div class="card-title center">最近の記録</div>
+						<div class="row"></div>
+						<table>
+							<thead>
+								<tr>
+									<th>日付</th>
+									<th>金額</th>
+									<th>カテゴリ</th>
+									<th></th>
+								</tr>
+							</thead>
+							<tbody>
+								<span th:each="record : ${recordsLimit10}" th:inline="text">
+								<tr>
+									<td>[[${record.recordDate}]]</td>
+									<td>[[${record.incomeAndExpense}]]円</td>
+									<td><i th:class="${categoriesToIcon.get(record.categoryCode)}+' fa-lg'"></i>[[${record.subcategoryName}]]</td>
+									<td><a class="dropdown-trigger" href="#!"
+										data-target="dropdown-record"><i class="fas fa-caret-down fa-lg"></i></a></td>
+
+									<!-- ドロップダウンメニュー -->
+									<ul id="dropdown-record" class="dropdown-content">
+										<li><a th:href="@{/editRecord/__${record.recordId}__}">編集</a></li>
+										<li><a th:href="@{/deleteRecord/__${record.recordId}__}">削除</a></li>
+									</ul>
+
+								</tr>
+
+								</span>
+							</tbody>
+						</table>
+
+
+					</div>
+
+				</div>
 			</div>
 			<div class="col s4">
 				<div class="row card">
@@ -89,14 +168,6 @@
 			</div>
 		</div>
 
-		<div class="container">
-			<div class="row">
-				<div class="col s8">
-					<canvas id="total"></canvas>
-				</div>
-			</div>
-		</div>
-
 
 		<!-- CDN -->
 		<a th:href="@{/upload}">テスト</a>
@@ -134,31 +205,12 @@
     options: {
       title: {
         display: true,
-        text: '支出'
+        text: '支出の内訳'
       }
     }
   });
   
 
-var ctx = document.getElementById("total");
-var data = {
-	    labels: [[${totalLabel}]],
-	    datasets: [{
-	        label: '得点',
-	        data: [[${total}]],
-	        backgroundColor: 'rgb(255, 99, 132, 1)',
-	    }]
-	};
-
-	var options = {
-	    scales: {
-	        yAxes: [{
-	            ticks: {
-	                min: 300
-	            }
-	        }]
-	    }
-	};
 
 	$(document).ready(
 			function() {
