@@ -16,6 +16,7 @@ import javax.validation.constraints.Size;
 
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
+import org.springframework.format.annotation.NumberFormat;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -60,6 +61,7 @@ public class SiteUser{
     
 	@NotNull
 	@Column(name = "budget")
+	@NumberFormat(pattern = "#,###")
 	private BigDecimal budget;
 	
 	private boolean admin;

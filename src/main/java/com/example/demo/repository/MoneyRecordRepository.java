@@ -24,24 +24,37 @@ public interface MoneyRecordRepository extends JpaRepository<MoneyRecord, Long> 
 	public MoneyRecord findByRecordId(int recordId);
 
 	public void deleteByRecordId(int recordId);
+	
+	public void deleteByUsername(String username);
 
 	public List<MoneyRecord> findByUsernameOrderByRecordDate(String username);
 
 	public List<MoneyRecord> findByRecordDateBetweenOrderByRecordDateAsc(LocalDate start, LocalDate end);
+	
+	//支出履歴（最新から10件取得・ホーム用）
+	@Query(value = "select record_id, record_date, concat(case when M.category_id not like '99%' then '-' else '' end, income_and_expense), "
+			+ "C.category_code, subcategory_name, record_note from money_records M left join categories C on C.category_id = M.category_id "
+			+ "where M.user_id = :username and M.category_id order by record_date desc limit 10", nativeQuery = true)
+	public List<Object[]> getMoneyRecordListLimit10(@Param("username") String username);
+
+	default List<MoneyRecordList> findMoneyRecordListLimit10(String username) {
+		return getMoneyRecordListLimit10(username).stream().map(MoneyRecordList::new).collect(Collectors.toList());
+	}
 
 	// 支出履歴一覧（日付降順）
 	@Query(value = "select record_id, record_date, concat(case when M.category_id not like '99%' then '-' else '' end, income_and_expense), "
-			+ "subcategory_name, record_note from money_records M left join categories C on C.category_id = M.category_id "
+			+ "C.category_code, subcategory_name, record_note from money_records M left join categories C on C.category_id = M.category_id "
 			+ "where M.user_id = :username and M.category_id order by record_date desc", nativeQuery = true)
 	public List<Object[]> getMoneyRecordList(@Param("username") String username);
 
 	default List<MoneyRecordList> findMoneyRecordList(String username) {
 		return getMoneyRecordList(username).stream().map(MoneyRecordList::new).collect(Collectors.toList());
 	}
+	
 
 	// 支出履歴一覧（日付昇順）
 	@Query(value = "select record_id, record_date, concat(case when M.category_id not like '99%' then '-' else '' end, income_and_expense), "
-			+ "subcategory_name, record_note from money_records M left join categories C on C.category_id = M.category_id "
+			+ "C.category_code, subcategory_name, record_note from money_records M left join categories C on C.category_id = M.category_id "
 			+ "where M.user_id = :username and M.category_id order by record_date asc", nativeQuery = true)
 	public List<Object[]> getMoneyRecordListOrderByDateAsc(@Param("username") String username);
 
@@ -52,7 +65,7 @@ public interface MoneyRecordRepository extends JpaRepository<MoneyRecord, Long> 
 
 	// 支出履歴一覧（金額降順）
 	@Query(value = "select record_id, record_date, concat(case when M.category_id not like '99%' then '-' else '' end, income_and_expense), "
-			+ "subcategory_name, record_note from money_records M left join categories C on C.category_id = M.category_id "
+			+ "C.category_code, subcategory_name, record_note from money_records M left join categories C on C.category_id = M.category_id "
 			+ "where M.user_id = :username and M.category_id order by income_and_expense desc", nativeQuery = true)
 	public List<Object[]> getMoneyRecordListOrderByMoneyDesc(@Param("username") String username);
 
@@ -63,7 +76,7 @@ public interface MoneyRecordRepository extends JpaRepository<MoneyRecord, Long> 
 
 	// 支出履歴一覧（金額昇順）
 	@Query(value = "select record_id, record_date, concat(case when M.category_id not like '99%' then '-' else '' end, income_and_expense), "
-			+ "subcategory_name, record_note from money_records M left join categories C on C.category_id = M.category_id "
+			+ "C.category_code, subcategory_name, record_note from money_records M left join categories C on C.category_id = M.category_id "
 			+ "where M.user_id = :username and M.category_id order by income_and_expense asc", nativeQuery = true)
 	public List<Object[]> getMoneyRecordListOrderByMoneyAsc(@Param("username") String username);
 

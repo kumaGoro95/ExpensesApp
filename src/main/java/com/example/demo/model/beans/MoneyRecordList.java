@@ -18,21 +18,24 @@ public class MoneyRecordList implements Serializable{
 	
 	private String incomeAndExpense;
 	
+	private int categoryCode;
+	
 	private String subcategoryName;
 	
 	private String note;
 	
-	public MoneyRecordList(int recordId, Date recordDate, String incomeAndExpense, String subcategoryName, String note) {
+	public MoneyRecordList(int recordId, Date recordDate, String incomeAndExpense, int categoryCode, String subcategoryName, String note) {
 		super();
 		this.recordId = recordId;
 		this.recordDate = recordDate;
 		this.incomeAndExpense = incomeAndExpense;
+		this.categoryCode = categoryCode;
 		this.subcategoryName = subcategoryName;
 		this.note = note;
 	}
 	
 	public MoneyRecordList(Object[] objects) {
-        this((int)objects[0], (Date) objects[1],(String) objects[2], (String) objects[3], (String) objects[4]);
+        this((int)objects[0], (Date) objects[1],(String) objects[2], (int) objects[3], (String) objects[4], (String) objects[5]);
     }
 
 }

@@ -23,11 +23,11 @@
 					<input type="hidden" name="recordId" th:value="*{recordId}" /> <input
 						type="hidden" name="username" th:value="${user.username}" />
 					<div class="form-group">
-						<label for="recordDate">日付</label> <input type="date"
-							th:errorclass="is-invalid" name="recordDate"
-							th:value="*{recordDate}">
-						<div class="invalid-feedback" th:errors="*{recordDate}"></div>
-					</div>
+								<label for="recordDate">日付</label> <input type="text"
+									class="datepicker" th:errorclass="is-invalid"
+									th:field="*{recordDate}">
+								<div class="invalid-feedback" th:errors="*{recordDate}"></div>
+							</div>
 					<div class="form-group">
 						<label for="incomeAndExpense">金額</label> <input type="number"
 							th:errorclass="is-invalid" name="incomeAndExpense"
@@ -65,9 +65,39 @@
 		</div>
 	</div>
 	<script>
-		$(document).ready(function() {
-			$('select').formSelect();
-		});
+	$(document).ready(
+			function() {
+				$(".dropdown-trigger").dropdown();
+				$('select').formSelect();
+				$('.datepicker').datepicker(
+						{
+							format : "yyyy-mm-dd",
+							i18n : {
+								months : [ "1月", "2月", "3月", "4月", "5月",
+										"6月", "7月", "8月", "9月", "10月",
+										"11月", "12月" ],
+								monthsShort : [ "1月", "2月", "3月", "4月",
+										"5月", "6月", "7月", "8月", "9月",
+										"10月", "11月", "12月" ],
+								weekdays : [ "日曜日", "月曜日", "火曜日", "水曜日",
+										"木曜日", "金曜日", "土曜日" ],
+								weekdaysShort : [ "日", "月", "火", "水", "木",
+										"金", "土" ],
+								weekdaysAbbrev : [ "日", "月", "火", "水", "木",
+										"金", "土" ],
+								nextMonth : "翌月",
+								previousMonth : "前月",
+								labelMonthSelect : "月を選択",
+								labelYearSelect : "年を選択",
+								setDefaultDate : true,
+								cancel : 'キャンセル',
+								clear : 'クリア',
+								done : 'OK',
+								close : "閉じる",
+								format : "yyyy-mm-dd",
+							}
+						});
+			});
 	</script>
 </body>
 </html>

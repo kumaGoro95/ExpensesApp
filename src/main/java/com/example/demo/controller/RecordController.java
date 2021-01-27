@@ -40,6 +40,7 @@ import com.example.demo.repository.MoneyRecordRepository;
 import com.example.demo.repository.SiteUserRepository;
 import com.example.demo.service.DateService;
 import com.example.demo.service.MoneyRecordService;
+import com.example.demo.util.CategoryCodeToIcon;
 import com.example.demo.util.CategoryCodeToName;
 
 import lombok.RequiredArgsConstructor;
@@ -101,9 +102,10 @@ public class RecordController {
 				records.get(i).setNote(records.get(i).getNote().substring(0, 10) + "…");
 			}
 		}
+		Map<Integer, String> categoriesToIcon = CategoryCodeToIcon.CategoriesToIcon;
 		model.addAttribute("user", userRepository.findByUsername(loginUser.getName()));
 		model.addAttribute("records", records);
-		model.addAttribute("icon", "fas fa-utensils");
+		model.addAttribute("categoriesToIcon", categoriesToIcon);
 		return "record";
 	}
 
