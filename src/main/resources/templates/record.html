@@ -31,7 +31,7 @@
 							//イベントの色を変える
 							eventColor : '#FFFFFF',
 							//イベントの文字色を変える
-							
+
 							eventRender : function(event, element) {
 								element.css("font-size", "0.9em");
 								element.css("padding", "5px");
@@ -45,7 +45,6 @@
 				$('.dropdown-trigger').dropdown();
 
 			});
-	
 
 	$('#deleteAssignmentModal').on('click', function(event) {
 		var button = $(event.relatedTarget); // Button that triggered the modal
@@ -56,13 +55,13 @@
 		var modal = $(this);
 		modal.find('.modal-footer p').text(objectName);
 	})
-		$('#message').fadeOut( 2000 );
+	$('#message').fadeOut(2000);
 </script>
 
 </head>
 <body>
 	<div class="container">
-	<div class="row"></div>
+		<div class="row"></div>
 		<div class="row card">
 			<div class="col s12">
 				<ul class="tabs">
@@ -87,7 +86,6 @@
 									<li><a th:href="@{/showRecordsOrderByMoneyAsc}">金額（少ない順）</a></li>
 								</ul>
 
-
 								<table>
 									<thead>
 										<tr>
@@ -99,33 +97,34 @@
 										</tr>
 									</thead>
 									<tbody>
-										<div th:each="record : ${records}" th:inline="text">
-											<tr>
-												<td>[[${record.recordDate}]]</td>
-												<td>[[${record.incomeAndExpense}]]円</td>
-												<td><i th:class="${categoriesToIcon.get(record.categoryCode)}+' fa-lg'"></i>[[${record.subcategoryName}]]</td>
-												<td>[[${record.note}]]</td>
-												<td><a th:href="@{/editRecord/__${record.recordId}__}">編集</a>
-													<a th:href="@{/deleteRecord/__${record.recordId}__}">削除</a></td>
-												
-											</tr>
+										<span th:each="record : ${records}" th:inline="text">
+										<tr>
+											<td>[[${record.recordDate}]]</td>
+											<td>[[${record.incomeAndExpense}]]円</td>
+											<td><i
+												th:class="${categoriesToIcon.get(record.categoryCode)}+' fa-lg'"></i>[[${record.subcategoryName}]]</td>
+											<td>[[${record.note}]]</td>
+											<td><a th:href="@{/editRecord/__${record.recordId}__}">編集</a>
+												<a th:href="@{/deleteRecord/__${record.recordId}__}">削除</a></td>
 
-										</div>
+										</tr>
+
 									</tbody>
 								</table>
-
-
+								</span>
+								<div class="center">
+									<span th:if="${records == nullRecord}"><h6>表示できるデータがありません</h6></span>
+								</div>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
-
 			<div id="tab2" class="col s12">
 				<div class="container">
 					<div class="row">
-							<div class="card center">
-								<div class="calendar" id='calendar'></div>
+						<div class="card center">
+							<div class="calendar" id='calendar'></div>
 						</div>
 					</div>
 				</div>

@@ -35,8 +35,8 @@
 							<div class="col s3 center">
 								<div class="cell">
 									<p class="frame">
-										<span class="moneylabel">予算</span><br>
-										<span class="money"><h5>[[${budget}]]円</h5></span>
+										<span class="moneylabel">予算</span><br> <span
+											class="money"><h5>[[${budget}]]円</h5></span>
 									</p>
 								</div>
 							</div>
@@ -47,8 +47,8 @@
 							<div class="col s3 center">
 								<div class="cell">
 									<p class="frame">
-										<span class="moneylabel">支出</span><br>
-										<span class="money"><h5>[[${totalAmmount}]]円</h5></span>
+										<span class="moneylabel">支出</span><br> <span
+											class="money"><h5>[[${totalAmmount}]]円</h5></span>
 									</p>
 								</div>
 							</div>
@@ -66,13 +66,13 @@
 								</div>
 							</div>
 						</div>
-<div class="row"></div>
+						<div class="row"></div>
 						<div class="exChart">
 							<canvas id="expenseChart"
 								style="display: block; height: 320px; width: 640px;" width="800"
 								height="400" class="chartjs-render-monitor"></canvas>
 							<div class="center">
-								<span th:if="${expenseData == checknull}"><h6>表示できるデータがありません</h6></span>
+								<span class="noData" th:if="${expenseData == checknull}"><h6>表示できるデータがありません</h6></span>
 							</div>
 						</div>
 					</div>
@@ -92,26 +92,28 @@
 							</thead>
 							<tbody>
 								<span th:each="record : ${recordsLimit10}" th:inline="text">
-								<tr>
-									<td>[[${record.recordDate}]]</td>
-									<td>[[${record.incomeAndExpense}]]円</td>
-									<td><i th:class="${categoriesToIcon.get(record.categoryCode)}+' fa-lg'"></i>[[${record.subcategoryName}]]</td>
-									<td><a class="dropdown-trigger" href="#!"
-										data-target="dropdown-record"><i class="fas fa-caret-down fa-lg"></i></a></td>
+									<tr>
+										<td>[[${record.recordDate}]]</td>
+										<td>[[${record.incomeAndExpense}]]円</td>
+										<td><i
+											th:class="${categoriesToIcon.get(record.categoryCode)}+' fa-lg'"></i>[[${record.subcategoryName}]]</td>
+										<td><a class="dropdown-trigger" href="#!"
+											data-target="dropdown-record"><i
+												class="fas fa-caret-down fa-lg"></i></a></td>
 
-									<!-- ドロップダウンメニュー -->
-									<ul id="dropdown-record" class="dropdown-content">
-										<li><a th:href="@{/editRecord/__${record.recordId}__}">編集</a></li>
-										<li><a th:href="@{/deleteRecord/__${record.recordId}__}">削除</a></li>
-									</ul>
+										<!-- ドロップダウンメニュー -->
+										<ul id="dropdown-record" class="dropdown-content">
+											<li><a th:href="@{/editRecord/__${record.recordId}__}">編集</a></li>
+											<li><a th:href="@{/deleteRecord/__${record.recordId}__}">削除</a></li>
+										</ul>
 
-								</tr>
-
-								</span>
+									</tr>
 							</tbody>
 						</table>
-
-
+						</span>
+						<div class="center">
+							<span th:if="${recordsLimit10 == nullRecord}"><h6>表示できるデータがありません</h6></span>
+						</div>
 					</div>
 
 				</div>
@@ -176,28 +178,41 @@
 	$('#message').fadeOut( 8000 );
   var ctx = document.getElementById("expenseChart");
   var expenseChart = new Chart(ctx, {
-    type: 'doughnut',
+    type: 'pie',
     data: {
       labels: [[ ${expenseLabel} ]],
       datasets:[{
           backgroundColor: [
-            "rgb(255, 99, 132)",
-            "rgb(54, 162, 235)",
-            "rgb(255, 205, 86)",
+        	//食費
             "rgb(255, 99, 71)",
-            "rgb(173, 255, 47)",
-            "rgb(100, 149, 237)",
+            //日用品
+            "rgb(30, 144, 255)",
+            //交通費
+            "rgb(50, 205, 50)",
+            //交際費
+            "rgb(255, 182, 193)",
+            //趣味・娯楽
+            "rgb(255, 205, 86)",
+            //教育費
+            "rgb(70, 130, 180)",
+            //衣服・美容
             "rgb(221, 160, 221)",
-            "rgb(244, 164, 96)",
-            "rgb(240, 248, 255)",
-            "rgb(192, 192, 192)",
+            //健康・医療
+            "rgb(124, 252, 0)",
+            //通信費
+            "rgb(135, 206, 250)",
+            //水道・光熱費
+            "rgb(255, 255, 100)",
+            //家・クルマ
             "rgb(220, 20, 60)",
-            "rgb(189, 183, 107)",
-            "rgb(46, 139, 87)",
+            //税金・保険
+            "rgb(188, 143, 143)",
+            //大型出費
             "rgb(72, 209, 204)",
-            "rgb(218, 112, 214)",
-            "rgb(210, 105, 30)",
-            "rgb(47, 79, 79)"
+            //その他
+            "rgb(192, 192, 192)",
+            //貯金
+            "rgb(230, 230, 250)"
           ],
           data:[[${expenseData}]],
       }]

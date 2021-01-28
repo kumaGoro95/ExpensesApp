@@ -8,6 +8,7 @@ import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -103,9 +104,15 @@ public class RecordController {
 			}
 		}
 		Map<Integer, String> categoriesToIcon = CategoryCodeToIcon.CategoriesToIcon;
+
+		// 履歴データがあるかチェック用
+		List<MoneyRecordList> nullRecord = new ArrayList<MoneyRecordList>();
+
 		model.addAttribute("user", userRepository.findByUsername(loginUser.getName()));
 		model.addAttribute("records", records);
 		model.addAttribute("categoriesToIcon", categoriesToIcon);
+		model.addAttribute("nullRecord", nullRecord);
+
 		return "record";
 	}
 
@@ -220,13 +227,6 @@ public class RecordController {
 		String strNow = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 		String currentMonth = strNow.substring(0, 7);
 
-		// 予算の取得
-		// BigDecimal budget = currentUser.getBudget();
-		// BigDecimal totalAmmount = mrDao.sumMonthExpense(currentUser.getUsername(),
-		// month);
-		// BigDecimal percent = totalAmmount.divide(budget, 2, RoundingMode.HALF_UP);
-		// String totalLabel = "月";
-
 		// 日ごとグラフ用のパラメータ
 		BigDecimal dailyAmmount[] = mrService.getDailyAmmount(loginUser.getName(), currentMonth);
 		Integer days[] = mrService.getDays(loginUser.getName(), currentMonth);
@@ -237,11 +237,86 @@ public class RecordController {
 		String incomeLabel[] = mrService.getIncomeLabel();
 		BigDecimal incomeData[] = mrService.getIncomeData(loginUser.getName(), currentMonth);
 
+		/* 支出円グラフ用 */
+
+		// カテゴリアイコン取得
+		Map<Integer, String> categoriesToIcon = CategoryCodeToIcon.CategoriesToIcon;
+
+		// カテゴリ毎の合計を取得
+		List<SummaryByCategory> expenseByCategory = moneyRecordRepository.findCategorySummaries(loginUser.getName(),
+				currentMonth);
+
+		// 収入分を削除
+		expenseByCategory.remove(expenseByCategory.size() - 1);
+
+		// 月の合計額を算出
+		BigDecimal totalAmmountExpense = new BigDecimal(0.0);
+		for (int i = 0; i < expenseByCategory.size(); i++) {
+			totalAmmountExpense = totalAmmountExpense.add(expenseByCategory.get(i).getSum());
+		}
+		// カテゴリ÷全体支出の割合を算出
+		Map<Integer, BigDecimal> percentages = new HashMap<Integer, BigDecimal>();
+		for (int i = 0; i < expenseByCategory.size(); i++) {
+			if (totalAmmountExpense == BigDecimal.valueOf(0)) {
+				break;
+			}
+			BigDecimal number = BigDecimal.valueOf(100);
+			BigDecimal result = expenseByCategory.get(i).getSum().divide(totalAmmountExpense, 3, RoundingMode.DOWN)
+					.multiply(number).setScale(1, RoundingMode.DOWN);
+			percentages.put(i + 1, result);
+		}
+
+		/* 収入円グラフ用 */
+		// サブカテゴリ毎の合計を算出
+		List<SummaryByCategory> incomeTotalsBySubCategory = moneyRecordRepository
+				.findSubcategorySummaries(currentUser.getUsername(), currentMonth, 99);
+		// サブカテゴリを取得
+		List<Category> incomeSubcategoryList = categoryRepository.findBycategoryCode(99);
+		Map<Integer, String> incomeSubcategories = new HashMap<Integer, String>();
+		for (int i = 0; i < incomeSubcategoryList.size(); i++) {
+			Integer key = incomeSubcategoryList.get(i).getCategoryId();
+			String value = incomeSubcategoryList.get(i).getSubcategoryName();
+			incomeSubcategories.put(key, value);
+		}
+		// 収入の合計を算出
+		BigDecimal totalAmmountIncome = new BigDecimal(0.0);
+		for (int i = 0; i < incomeTotalsBySubCategory.size(); i++) {
+			totalAmmountIncome = totalAmmountIncome.add(incomeTotalsBySubCategory.get(i).getSum());
+		}
+
+		// 円グラフに表示するデータがあるか確認
+		List<BigDecimal> checknullList = new ArrayList<BigDecimal>();
+		for (int i = 0; i < 15; i++) {
+			checknullList.add(BigDecimal.valueOf(0));
+		}
+		List<BigDecimal> checknullIncomeList = new ArrayList<BigDecimal>();
+		for (int i = 0; i < 3; i++) {
+			checknullIncomeList.add(BigDecimal.valueOf(0));
+		}
+		BigDecimal checknull[] = checknullList.toArray(new BigDecimal[checknullList.size()]);
+		BigDecimal checknullIncome[] = checknullIncomeList.toArray(new BigDecimal[checknullIncomeList.size()]);
+
+		// 支出内訳用
+		model.addAttribute("categories", categories);
+		model.addAttribute("categoriesToIcon", categoriesToIcon);
+		model.addAttribute("percentages", percentages);
+		model.addAttribute("totalsByCategory", expenseByCategory);
+		model.addAttribute("totalAmmountExpense", totalAmmountExpense);
+
+		// 収入内訳用
+		model.addAttribute("incomeTotals", incomeTotalsBySubCategory);
+		model.addAttribute("incomeSubcategories", incomeSubcategories);
+		model.addAttribute("totalAmmountIncome", totalAmmountIncome);
+
 		// 収支別円グラフ
 		model.addAttribute("expenseLabel", expenseLabel);
 		model.addAttribute("expenseData", expenseData);
 		model.addAttribute("incomeLabel", incomeLabel);
 		model.addAttribute("incomeData", incomeData);
+
+		// 円グラフデータチェック用
+		model.addAttribute("checknull", checknull);
+		model.addAttribute("checknullIncome", checknullIncome);
 
 		// 日ごとグラフ
 		model.addAttribute("label", days);
@@ -249,12 +324,9 @@ public class RecordController {
 
 		// 月切り替え用パラメータ
 		model.addAttribute("months", allMonths);
-		
-		//　現在の月をドロップダウンに表示
-		model.addAttribute("currentMonth", currentMonth);
 
-		// model.addAttribute("total", percent);
-		// model.addAttribute("totalLabel", totalLabel);
+		// 現在の月をドロップダウンに表示
+		model.addAttribute("currentMonth", currentMonth);
 
 		return "analysis";
 	}
@@ -267,7 +339,6 @@ public class RecordController {
 		model.addAttribute("subcategories", categoryRepository.findAll());
 		Map<Integer, String> categories = CategoryCodeToName.Categories;
 		model.addAttribute("categories", categories);
-
 
 		// 月一覧を取得
 		String[] allMonths = dService.getAllMonths(loginUser.getName());
@@ -282,11 +353,87 @@ public class RecordController {
 		String incomeLabel[] = mrService.getIncomeLabel();
 		BigDecimal incomeData[] = mrService.getIncomeData(loginUser.getName(), month);
 
+		/* 支出円グラフ用 */
+
+		// カテゴリアイコン取得
+		Map<Integer, String> categoriesToIcon = CategoryCodeToIcon.CategoriesToIcon;
+
+		// カテゴリ毎の合計を取得
+		List<SummaryByCategory> expenseByCategory = moneyRecordRepository.findCategorySummaries(loginUser.getName(),
+				month);
+
+		// 収入分を削除
+		expenseByCategory.remove(expenseByCategory.size() - 1);
+
+		// 月の合計額を算出
+		BigDecimal totalAmmountExpense = new BigDecimal(0.0);
+		for (int i = 0; i < expenseByCategory.size(); i++) {
+			totalAmmountExpense = totalAmmountExpense.add(expenseByCategory.get(i).getSum());
+		}
+		// カテゴリ÷全体支出の割合を算出
+		Map<Integer, BigDecimal> percentages = new HashMap<Integer, BigDecimal>();
+		for (int i = 0; i < expenseByCategory.size(); i++) {
+			if (totalAmmountExpense == BigDecimal.valueOf(0)) {
+				break;
+			}
+			BigDecimal number = BigDecimal.valueOf(100);
+			BigDecimal result = expenseByCategory.get(i).getSum().divide(totalAmmountExpense, 3, RoundingMode.DOWN)
+					.multiply(number).setScale(1, RoundingMode.DOWN);
+			percentages.put(i + 1, result);
+		}
+
+		/* 収入円グラフ用 */
+
+		// サブカテゴリ毎の合計を算出
+		List<SummaryByCategory> incomeTotalsBySubCategory = moneyRecordRepository
+				.findSubcategorySummaries(currentUser.getUsername(), month, 99);
+		// サブカテゴリを取得
+		List<Category> incomeSubcategoryList = categoryRepository.findBycategoryCode(99);
+		Map<Integer, String> incomeSubcategories = new HashMap<Integer, String>();
+		for (int i = 0; i < incomeSubcategoryList.size(); i++) {
+			Integer key = incomeSubcategoryList.get(i).getCategoryId();
+			String value = incomeSubcategoryList.get(i).getSubcategoryName();
+			incomeSubcategories.put(key, value);
+		}
+		// 収入の合計を算出
+		BigDecimal totalAmmountIncome = new BigDecimal(0.0);
+		for (int i = 0; i < incomeTotalsBySubCategory.size(); i++) {
+			totalAmmountIncome = totalAmmountIncome.add(incomeTotalsBySubCategory.get(i).getSum());
+		}
+
+		// 円グラフに表示するデータがあるか確認
+		List<BigDecimal> checknullList = new ArrayList<BigDecimal>();
+		for (int i = 0; i < 15; i++) {
+			checknullList.add(BigDecimal.valueOf(0));
+		}
+		List<BigDecimal> checknullIncomeList = new ArrayList<BigDecimal>();
+		for (int i = 0; i < 3; i++) {
+			checknullIncomeList.add(BigDecimal.valueOf(0));
+		}
+		BigDecimal checknull[] = checknullList.toArray(new BigDecimal[checknullList.size()]);
+		BigDecimal checknullIncome[] = checknullIncomeList.toArray(new BigDecimal[checknullIncomeList.size()]);
+
+		// 支出内訳用
+		model.addAttribute("categories", categories);
+		model.addAttribute("categoriesToIcon", categoriesToIcon);
+		model.addAttribute("percentages", percentages);
+		model.addAttribute("totalsByCategory", expenseByCategory);
+		model.addAttribute("totalAmmountExpense", totalAmmountExpense);
+
+		// 収入内訳用
+		model.addAttribute("incomeTotals", incomeTotalsBySubCategory);
+		model.addAttribute("incomeSubcategories", incomeSubcategories);
+		model.addAttribute("totalAmmountIncome", totalAmmountIncome);
+
 		// 収支別円グラフ
 		model.addAttribute("expenseLabel", expenseLabel);
 		model.addAttribute("expenseData", expenseData);
 		model.addAttribute("incomeLabel", incomeLabel);
 		model.addAttribute("incomeData", incomeData);
+
+		// 円グラフデータチェック用
+		model.addAttribute("checknull", checknull);
+		model.addAttribute("checknullIncome", checknullIncome);
 
 		// 日ごとグラフ
 		model.addAttribute("label", days);
@@ -294,12 +441,9 @@ public class RecordController {
 
 		// 月切り替え用パラメータ
 		model.addAttribute("months", allMonths);
-		
-		//ドロップダウン用
-		model.addAttribute("currentMonth", month);
 
-		// model.addAttribute("total", percent);
-		// model.addAttribute("totalLabel", totalLabel);
+		// ドロップダウン用
+		model.addAttribute("currentMonth", month);
 
 		return "analysis";
 

@@ -17,6 +17,7 @@
 <title>title</title>
 </head>
 <body>
+<div class="container">
 	<div class="row">
 		<div id="test1" class="col s12">
 			<div class="record">
@@ -37,9 +38,10 @@
 										</ul></span>
 								</div>
 								<div class="left">
-						<i class="medium material-icons">face</i>
-					</div>
-								<a th:href="@{/userdetail/__${post.username}__}"><h5>[[${post.userNickname}]]</h5></a><p th:text="${post.createdAt}"></p>
+									<i class="medium material-icons">face</i>
+								</div>
+								<a th:href="@{/userdetail/__${post.username}__}"><h5 class="black-text">[[${post.userNickname}]]</h5></a>
+								<p th:text="${post.createdAt}"></p>
 								<div class="row postbody">[[${post.postBody}]]</div>
 								<div class="divider"></div>
 
@@ -47,12 +49,14 @@
 								<div class="right">
 									<a th:href="@{/post/__${post.postId}__}"> <i
 										class="far fa-comment-dots fa-2x"></i>[[${commentCount.get(post.postId)}]]
-									</a> 
+									</a>
 									<th:block th:if="${myLikes.contains(post.postId) == true}">
-									<a th:href="@{/like/__${post.postId}__}"><i class="fas fa-heart fa-2x pink-text text-accent-2"></i></a>[[${likeCount.get(post.postId)}]]
+										<a th:href="@{/like/__${post.postId}__}"><i
+											class="fas fa-heart fa-2x pink-text text-accent-2"></i></a>[[${likeCount.get(post.postId)}]]
 									</th:block>
 									<th:block th:unless="${myLikes.contains(post.postId) == true}">
-									<a th:href="@{/like/__${post.postId}__}"><i class="far fa-heart fa-2x pink-text text-accent-2"></i></a>[[${likeCount.get(post.postId)}]]
+										<a th:href="@{/like/__${post.postId}__}"><i
+											class="far fa-heart fa-2x pink-text text-accent-2"></i></a>[[${likeCount.get(post.postId)}]]
 									</th:block>
 								</div>
 							</div>
@@ -61,7 +65,8 @@
 					</div>
 				</div>
 			</div>
-<a th:href="@{/post}">投稿</a>
+			<a th:href="@{/post}">投稿</a>
+		</div>
 		</div>
 
 		<script>

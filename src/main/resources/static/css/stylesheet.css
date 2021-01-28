@@ -1,76 +1,159 @@
-	
-body{
+body {
 	background-color: #efebe9;
 }
 
-.fa-utensils{
-	color:blue;
+/*アイコンの色割り当て*/
+
+/*食費*/
+.fa-utensils {
+	color: rgb(255, 99, 71);
 }
-.card{
+/*日用品*/
+.fa-shopping-basket {
+	color: rgb(30, 144, 255);
+}
+/*交通費*/
+.fa-fa-subway {
+	color: rgb(50, 205, 50);
+}
+/*交際費*/
+.fa-glass-cheers {
+	color: rgb(255, 182, 193);
+}
+/*趣味・娯楽*/
+.fa-music {
+	color: rgb(255, 205, 86);
+}
+/*教育費*/
+.fa-book {
+	color: rgb(70, 130, 180);
+}
+
+/*服・美容*/
+.fa-tshirt {
+	color: rgb(221, 160, 221);
+}
+
+/*健康・医療*/
+.fa-notes-medical {
+	color: rgb(124, 252, 0);
+}
+
+/*通信費*/
+.fa-wifi {
+	color: rgb(135, 206, 250);
+}
+
+/*水道・光熱費*/
+.fa-burn {
+	color: rgb(255, 255, 100);
+}
+
+/*家・クルマ*/
+.fa-home {
+	color: rgb(220, 20, 60);
+}
+/*税金・保険*/
+.fa-money-check {
+	color: rgb(188, 143, 143);
+}
+
+/*大型出費*/
+.fa-luggage-cart {
+	color: rgb(72, 209, 204);
+}
+
+/*その他*/
+.fa-feather-alt {
+	color: rgb(192, 192, 192);
+}
+
+/*貯金*/
+.fa-coins {
+	color: rgb(230, 230, 250);
+}
+
+/*収入*/
+.fa-money-bill-wave {
+	color: rgb(238, 110, 115);
+}
+
+.card {
 	border-radius: 10px;
-	padding:10px 0 10px 0;
+	padding: 10px 0 10px 0;
 }
 
-.divider{
-	margin:5px 0 5px 0;
+.divider {
+	margin: 5px 0 5px 0;
 }
 
-.calendar{
-	padding:10px;
+.calendar {
+	padding: 10px;
 }
 
-.messagebar{
-	height:50px;
+.messagebar {
+	height: 50px;
 }
 
-.message{
+.message {
 	border-radius: 5px;
-	opacity:0.8;
+	opacity: 0.8;
 }
 
-.postbody{
-	padding:20px 0 10px 20px;
+.postbody {
+	padding: 20px 0 10px 20px;
 }
 
-.setting-update{
-	margin:10px 10px 10px 0;
+.setting-update {
+	margin: 10px 10px 10px 0;
 }
 
-.moneylabel{
+.moneylabel {
 	font-size: 12px;
 }
 
-textarea{
-  width: 100%;
-  height: 200px;
-  padding: 5px;
-  border-radius: 5px;
-  border: 1px solid #ccc;
-  appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
+textarea {
+	width: 100%;
+	height: 200px;
+	padding: 5px;
+	border-radius: 5px;
+	border: 1px solid #ccc;
+	appearance: none;
+	-webkit-appearance: none;
+	-moz-appearance: none;
 }
+
 .expense {
 	color: red;
 }
 
-.income{
-	color:green;
+.income {
+	color: green;
 }
 
-.inChart {
-  position: relative;
+.exChart {
+	position: relative;
+	padding: 10px;
 }
 
-.inChart h6 {
-   position: absolute;
-   top: 0;
-   left: 0;
-   margin: auto;
-   right: 0;
-   margin: auto;
-   text-align: center;
-   top: 60%;
-   -webkit-transform: translateY(-50%);
-   transform: translateY(-50%); 
+.incomeChart {
+	position: relative;
+	padding: 10px;
+}
+
+.noData {
+	position: absolute;
+	top: 0;
+	left: 0;
+	margin: auto;
+	right: 0;
+	margin: auto;
+	text-align: center;
+	top: 50%;
+	-webkit-transform: translateY(-50%);
+	transform: translateY(-50%);
+}
+
+.incomeDots {
+	color: rgb(238, 110, 115);
 }
