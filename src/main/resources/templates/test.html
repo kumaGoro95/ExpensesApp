@@ -11,6 +11,8 @@
 	th:href="@{/webjars/materializecss/1.0.0/css/materialize.min.css}">
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
 	rel="stylesheet">
+<link href="https://use.fontawesome.com/releases/v5.6.1/css/all.css"
+	rel="stylesheet">
 <link rel="stylesheet" th:href="@{/css/stylesheet.css}">
 <th:block th:insert="fragments/header :: header"></th:block>
 <title>title</title>
@@ -28,33 +30,57 @@
 			</p>
 		</form>
 		<span id="result" style="padding: 3px;"></span>
-	</div>
-	<div class="row">
-		<canvas id="total"></canvas>
+
+
+		<div class="card">
+			<table>
+				<thead>
+					<tr>
+						<th>カテゴリ</th>
+						<th></th>
+						<th>金額</th>
+						<th>割合</th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody>
+					<span th:each="totalByCategory : ${totalsByCategory}"
+						th:inline="text">
+					<tr>
+						<td><i
+							th:class="${categoriesToIcon.get(totalByCategory.categoryCode)}+' fa-lg'"></i>[[${categories.get(totalByCategory.categoryCode)}]]</td>
+						<td></td>
+						<td>[[${totalByCategory.sum}]]円</td>
+						<td>[[${percentages.get(totalByCategory.categoryCode)}]]％</td>
+						<td><i class="fas fa-chevron-circle-down"></i></td>
+
+					</tr>
+					</span>
+				</tbody>
+			</table>
+		</div>
 	</div>
 	<script type="text/javascript" th:inline="javascript">
-
-	$(function() {
-		// アップロードボタンが押されたら実行。
-		$('#upload').click(function() {
-			var formData = new FormData($('#form').get()[0]);
-			$.ajax({
-				url : '/upload',
-				method : 'post',
-				data : formData,
-				processData : false,
-				contentType : false,
-				cache : false
-			}).done(function(data, status, jqxhr) {
-				$('#result').text('結果：成功');
-			}).fail(function(data, status, jqxhr) {
-				$('#result').text('結果：失敗');
+		$('.dropdown-trigger').dropdown();
+		$(function() {
+			// アップロードボタンが押されたら実行。
+			$('#upload').click(function() {
+				var formData = new FormData($('#form').get()[0]);
+				$.ajax({
+					url : '/upload',
+					method : 'post',
+					data : formData,
+					processData : false,
+					contentType : false,
+					cache : false
+				}).done(function(data, status, jqxhr) {
+					$('#result').text('結果：成功');
+				}).fail(function(data, status, jqxhr) {
+					$('#result').text('結果：失敗');
+				});
 			});
 		});
-	});
-	
-
-</script>
+	</script>
 </body>
 
 

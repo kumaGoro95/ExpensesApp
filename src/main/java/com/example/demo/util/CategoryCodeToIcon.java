@@ -20,7 +20,7 @@ public class CategoryCodeToIcon {
 		categoriesToIcon.put(8, "fas fa-notes-medical");
 		categoriesToIcon.put(9, "fas fa-wifi");
 		categoriesToIcon.put(10, "fas fa-burn");
-		categoriesToIcon.put(11, "fas fa-caravan");
+		categoriesToIcon.put(11, "fas fa-home");
 		categoriesToIcon.put(12, "fas fa-money-check");
 		categoriesToIcon.put(13, "fas fa-luggage-cart");
 		categoriesToIcon.put(14, "fas fa-feather-alt");

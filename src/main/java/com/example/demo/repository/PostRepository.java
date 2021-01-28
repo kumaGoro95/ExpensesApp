@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.example.demo.model.Post;
@@ -41,12 +42,22 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 		return map;
 	}
 	
+	//全投稿を取得
 	@Query(value = "select post_id, U.user_id, U.user_name, post_body, P.created_at, P.updated_at "
 			+ "from posts P left join users U on P.user_id = U.user_id", nativeQuery = true)
 	public List<Object[]> getAllPosts();
 	
 	default List<PostByNickname> findAllPosts(){
 		return getAllPosts().stream().map(PostByNickname::new).collect(Collectors.toList());
+	}
+	
+	//固有のユーザーの投稿を取得
+	@Query(value = "select post_id, U.user_id, U.user_name, post_body, P.created_at, P.updated_at "
+			+ "from posts P left join users U on P.user_id = U.user_id where P.user_id = :username", nativeQuery = true)
+	public List<Object[]> getAllPostsByUsername(@Param("username") String username);
+	
+	default List<PostByNickname> findAllPostsByUsername(String username){
+		return getAllPostsByUsername(username).stream().map(PostByNickname::new).collect(Collectors.toList());
 	}
 	
 }
