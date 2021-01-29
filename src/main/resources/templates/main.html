@@ -162,17 +162,15 @@
 								<div class="invalid-feedback" th:errors="*{note}"></div>
 							</div>
 
-							<div class="form-check"></div>
-							<button class="waves-effect waves-light btn">登録</button>
+							<button class="waves-effect waves-light btn-large">
+								記録する <i class="material-icons right">note_add</i>
+							</button>
 						</form>
 					</div>
 				</div>
 			</div>
 		</div>
 
-
-		<!-- CDN -->
-		<a th:href="@{/upload}">テスト</a>
 	</div>
 	<script type="text/javascript" th:inline="javascript">
 	$('#message').fadeOut( 8000 );

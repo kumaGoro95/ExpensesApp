@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.example.demo.model.Post;
 import com.example.demo.model.Like;
 import com.example.demo.model.PostComment;
+import com.example.demo.model.beans.PostByNickname;
 import com.example.demo.repository.SiteUserRepository;
 import com.example.demo.repository.PostCommentRepository;
 import com.example.demo.repository.PostRepository;
@@ -87,10 +88,15 @@ public class PostController {
 	@RequestMapping("/post/{postId}")
 	public String showPost(@PathVariable("postId") int postId, @ModelAttribute("comment") PostComment comment,
 			Authentication loginUser, Model model) {
+		Map<Integer, BigInteger> commentCount = postRepository.findCommentCount();
+		Map<Integer, BigInteger> likeCount = likeRepository.findLikeCount();
+		List<PostByNickname> list = postRepository.findPostByPostId(postId);
 		model.addAttribute("user", userRepository.findByUsername(loginUser.getName()));
-		model.addAttribute("post", postRepository.findByPostId(postId));
-		model.addAttribute("comments", commentRepository.findByPostId(postId));
-		model.addAttribute("theNumberOfLikes", likeRepository.countByPostId(postId));
+		model.addAttribute("post", list.get(0));
+		model.addAttribute("comments", commentRepository.findCommentsByPostId(postId));
+		model.addAttribute("commentCount", commentCount);
+		model.addAttribute("likeCount", likeCount);
+		model.addAttribute("myLikes", likeRepository.findMyLikes(loginUser.getName()));
 		
 
 		return "postdetail";
