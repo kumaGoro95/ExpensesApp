@@ -18,7 +18,6 @@
 		<div class="row card hoverable">
 			<div class="card-content">
 				<h3 class="center gray-text">出入金記録</h3>
-				<p>必要事項を入力してください。 *必須
 				<form th:action="@{/record}" th:object="${moneyRecord}"
 					method="post" novalidate>
 					<input type="hidden" name="username" th:value="${user.username}" />

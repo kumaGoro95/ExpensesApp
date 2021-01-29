@@ -22,7 +22,7 @@
 	<div class="inline" th:inline="text">
 		<div class="container">
 		<div class="row">
-		<h3 class="center">〇年〇月</h3>
+		<h3 class="center">[[${year}]]年[[${month}]]月</h3>
 		</div>
 			<!-- Dropdown Trigger -->
 			<a class='dropdown-trigger btn-large' href='#' data-target='dropdown1'>切り替え</a>
@@ -45,7 +45,7 @@
 					<div class="card-content">
 						<div class="card-title center">
 							<div class="cell">
-								<span class="money"><h3>[[${totalAmmountExpense}]]円</h3></span>
+								<span class="money"><h3>合計 [[${totalAmmountExpense}]]円</h3></span>
 							</div>
 						</div>
 						<div class="row"></div>
@@ -90,7 +90,7 @@
 					<div class="card-content">
 						<div class="card-title center">
 							<div class="cell">
-								<span class="money"><h3>[[${totalAmmountIncome}]]円</h3></span>
+								<span class="money"><h3>合計 [[${totalAmmountIncome}]]円</h3></span>
 							</div>
 						</div>
 						<div class="row"></div>
@@ -118,7 +118,7 @@
 										<td><span class="incomeDots">●</span>[[${incomeSubcategories.get(incomeTotal.categoryCode)}]]</td>
 										<td></td>
 										<td>[[${incomeTotal.sum}]]円</td>
-										<td>％</td>
+										<td>[[${incomePercentages.get(incomeTotal.categoryCode)}]]％</td>
 										<td><i class="fas fa-chevron-circle-down"></i></td>
 
 									</tr>
@@ -130,14 +130,16 @@
 			</div>
 			<div class="row card">
 				<div class="col s12">
-					<canvas id="total"></canvas>
+				<div class="dailyTotal">
+					<canvas id="dailyTotal"></canvas>
+				</div>
 				</div>
 			</div>
 		</div>
 
 
 <script type="text/javascript" th:inline="javascript">	
-	var ctx = document.getElementById("total");
+	var ctx = document.getElementById("dailyTotal");
 	  var myBarChart = new Chart(ctx, {
 	    type: 'bar',
 	    data: {

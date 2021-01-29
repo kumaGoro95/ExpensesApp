@@ -10,15 +10,17 @@
 	th:src="@{/webjars/materializecss/1.0.0/js/materialize.min.js/}"></script>
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
 	rel="stylesheet">
+<link href="https://use.fontawesome.com/releases/v5.6.1/css/all.css"
+	rel="stylesheet">
 <link rel="stylesheet" th:href="@{/css/stylesheet.css}">
 <title>title</title>
 </head>
 <body>
 	<div class="container">
-	<div class="row"></div>
+		<div class="row"></div>
 		<div class="row card">
 			<div class="card-content">
-				<h3 class="center gray-text">ログイン画面</h3>
+				<h3 class="center gray-text">ログイン</h3>
 				<div class="alert-danger" th:if="${param.error}">
 					<p>メールアドレスまたはパスワードが正しくありません</p>
 				</div>
@@ -55,8 +57,8 @@
 			</div>
 		</div>
 	</div>
-<script>
-$('#message').fadeOut( 2000 );
-</script>
+	<script>
+		$('#message').fadeOut(2000);
+	</script>
 </body>
 </html>

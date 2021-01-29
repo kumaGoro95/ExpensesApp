@@ -60,4 +60,13 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 		return getAllPostsByUsername(username).stream().map(PostByNickname::new).collect(Collectors.toList());
 	}
 	
+	//postIdで検索
+	@Query(value = "select post_id, U.user_id, U.user_name, post_body, P.created_at, P.updated_at "
+			+ "from posts P left join users U on P.user_id = U.user_id where P.post_id = :postId", nativeQuery = true)
+	public List<Object[]> getPostByPostId(@Param("postId") int postId);
+	
+	default List<PostByNickname> findPostByPostId(int postId){
+		return getPostByPostId(postId).stream().map(PostByNickname::new).collect(Collectors.toList());
+	}
+	
 }

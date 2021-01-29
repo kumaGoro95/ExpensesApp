@@ -125,8 +125,15 @@ public class RecordController {
 				records.get(i).setNote(records.get(i).getNote().substring(0, 10) + "…");
 			}
 		}
+		Map<Integer, String> categoriesToIcon = CategoryCodeToIcon.CategoriesToIcon;
+
+		// 履歴データがあるかチェック用
+		List<MoneyRecordList> nullRecord = new ArrayList<MoneyRecordList>();
+
 		model.addAttribute("user", userRepository.findByUsername(loginUser.getName()));
 		model.addAttribute("records", records);
+		model.addAttribute("categoriesToIcon", categoriesToIcon);
+		model.addAttribute("nullRecord", nullRecord);
 		return "record";
 	}
 
@@ -138,8 +145,15 @@ public class RecordController {
 				records.get(i).setNote(records.get(i).getNote().substring(0, 10) + "…");
 			}
 		}
+		Map<Integer, String> categoriesToIcon = CategoryCodeToIcon.CategoriesToIcon;
+
+		// 履歴データがあるかチェック用
+		List<MoneyRecordList> nullRecord = new ArrayList<MoneyRecordList>();
+
 		model.addAttribute("user", userRepository.findByUsername(loginUser.getName()));
 		model.addAttribute("records", records);
+		model.addAttribute("categoriesToIcon", categoriesToIcon);
+		model.addAttribute("nullRecord", nullRecord);
 		return "record";
 	}
 
@@ -151,8 +165,15 @@ public class RecordController {
 				records.get(i).setNote(records.get(i).getNote().substring(0, 10) + "…");
 			}
 		}
+		Map<Integer, String> categoriesToIcon = CategoryCodeToIcon.CategoriesToIcon;
+
+		// 履歴データがあるかチェック用
+		List<MoneyRecordList> nullRecord = new ArrayList<MoneyRecordList>();
+
 		model.addAttribute("user", userRepository.findByUsername(loginUser.getName()));
 		model.addAttribute("records", records);
+		model.addAttribute("categoriesToIcon", categoriesToIcon);
+		model.addAttribute("nullRecord", nullRecord);
 		return "record";
 	}
 
@@ -226,6 +247,8 @@ public class RecordController {
 		LocalDate now = LocalDate.now();
 		String strNow = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 		String currentMonth = strNow.substring(0, 7);
+		String year = currentMonth.substring(0, 4);
+		String month = currentMonth.substring(5, 7);
 
 		// 日ごとグラフ用のパラメータ
 		BigDecimal dailyAmmount[] = mrService.getDailyAmmount(loginUser.getName(), currentMonth);
@@ -278,10 +301,22 @@ public class RecordController {
 			String value = incomeSubcategoryList.get(i).getSubcategoryName();
 			incomeSubcategories.put(key, value);
 		}
+
 		// 収入の合計を算出
 		BigDecimal totalAmmountIncome = new BigDecimal(0.0);
 		for (int i = 0; i < incomeTotalsBySubCategory.size(); i++) {
 			totalAmmountIncome = totalAmmountIncome.add(incomeTotalsBySubCategory.get(i).getSum());
+		}
+
+		Map<Integer, BigDecimal> incomePercentages = new HashMap<Integer, BigDecimal>();
+		for (int i = 0; i < incomeTotalsBySubCategory.size(); i++) {
+			if (totalAmmountIncome == BigDecimal.valueOf(0)) {
+				break;
+			}
+			BigDecimal number = BigDecimal.valueOf(100);
+			BigDecimal result = incomeTotalsBySubCategory.get(i).getSum()
+					.divide(totalAmmountIncome, 3, RoundingMode.DOWN).multiply(number).setScale(1, RoundingMode.DOWN);
+			incomePercentages.put(i + 1, result);
 		}
 
 		// 円グラフに表示するデータがあるか確認
@@ -307,6 +342,7 @@ public class RecordController {
 		model.addAttribute("incomeTotals", incomeTotalsBySubCategory);
 		model.addAttribute("incomeSubcategories", incomeSubcategories);
 		model.addAttribute("totalAmmountIncome", totalAmmountIncome);
+		model.addAttribute("incomePercentages", incomePercentages);
 
 		// 収支別円グラフ
 		model.addAttribute("expenseLabel", expenseLabel);
@@ -324,6 +360,8 @@ public class RecordController {
 
 		// 月切り替え用パラメータ
 		model.addAttribute("months", allMonths);
+		model.addAttribute("year", year);
+		model.addAttribute("month", month);
 
 		// 現在の月をドロップダウンに表示
 		model.addAttribute("currentMonth", currentMonth);
@@ -339,6 +377,10 @@ public class RecordController {
 		model.addAttribute("subcategories", categoryRepository.findAll());
 		Map<Integer, String> categories = CategoryCodeToName.Categories;
 		model.addAttribute("categories", categories);
+
+		// 年月を取得
+		String currentYear = month.substring(0, 4);
+		String currentMonth = month.substring(5, 7);
 
 		// 月一覧を取得
 		String[] allMonths = dService.getAllMonths(loginUser.getName());
@@ -400,6 +442,17 @@ public class RecordController {
 		for (int i = 0; i < incomeTotalsBySubCategory.size(); i++) {
 			totalAmmountIncome = totalAmmountIncome.add(incomeTotalsBySubCategory.get(i).getSum());
 		}
+		//収入の割合を算出
+		Map<Integer, BigDecimal> incomePercentages = new HashMap<Integer, BigDecimal>();
+		for (int i = 0; i < incomeTotalsBySubCategory.size(); i++) {
+			if (totalAmmountIncome == BigDecimal.valueOf(0)) {
+				break;
+			}
+			BigDecimal number = BigDecimal.valueOf(100);
+			BigDecimal result = incomeTotalsBySubCategory.get(i).getSum()
+					.divide(totalAmmountIncome, 3, RoundingMode.DOWN).multiply(number).setScale(1, RoundingMode.DOWN);
+			incomePercentages.put(i + 1, result);
+		}
 
 		// 円グラフに表示するデータがあるか確認
 		List<BigDecimal> checknullList = new ArrayList<BigDecimal>();
@@ -424,6 +477,7 @@ public class RecordController {
 		model.addAttribute("incomeTotals", incomeTotalsBySubCategory);
 		model.addAttribute("incomeSubcategories", incomeSubcategories);
 		model.addAttribute("totalAmmountIncome", totalAmmountIncome);
+		model.addAttribute("incomePercentages", incomePercentages);
 
 		// 収支別円グラフ
 		model.addAttribute("expenseLabel", expenseLabel);
@@ -441,6 +495,8 @@ public class RecordController {
 
 		// 月切り替え用パラメータ
 		model.addAttribute("months", allMonths);
+		model.addAttribute("year", currentYear);
+		model.addAttribute("month", currentMonth);
 
 		// ドロップダウン用
 		model.addAttribute("currentMonth", month);

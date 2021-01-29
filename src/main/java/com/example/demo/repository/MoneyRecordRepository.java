@@ -87,7 +87,7 @@ public interface MoneyRecordRepository extends JpaRepository<MoneyRecord, Long> 
 
 	// 履歴一覧用（日にちで取得）
 	@Query(value = "select record_id, record_date, concat(case when M.category_id not like '99%' then '-' else '' end, income_and_expense), "
-			+ "subcategory_name, record_note from money_records M left join categories C on C.category_id = M.category_id "
+			+ "C.category_code, subcategory_name, record_note from money_records M left join categories C on C.category_id = M.category_id "
 			+ "where M.user_id = :username and M.record_date = :date order by record_date desc", nativeQuery = true)
 	public List<Object[]> getOneDayRecord(@Param("username") String username, @Param("date") String date);
 
