@@ -35,6 +35,7 @@ import com.example.demo.model.MoneyRecord;
 import com.example.demo.model.SiteUser;
 import com.example.demo.model.beans.DailySumGraph;
 import com.example.demo.model.beans.MoneyRecordList;
+import com.example.demo.model.beans.RefineCondition;
 import com.example.demo.model.beans.SummaryByCategory;
 import com.example.demo.repository.CategoryRepository;
 import com.example.demo.repository.MoneyRecordRepository;
@@ -65,6 +66,9 @@ public class RecordController {
 		mrDao = new MoneyRecordDaoImpl(em);
 	}
 
+	
+
+	
 	// 出入金記録登録画面へ遷移
 	@GetMapping("/record")
 	public String record(@ModelAttribute("moneyRecord") MoneyRecord moneyRecord, Authentication loginUser,
@@ -96,22 +100,27 @@ public class RecordController {
 
 	// 履歴画面へ遷移(日付降順)
 	@GetMapping("/showRecords")
-	public String showRecords(Authentication loginUser, Model model) {
+	public String showRecords(@ModelAttribute("refineCondition") RefineCondition refineCondition, Authentication loginUser, Model model) {
 		List<MoneyRecordList> records = moneyRecordRepository.findMoneyRecordList(loginUser.getName());
 		for (int i = 0; i < records.size(); i++) {
 			if (records.get(i).getNote().length() > 13) {
 				records.get(i).setNote(records.get(i).getNote().substring(0, 10) + "…");
 			}
 		}
+		
+		// カテゴリ一覧を取得
+		Map<Integer, String> categories = CategoryCodeToName.Categories;
 		Map<Integer, String> categoriesToIcon = CategoryCodeToIcon.CategoriesToIcon;
 
 		// 履歴データがあるかチェック用
 		List<MoneyRecordList> nullRecord = new ArrayList<MoneyRecordList>();
-
+		
 		model.addAttribute("user", userRepository.findByUsername(loginUser.getName()));
 		model.addAttribute("records", records);
 		model.addAttribute("categoriesToIcon", categoriesToIcon);
+		model.addAttribute("categories", categories);
 		model.addAttribute("nullRecord", nullRecord);
+		model.addAttribute("refineCondition", refineCondition);
 
 		return "record";
 	}
@@ -177,6 +186,13 @@ public class RecordController {
 		return "record";
 	}
 
+	// 絞込検索
+	@PostMapping("/showRecords/refine")
+	public String refine(@ModelAttribute("refineCondition") RefineCondition refine, Authentication loginUser, Model model) {
+		
+		return "record";
+	}
+
 	// カレンダーから一覧へ遷移
 	@GetMapping("/Records/{date}")
 	public String showRecordsByDate(@PathVariable("date") String date, Authentication loginUser, Model model) {
@@ -184,7 +200,7 @@ public class RecordController {
 		model.addAttribute("user", userRepository.findByUsername(loginUser.getName()));
 		model.addAttribute("icon", "fas fa-utensils");
 
-		return "refinedRecord";
+		return "record";
 	}
 
 	// 出入金記録を削除
@@ -331,6 +347,14 @@ public class RecordController {
 		BigDecimal checknull[] = checknullList.toArray(new BigDecimal[checknullList.size()]);
 		BigDecimal checknullIncome[] = checknullIncomeList.toArray(new BigDecimal[checknullIncomeList.size()]);
 
+		// 今月の収支を計算
+		BigDecimal total = totalAmmountIncome.subtract(totalAmmountExpense);
+		BigDecimal totalRatio = currentUser.getBudget().subtract(totalAmmountExpense);
+
+		// 収支合計額表示
+		model.addAttribute("total", total);
+		model.addAttribute("budgetRatio", totalRatio);
+
 		// 支出内訳用
 		model.addAttribute("categories", categories);
 		model.addAttribute("categoriesToIcon", categoriesToIcon);
@@ -442,7 +466,7 @@ public class RecordController {
 		for (int i = 0; i < incomeTotalsBySubCategory.size(); i++) {
 			totalAmmountIncome = totalAmmountIncome.add(incomeTotalsBySubCategory.get(i).getSum());
 		}
-		//収入の割合を算出
+		// 収入の割合を算出
 		Map<Integer, BigDecimal> incomePercentages = new HashMap<Integer, BigDecimal>();
 		for (int i = 0; i < incomeTotalsBySubCategory.size(); i++) {
 			if (totalAmmountIncome == BigDecimal.valueOf(0)) {
@@ -465,6 +489,14 @@ public class RecordController {
 		}
 		BigDecimal checknull[] = checknullList.toArray(new BigDecimal[checknullList.size()]);
 		BigDecimal checknullIncome[] = checknullIncomeList.toArray(new BigDecimal[checknullIncomeList.size()]);
+
+		// 今月の収支を計算
+		BigDecimal total = totalAmmountIncome.subtract(totalAmmountExpense);
+		BigDecimal totalRatio = currentUser.getBudget().subtract(totalAmmountExpense);
+
+		// 収支合計額表示
+		model.addAttribute("total", total);
+		model.addAttribute("budgetRatio", totalRatio);
 
 		// 支出内訳用
 		model.addAttribute("categories", categories);

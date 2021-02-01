@@ -21,10 +21,7 @@
 <body>
 	<div class="inline" th:inline="text">
 		<div class="container">
-		<div class="row">
-		<h3 class="center">[[${year}]]年[[${month}]]月</h3>
-		</div>
-			<!-- Dropdown Trigger -->
+		<!-- Dropdown Trigger -->
 			<a class='dropdown-trigger btn-large' href='#' data-target='dropdown1'>切り替え</a>
 			<!-- Dropdown Structure -->
 			<ul id='dropdown1' class='dropdown-content'>
@@ -32,6 +29,11 @@
 					<li><a th:href="@{/analysis/__${month}__}">[[${month}]]</a></li>
 				</div>
 			</ul>
+		<div class="row card">
+		<h2 class="center">[[${year}]]年[[${month}]]月</h2>
+		<h4 class="center">収支：[[${total}]]円</h4>
+		<h4 class="center">予算比：[[${budgetRatio}]]円</h4>
+		</div>
 			<div class="row card">
 				<div class="col s12">
 					<ul class="tabs">
