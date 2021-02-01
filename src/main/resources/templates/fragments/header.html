@@ -9,18 +9,17 @@
 		<div class="navbar-fixed">
 			<nav>
 				<div class="nav-wrapper">
-					<a th:href="@{/}" class="brand-logo">Piggy Bank<i
-						class="fas fa-piggy-bank fa-lg right"></i></a> <span
-						th:if="${user.username != null}" th:inline="text">
+					<span th:if="${user.username != null}" th:inline="text"> <a
+						th:href="@{/top}" class="brand-logo">Piggy Bank<i
+							class="fas fa-piggy-bank fa-lg right"></i></a>
 						<ul id="nav-mobile" class="right hide-on-med-and-down">
-
 							<li><a class="dropdown-trigger" href="#!"
-								data-target="dropdown-header-record">家計簿<i
+								data-target="dropdown-header-record"><span class="header-menu">家計簿</span><i
 									class="material-icons left">description</i></a></li>
 							<li><a th:href="@{/postmain}"><i
-									class="material-icons left">people_outline</i>みんなの節約術</a></li>
+									class="material-icons left">people_outline</i><span class="header-menu">みんなの節約術</span></a></li>
 							<li><a class="dropdown-trigger" href="#!"
-								data-target="dropdown-header-user">[[${user.userNickname}]]
+								data-target="dropdown-header-user"><span class="header-menu">[[${user.userNickname}]]</span>
 									<i class="material-icons right">arrow_drop_down</i>
 							</a></li>
 						</ul>
@@ -32,13 +31,17 @@
 									class="material-icons left">insert_chart</i>分析</a></li>
 						</ul>
 						<ul id="dropdown-header-user" class="dropdown-content">
-							<li><a th:href="@{/mypage}">マイページ</a></li>
-							<li><a th:href="@{/logout}">ログアウト</a></li>
+							<li><a th:href="@{/mypage}"><i
+									class="material-icons left">settings</i>マイページ</a></li>
+							<li><a th:href="@{/logout}"><i
+									class="material-icons left">exit_to_app</i>ログアウト</a></li>
 						</ul>
-					</span> <span th:if="${user.username == null}">
+					</span> <span th:if="${user.username == null}"> <a th:href="@{/}"
+						class="brand-logo">Piggy Bank<i
+							class="fas fa-piggy-bank fa-lg right"></i></a>
 						<ul id="nav-mobile" class="right hide-on-med-and-down">
-							<li><a th:href="@{/login}">ログイン</a></li>
-							<li><a th:href="@{/register}">会員登録</a></li>
+							<li><a th:href="@{/login}"><span class="header-menu"><i class="material-icons left">input</i>ログイン</span></a></li>
+							<li><a th:href="@{/register}"><span class="header-menu"><i class="material-icons left">person_add</i>会員登録</span></a></li>
 						</ul>
 					</span>
 				</div>

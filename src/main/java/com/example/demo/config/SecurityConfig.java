@@ -32,7 +32,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	public void configure(WebSecurity web) throws Exception{
 		//セキュリティ設定を無視するパスを指定
 		//通常、cssやjs、imgなどの静的リソースを指定する
-		web.ignoring().antMatchers("/css/**", "/webjars/**", "/js/**");
+		web.ignoring().antMatchers("/css/**", "/webjars/**", "/js/**", "/images/**");
 	}
 	
 	@Override
@@ -40,8 +40,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		http //httpリクエストの設定
 		  //認証リクエストの設定
 		  .authorizeRequests()
-		    //「/login」「/register」をアクセス可能にする
-		    .antMatchers("/login", "/register").permitAll()
+		    //「/index」「/login」「/register」をアクセス可能にする
+		    .antMatchers("/", "/login", "/register").permitAll()
 		    //認証の必要があるように設定
 		    .anyRequest().authenticated()
 		    .and()
@@ -50,7 +50,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		    //ログイン時のURLを指定
 		    .loginPage("/login")
 		    //認証後にリダイレクトする場所を指定
-		    .defaultSuccessUrl("/")
+		    .defaultSuccessUrl("/top")
 		    .usernameParameter("email")
 		    .passwordParameter("password")
 		    .and()

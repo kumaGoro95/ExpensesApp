@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<th:block th:insert="fragments/header :: header"></th:block>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet"
+	th:href="@{/webjars/materializecss/1.0.0/css/materialize.min.css}">
+<script type="text/javascript"
+	th:src="@{/webjars/materializecss/1.0.0/js/materialize.min.js/}"></script>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+	rel="stylesheet">
+<link href="https://use.fontawesome.com/releases/v5.6.1/css/all.css"
+	rel="stylesheet">
+<link rel="stylesheet" th:href="@{/css/stylesheet.css}">
+<title>title</title>
+</head>
+<body>
+	<span class="backgroundimg"> <img
+		th:src="@{/images/backgroundimg.jpg}">
+	</span>
+	<div class="container">
+	<div class="row">
+	<div class="col s6">
+	<div class="card">
+	<div class="card-content">
+	<div class="card-title"></div>
+	テスト
+	</div>
+	</div>
+	</div>
+	<div class="col s6">
+	<div class="card">
+	<div class="card-content">
+	<div class="card-title"></div>
+	テスト
+	</div>
+	</div>
+	</div>
+	</div>
+	<div class="row">
+	<div class="col s6 center">
+	<a th:href="@{/login}" class="waves-effect waves-light btn-large"><i class="material-icons left">input</i>ログイン</a>
+	</div>
+	<div class="col s6 center">
+	<a th:href="@{/register}" class="waves-effect waves-light btn-large"><i class="material-icons left">person_add</i>会員登録</a>
+	</div>
+	</div>
+	</div>
+	
+	<style>
+.messagebar {
+	display: none;
+}
+</style>
+	<script>
+		$('#message').fadeOut(2000);
+	</script>
+
+</body>
+</html>

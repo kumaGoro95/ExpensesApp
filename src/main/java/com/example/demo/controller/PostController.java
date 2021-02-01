@@ -23,6 +23,7 @@ import com.example.demo.model.Like;
 import com.example.demo.model.PostComment;
 import com.example.demo.model.beans.PostByNickname;
 import com.example.demo.repository.SiteUserRepository;
+import com.example.demo.service.PostService;
 import com.example.demo.repository.PostCommentRepository;
 import com.example.demo.repository.PostRepository;
 import com.example.demo.repository.LikeRepository;
@@ -38,19 +39,50 @@ public class PostController {
 	private final PostRepository postRepository;
 	private final PostCommentRepository commentRepository;
 	private final LikeRepository likeRepository;
+	private final PostService pService;
+
+	//投稿検索用インナークラス
+	private class SearchingWords {
+		private String word;
+
+		public SearchingWords(String word) {
+			this.word = word;
+		}
+
+		public String getWord() {
+			return this.word;
+		}
+	}
 
 	// 投稿系ホーム画面
 	@GetMapping("/postmain")
 	public String goToPost(@ModelAttribute("posts") Post post, Authentication loginUser, Model model) {
 		Map<Integer, BigInteger> commentCount = postRepository.findCommentCount();
 		Map<Integer, BigInteger> likeCount = likeRepository.findLikeCount();
+		SearchingWords swords = new SearchingWords(null);
 		model.addAttribute("commentCount", commentCount);
 		model.addAttribute("user", userRepository.findByUsername(loginUser.getName()));
 		model.addAttribute("posts", postRepository.findAllPosts());
 		model.addAttribute("likeCount", likeCount);
 		model.addAttribute("myLikes", likeRepository.findMyLikes(loginUser.getName()));
+		model.addAttribute("swords", swords);
 
-	
+		return "postmain";
+	}
+
+	@PostMapping("/search")
+	public String post(@ModelAttribute("swords") SearchingWords swords, Authentication loginUser, Model model) {
+
+		List<PostByNickname> list = pService.getWords(swords.getWord());
+		model.addAttribute("posts", list);
+
+		model.addAttribute("user", userRepository.findByUsername(loginUser.getName()));
+		Map<Integer, BigInteger> commentCount = postRepository.findCommentCount();
+		Map<Integer, BigInteger> likeCount = likeRepository.findLikeCount();
+		model.addAttribute("commentCount", commentCount);
+		model.addAttribute("user", userRepository.findByUsername(loginUser.getName()));
+		model.addAttribute("likeCount", likeCount);
+		model.addAttribute("myLikes", likeRepository.findMyLikes(loginUser.getName()));
 
 		return "postmain";
 	}
@@ -97,7 +129,6 @@ public class PostController {
 		model.addAttribute("commentCount", commentCount);
 		model.addAttribute("likeCount", likeCount);
 		model.addAttribute("myLikes", likeRepository.findMyLikes(loginUser.getName()));
-		
 
 		return "postdetail";
 	}
@@ -129,14 +160,14 @@ public class PostController {
 	@Transactional
 	public String Like(@PathVariable("postId") int postId, @ModelAttribute("like") Like like, Authentication loginUser,
 			Model model) {
-		if(likeRepository.existsByUsernameAndPostId(loginUser.getName(), postId) == true) {
+		if (likeRepository.existsByUsernameAndPostId(loginUser.getName(), postId) == true) {
 			likeRepository.deleteByUsernameAndPostId(loginUser.getName(), postId);
-		}else {
-		like.setPostId(postId);
-		like.setUsername(loginUser.getName());
-		LocalDateTime ldt = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
-		like.setCreatedAt(ldt);
-		likeRepository.save(like);
+		} else {
+			like.setPostId(postId);
+			like.setUsername(loginUser.getName());
+			LocalDateTime ldt = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
+			like.setCreatedAt(ldt);
+			likeRepository.save(like);
 		}
 
 		return "redirect:/postmain?postdetail";

@@ -19,11 +19,11 @@ public class PostByNickname implements Serializable{
 
 	private String postBody;
 
-	private Timestamp createdAt;
+	private LocalDateTime createdAt;
 
-	private Timestamp updatedAt;
+	private LocalDateTime updatedAt;
 	
-	public PostByNickname(int postId, String username, String userNickname, String postBody, Timestamp createdAt, Timestamp updatedAt) {
+	public PostByNickname(int postId, String username, String userNickname, String postBody, LocalDateTime createdAt, LocalDateTime updatedAt) {
 		this.postId = postId;
 		this.username = username;
 		this.userNickname = userNickname;
@@ -33,7 +33,7 @@ public class PostByNickname implements Serializable{
 	}
 	
 	public PostByNickname(Object[] objects) {
-        this((int) objects[0], (String) objects[1], (String) objects[2], (String) objects[3],(Timestamp) objects[4], (Timestamp) objects[5]);
+        this((int) objects[0], (String) objects[1], (String) objects[2], (String) objects[3],(LocalDateTime) objects[4], (LocalDateTime) objects[5]);
     }
 
 }

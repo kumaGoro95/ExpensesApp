@@ -6,6 +6,14 @@ nav .brand-logo {
 	padding: 0px 10px 0px 15px;
 }
 
+.backgroundimg img{
+	padding: 0px;
+	width:100%;
+}
+
+.header-menu{
+	font-size:18px;
+}
 /*アイコンの色割り当て*/
 
 /*食費*/
@@ -177,4 +185,8 @@ textarea {
 
 .incomeDots {
 	color: rgb(238, 110, 115);
+}
+
+.search{
+	display: none;
 }

@@ -44,6 +44,14 @@ public class SecurityController {
 	private final MoneyRecordRepository moneyRecordRepository;
 	private final BCryptPasswordEncoder passwordEncoder;
 	private final CategoryRepository categoryRepository;
+	
+	@GetMapping("/")
+	public String index(@ModelAttribute("user") SiteUser user, Authentication loginUser) {
+		if (loginUser != null) {
+			return "redirect:/top?/";
+		}
+		return "index";
+	}
 
 	@GetMapping("/login")
 	public String login(@ModelAttribute("user") SiteUser user, Authentication loginUser) {

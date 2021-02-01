@@ -113,7 +113,7 @@ public class HomeController {
 		return "test";
 	}
 
-	@GetMapping("/")
+	@GetMapping("/top")
 	// Authentication・・・認証済みのユーザー情報を取得
 	public String loginProcess(@ModelAttribute("moneyRecord") MoneyRecord moneyRecord, Authentication loginUser,
 			Model model) {
