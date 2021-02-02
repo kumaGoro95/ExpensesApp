@@ -13,9 +13,13 @@ public class PostByNickname implements Serializable{
 
 	private int postId;
 	
+	private int postCategory;
+	
 	private String username;
 
 	private String userNickname;
+	
+	private String postTitle;
 
 	private String postBody;
 
@@ -23,17 +27,19 @@ public class PostByNickname implements Serializable{
 
 	private LocalDateTime updatedAt;
 	
-	public PostByNickname(int postId, String username, String userNickname, String postBody, LocalDateTime createdAt, LocalDateTime updatedAt) {
+	public PostByNickname(int postId, int postCategory, String username, String userNickname, String postTitle, String postBody, LocalDateTime createdAt, LocalDateTime updatedAt) {
 		this.postId = postId;
+		this.postCategory = postCategory;
 		this.username = username;
 		this.userNickname = userNickname;
+		this.postTitle = postTitle;
 		this.postBody = postBody;
 		this.createdAt = createdAt;
 		this.updatedAt = updatedAt;
 	}
 	
 	public PostByNickname(Object[] objects) {
-        this((int) objects[0], (String) objects[1], (String) objects[2], (String) objects[3],(LocalDateTime) objects[4], (LocalDateTime) objects[5]);
+        this((int) objects[0], (int) objects[1], (String) objects[2], (String) objects[3], (String) objects[4], (String) objects[5],(LocalDateTime) objects[6], (LocalDateTime) objects[7]);
     }
 
 }
