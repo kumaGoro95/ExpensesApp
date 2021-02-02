@@ -113,6 +113,10 @@ nav .brand-logo {
 	opacity: 0.8;
 }
 
+.post-title {
+	padding: 0 0 0 20px;
+}
+
 .postbody {
 	padding: 20px 0 10px 20px;
 }

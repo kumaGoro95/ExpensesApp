@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.demo.dao.MoneyRecordDaoImpl;
@@ -35,6 +36,7 @@ import com.example.demo.model.MoneyRecord;
 import com.example.demo.model.SiteUser;
 import com.example.demo.model.beans.DailySumGraph;
 import com.example.demo.model.beans.MoneyRecordList;
+import com.example.demo.model.beans.RecordDataList;
 import com.example.demo.model.beans.RefineCondition;
 import com.example.demo.model.beans.SummaryByCategory;
 import com.example.demo.repository.CategoryRepository;
@@ -49,6 +51,7 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Controller
+@SessionAttributes(types = RecordDataList.class)
 public class RecordController {
 
 	// DI
@@ -66,9 +69,6 @@ public class RecordController {
 		mrDao = new MoneyRecordDaoImpl(em);
 	}
 
-	
-
-	
 	// 出入金記録登録画面へ遷移
 	@GetMapping("/record")
 	public String record(@ModelAttribute("moneyRecord") MoneyRecord moneyRecord, Authentication loginUser,
@@ -100,40 +100,56 @@ public class RecordController {
 
 	// 履歴画面へ遷移(日付降順)
 	@GetMapping("/showRecords")
-	public String showRecords(@ModelAttribute("refineCondition") RefineCondition refineCondition, Authentication loginUser, Model model) {
+	public String showRecords(@ModelAttribute("refineCondition") RefineCondition refineCondition,
+			Authentication loginUser, Model model) {
 		List<MoneyRecordList> records = moneyRecordRepository.findMoneyRecordList(loginUser.getName());
 		for (int i = 0; i < records.size(); i++) {
 			if (records.get(i).getNote().length() > 13) {
 				records.get(i).setNote(records.get(i).getNote().substring(0, 10) + "…");
 			}
 		}
-		
+
 		// カテゴリ一覧を取得
 		Map<Integer, String> categories = CategoryCodeToName.Categories;
 		Map<Integer, String> categoriesToIcon = CategoryCodeToIcon.CategoriesToIcon;
 
 		// 履歴データがあるかチェック用
 		List<MoneyRecordList> nullRecord = new ArrayList<MoneyRecordList>();
+
 		
+		
+		// 並べ替え用recordId一覧
+		List<Integer> intList = new ArrayList<Integer>();
+		for (int i = 0; i < records.size(); i++) {
+			intList.add(records.get(i).getRecordId());
+		}
+		Integer[] recordIds = intList.toArray(new Integer[records.size()]);
+		RecordDataList dataList = new RecordDataList(recordIds);
+
 		model.addAttribute("user", userRepository.findByUsername(loginUser.getName()));
 		model.addAttribute("records", records);
 		model.addAttribute("categoriesToIcon", categoriesToIcon);
 		model.addAttribute("categories", categories);
 		model.addAttribute("nullRecord", nullRecord);
 		model.addAttribute("refineCondition", refineCondition);
+		model.addAttribute("dataList", dataList);
 
 		return "record";
 	}
 
-	// 履歴画面へ遷移(日付降順)
-	@GetMapping("/showRecordsOrderByDateAsc")
-	public String showRecordsOrderByDateAsc(Authentication loginUser, Model model) {
-		List<MoneyRecordList> records = moneyRecordRepository.findMoneyRecordListOrderByDateAsc(loginUser.getName());
+	// 履歴画面へ遷移(日付昇順)
+	@GetMapping("/showRecords/orderByDateAsc")
+	public String showRecordsOrderByDateAsc(@ModelAttribute("dataList") @Validated RecordDataList dataList, BindingResult result, @ModelAttribute("refineCondition") RefineCondition refineCondition,
+			 Authentication loginUser, Model model) {
+		System.out.println(result.getClass());
+
+		List<MoneyRecordList> records = moneyRecordRepository.findMoneyRecordList(loginUser.getName());
 		for (int i = 0; i < records.size(); i++) {
 			if (records.get(i).getNote().length() > 13) {
 				records.get(i).setNote(records.get(i).getNote().substring(0, 10) + "…");
 			}
 		}
+
 		Map<Integer, String> categoriesToIcon = CategoryCodeToIcon.CategoriesToIcon;
 
 		// 履歴データがあるかチェック用
@@ -188,8 +204,52 @@ public class RecordController {
 
 	// 絞込検索
 	@PostMapping("/showRecords/refine")
-	public String refine(@ModelAttribute("refineCondition") RefineCondition refine, Authentication loginUser, Model model) {
-		
+	public String refine(@ModelAttribute("refineCondition") RefineCondition refineCondition, Authentication loginUser,
+			Model model) {
+		// カテゴリ未選択の場合
+		if (refineCondition.getCategoryCode().equals("未選択")) {
+			refineCondition.setCategoryCode("%");
+		}
+		// 開始日未選択の場合
+		if (refineCondition.getStartDate().equals("")) {
+			// 一番古い記録日を代入
+			Object obj = moneyRecordRepository.getOldestDate(loginUser.getName());
+			String OldestRecordDate = obj.toString();
+			refineCondition.setStartDate(OldestRecordDate);
+		}
+		// 終了日未選択の場合
+		if (refineCondition.getEndDate().equals("")) {
+			// 今日の日付を代入
+			refineCondition.setEndDate(LocalDate.now().toString());
+		}
+		String categoryCode = refineCondition.getCategoryCode();
+		String startDate = refineCondition.getStartDate();
+		String endDate = refineCondition.getEndDate();
+
+		// 上記の条件で絞り込み検索を実施
+		List<MoneyRecordList> records = moneyRecordRepository.findMoneyRecordRefinedList(categoryCode, startDate,
+				endDate);
+		// 備考欄に表示する文字数を調整
+		for (int i = 0; i < records.size(); i++) {
+			if (records.get(i).getNote().length() > 13) {
+				records.get(i).setNote(records.get(i).getNote().substring(0, 10) + "…");
+			}
+		}
+
+		// カテゴリ一覧を取得
+		Map<Integer, String> categories = CategoryCodeToName.Categories;
+		Map<Integer, String> categoriesToIcon = CategoryCodeToIcon.CategoriesToIcon;
+
+		// 履歴データがあるかチェック用
+		List<MoneyRecordList> nullRecord = new ArrayList<MoneyRecordList>();
+
+		model.addAttribute("user", userRepository.findByUsername(loginUser.getName()));
+		model.addAttribute("records", records);
+		model.addAttribute("categoriesToIcon", categoriesToIcon);
+		model.addAttribute("categories", categories);
+		model.addAttribute("nullRecord", nullRecord);
+		model.addAttribute("refineCondition", refineCondition);
+
 		return "record";
 	}
 

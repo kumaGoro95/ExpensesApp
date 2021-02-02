@@ -30,8 +30,16 @@ public class Post{
 	private int postId;
 	
 	@NotNull
+	@Column(name = "post_category")
+	private int postCategory;
+	
+	@NotNull
 	@Column(name = "user_id")
 	private String username;
+	
+	@Length(min=0, max=60)
+	@Column(name = "post_title")
+	private String postTitle;
 	
 	@Length(min=0, max=500)
 	@Column(name = "post_body")

@@ -24,14 +24,14 @@ public interface MoneyRecordRepository extends JpaRepository<MoneyRecord, Long> 
 	public MoneyRecord findByRecordId(int recordId);
 
 	public void deleteByRecordId(int recordId);
-	
+
 	public void deleteByUsername(String username);
 
 	public List<MoneyRecord> findByUsernameOrderByRecordDate(String username);
 
 	public List<MoneyRecord> findByRecordDateBetweenOrderByRecordDateAsc(LocalDate start, LocalDate end);
-	
-	//支出履歴（最新から10件取得・ホーム用）
+
+	// 支出履歴（最新から10件取得・ホーム用）
 	@Query(value = "select record_id, record_date, concat(case when M.category_id not like '99%' then '-' else '' end, income_and_expense), "
 			+ "C.category_code, subcategory_name, record_note from money_records M left join categories C on C.category_id = M.category_id "
 			+ "where M.user_id = :username and M.category_id order by record_date desc limit 10", nativeQuery = true)
@@ -50,7 +50,16 @@ public interface MoneyRecordRepository extends JpaRepository<MoneyRecord, Long> 
 	default List<MoneyRecordList> findMoneyRecordList(String username) {
 		return getMoneyRecordList(username).stream().map(MoneyRecordList::new).collect(Collectors.toList());
 	}
-	
+
+	// 支出履歴絞り込み検索（日付降順）
+	@Query(value = "select record_id, record_date, concat(case when M.category_id not like '99%' then '-' else '' end, income_and_expense), "
+			+ "C.category_code, subcategory_name, record_note from money_records M left join categories C on C.category_id = M.category_id "
+			+ "where C.category_code like :categoryCode and M.record_date between :startDate and :endDate order by record_date desc", nativeQuery = true)
+	public List<Object[]> getMoneyRecordRefinedList(@Param("categoryCode") String categoryCode, @Param("startDate") String startDate, @Param("endDate") String endDate);
+
+	default List<MoneyRecordList> findMoneyRecordRefinedList(String categoryCode, String startDate, String endDate) {
+		return getMoneyRecordRefinedList(categoryCode, startDate, endDate).stream().map(MoneyRecordList::new).collect(Collectors.toList());
+	}
 
 	// 支出履歴一覧（日付昇順）
 	@Query(value = "select record_id, record_date, concat(case when M.category_id not like '99%' then '-' else '' end, income_and_expense), "

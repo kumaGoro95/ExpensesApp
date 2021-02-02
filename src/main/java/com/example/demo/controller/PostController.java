@@ -24,6 +24,8 @@ import com.example.demo.model.PostComment;
 import com.example.demo.model.beans.PostByNickname;
 import com.example.demo.repository.SiteUserRepository;
 import com.example.demo.service.PostService;
+import com.example.demo.util.CategoryCodeToName;
+import com.example.demo.util.PostCategoryCodeToName;
 import com.example.demo.repository.PostCommentRepository;
 import com.example.demo.repository.PostRepository;
 import com.example.demo.repository.LikeRepository;
@@ -41,7 +43,7 @@ public class PostController {
 	private final LikeRepository likeRepository;
 	private final PostService pService;
 
-	//投稿検索用インナークラス
+	// 投稿検索用インナークラス
 	private class SearchingWords {
 		private String word;
 
@@ -59,13 +61,20 @@ public class PostController {
 	public String goToPost(@ModelAttribute("posts") Post post, Authentication loginUser, Model model) {
 		Map<Integer, BigInteger> commentCount = postRepository.findCommentCount();
 		Map<Integer, BigInteger> likeCount = likeRepository.findLikeCount();
+
+		// 検索用
 		SearchingWords swords = new SearchingWords(null);
+
+		// カテゴリ
+		Map<Integer, String> postCategories = PostCategoryCodeToName.PostCategories;
+
 		model.addAttribute("commentCount", commentCount);
 		model.addAttribute("user", userRepository.findByUsername(loginUser.getName()));
 		model.addAttribute("posts", postRepository.findAllPosts());
 		model.addAttribute("likeCount", likeCount);
 		model.addAttribute("myLikes", likeRepository.findMyLikes(loginUser.getName()));
 		model.addAttribute("swords", swords);
+		model.addAttribute("postCategories", postCategories);
 
 		return "postmain";
 	}
@@ -87,10 +96,37 @@ public class PostController {
 		return "postmain";
 	}
 
+	@GetMapping("/showPost/{category}")
+	public String showPostByCategory(@PathVariable("category") int category, @ModelAttribute("posts") Post post, Authentication loginUser, Model model) {
+		Map<Integer, BigInteger> commentCount = postRepository.findCommentCount();
+		Map<Integer, BigInteger> likeCount = likeRepository.findLikeCount();
+
+		// 検索用
+		SearchingWords swords = new SearchingWords(null);
+
+		// カテゴリ
+		Map<Integer, String> postCategories = PostCategoryCodeToName.PostCategories;
+
+		model.addAttribute("commentCount", commentCount);
+		model.addAttribute("user", userRepository.findByUsername(loginUser.getName()));
+		model.addAttribute("posts", postRepository.findPostByCategory(category));
+		model.addAttribute("likeCount", likeCount);
+		model.addAttribute("myLikes", likeRepository.findMyLikes(loginUser.getName()));
+		model.addAttribute("swords", swords);
+		model.addAttribute("postCategories", postCategories);
+		
+		return "postmain";
+	}
+
 	// 投稿画面へ遷移
 	@GetMapping("/post")
 	public String post(@ModelAttribute("post") Post post, Authentication loginUser, Model model) {
 		model.addAttribute("user", userRepository.findByUsername(loginUser.getName()));
+		
+		// カテゴリ
+		Map<Integer, String> postCategories = PostCategoryCodeToName.PostCategories;
+
+		model.addAttribute("postCategories", postCategories);
 
 		return "post";
 	}

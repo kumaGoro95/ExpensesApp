@@ -7,8 +7,8 @@
 <link rel='stylesheet'
 	th:href="@{/webjars/fullcalendar/3.5.1/dist/fullcalendar.css}">
 <script th:src="@{/webjars/jquery/3.5.1/jquery.min.js}"></script>
-<script th:src="@{webjars/moment/2.19.1/min/moment.min.js}"></script>
-<script th:src="@{webjars/fullcalendar/3.5.1/dist/fullcalendar.js}"></script>
+<script th:src="@{/webjars/moment/2.19.1/min/moment.min.js}"></script>
+<script th:src="@{/webjars/fullcalendar/3.5.1/dist/fullcalendar.js}"></script>
 <script type="text/javascript"
 	th:src="@{/webjars/materializecss/1.0.0/js/materialize.min.js/}"></script>
 <link rel="stylesheet"
@@ -43,7 +43,7 @@
 				$('.tabs').tabs();
 
 				$('.dropdown-trigger').dropdown();
-				
+
 				$('select').formSelect();
 
 				$('.datepicker')
@@ -104,7 +104,6 @@
 			p1.style.display = "block";
 		}
 	}
-
 </script>
 
 </head>
@@ -114,13 +113,13 @@
 		<div class="row">
 
 			<div class="waves-effect waves-light btn-large" id="search-btn"
-				onclick="clickBtn1()">検索</div>
+				onclick="clickBtn1()">絞り込み<i class="material-icons left">search</i></div>
 
 		</div>
 		<div id="search" class="row card search">
 			<div class="card-content">
 				<div class="card-title">絞り込み</div>
-				<form th:action="@{/showRecord/refine}"
+				<form th:action="@{/showRecords/refine}"
 					th:object="${refineCondition}" method="post" novalidate>
 
 					<div class="form-group">
@@ -130,24 +129,24 @@
 								<option th:value="未選択" selected>カテゴリを選択してください</option>
 								<span th:each="category: ${categories}" th:inline="text">
 									<option th:value="${category['key']}">[[${category['value']}]]</option>
+									</span>
 							</select>
 						</div>
 					</div>
 
 					<div class="form-group">
 						<label for="startDate">開始日</label> <input type="text"
-							class="datepicker" placeholder="2021-01-01" th:errorclass="is-invalid"
-							name ="startDate" />
+							class="datepicker" th:errorclass="is-invalid" name="startDate" />
 						<div class="invalid-feedback" th:errors="*{startDate}"></div>
 					</div>
 					<div class="form-group">
 						<label for="endDate">終了日</label> <input type="text"
-							class="datepicker" placeholder="2021-01-01" th:errorclass="is-invalid"
+							class="datepicker" th:errorclass="is-invalid"
 							th:field="*{endDate}" />
 						<div class="invalid-feedback" th:errors="*{endDate}"></div>
 					</div>
 
-					<button class="btn refine-exe">検索</button>
+					<button class="btn refine-exe">この条件で絞り込む</button>
 				</form>
 			</div>
 		</div>
@@ -159,18 +158,21 @@
 				</ul>
 			</div>
 			<div id="tab1" class="col s12">
-				<div class="container">
+				<div class="card-content">
+					<div class="card-title">履歴一覧</div>
+					<div class="row"></div>
 					<div class="row">
 						<div id="tab1" class="col s12">
 							<div class="record">
-								<h3>一覧</h3>
 								<!-- Dropdown Trigger -->
-								<a class='dropdown-trigger btn' href='#' data-target='dropdown1'>並び替え</a>
+								<a class='dropdown-trigger btn' href='#' data-target='dropdown1'>並び替え<i class="material-icons left">sort</i></a>
+								<div class="row"></div>
 
 								<!-- Dropdown Structure -->
 								<ul id='dropdown1' class='dropdown-content'>
 									<li><a th:href="@{/showRecords}">日付（新しい順）</a></li>
-									<li><a th:href="@{/showRecordsOrderByDateAsc}">日付（古い順）</a></li>
+									<li><form role="form" th:action="@{/showRecords/orderByDateAsc}" th:object="${records}" method="post"><input type="submit" value="テスト"></form></li>
+									<li><a th:href="@{/showRecords/orderByDateAsc}">日付（古い順）</a></li>
 									<li><a th:href="@{/showRecordsOrderByMoneyDesc}">金額（多い順）</a></li>
 									<li><a th:href="@{/showRecordsOrderByMoneyAsc}">金額（少ない順）</a></li>
 								</ul>
@@ -209,7 +211,7 @@
 				</div>
 			</div>
 			<div id="tab2" class="col s12">
-				<div class="container">
+				<div class="card-content">
 					<div class="row">
 						<div class="card center">
 							<div class="calendar" id='calendar'></div>

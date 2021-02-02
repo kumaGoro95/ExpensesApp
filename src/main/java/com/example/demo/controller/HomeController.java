@@ -252,7 +252,7 @@ public class HomeController {
 
 		redirectAttributes.addFlashAttribute("flashMsg", "設定変更しました");
 
-		return "redirect:/?setting";
+		return "redirect:/top?setting";
 	}
 
 	// パスワード変更画面へ遷移
