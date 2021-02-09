@@ -113,7 +113,9 @@
 		<div class="row">
 
 			<div class="waves-effect waves-light btn-large" id="search-btn"
-				onclick="clickBtn1()">絞り込み<i class="material-icons left">search</i></div>
+				onclick="clickBtn1()">
+				絞り込み<i class="material-icons left">search</i>
+			</div>
 
 		</div>
 		<div id="search" class="row card search">
@@ -126,10 +128,10 @@
 						<label for="name">カテゴリ</label>
 						<div class="input-field col s12">
 							<select th:field="*{categoryCode}">
-								<option th:value="未選択" selected>カテゴリを選択してください</option>
+								<option th:value="all" selected>カテゴリを選択してください</option>
 								<span th:each="category: ${categories}" th:inline="text">
 									<option th:value="${category['key']}">[[${category['value']}]]</option>
-									</span>
+							</span>
 							</select>
 						</div>
 					</div>
@@ -165,16 +167,16 @@
 						<div id="tab1" class="col s12">
 							<div class="record">
 								<!-- Dropdown Trigger -->
-								<a class='dropdown-trigger btn' href='#' data-target='dropdown1'>並び替え<i class="material-icons left">sort</i></a>
+								<a class='dropdown-trigger btn' href='#' data-target='dropdown1'>並び替え<i
+									class="material-icons left">sort</i></a>
 								<div class="row"></div>
 
 								<!-- Dropdown Structure -->
 								<ul id='dropdown1' class='dropdown-content'>
 									<li><a th:href="@{/showRecords}">日付（新しい順）</a></li>
-									<li><form role="form" th:action="@{/showRecords/orderByDateAsc}" th:object="${records}" method="post"><input type="submit" value="テスト"></form></li>
-									<li><a th:href="@{/showRecords/orderByDateAsc}">日付（古い順）</a></li>
-									<li><a th:href="@{/showRecordsOrderByMoneyDesc}">金額（多い順）</a></li>
-									<li><a th:href="@{/showRecordsOrderByMoneyAsc}">金額（少ない順）</a></li>
+									<li><a th:href="@{/showRecords/orderByDateAsc/__${refineCondition.categoryCode}__/__${refineCondition.startDate}__/__${refineCondition.endDate}__}">日付（古い順）</a></li>
+									<li><a th:href="@{/showRecords/orderByMoneyDesc/__${refineCondition.categoryCode}__/__${refineCondition.startDate}__/__${refineCondition.endDate}__}">金額（多い順）</a></li>
+									<li><a th:href="@{/showRecords/orderByMoneyAsc/__${refineCondition.categoryCode}__/__${refineCondition.startDate}__/__${refineCondition.endDate}__}">金額（少ない順）</a></li>
 								</ul>
 
 								<table>
@@ -193,7 +195,7 @@
 												<td>[[${record.recordDate}]]</td>
 												<td>[[${record.incomeAndExpense}]]円</td>
 												<td><i
-													th:class="${categoriesToIcon.get(record.categoryCode)}+' fa-lg'"></i>[[${record.subcategoryName}]]</td>
+													th:class="${categoriesToIcon.get(record.categoryCode)}+' fa-lg'"></i><span class="record-categories">[[${record.subcategoryName}]]</span></td>
 												<td>[[${record.note}]]</td>
 												<td><a th:href="@{/editRecord/__${record.recordId}__}">編集</a>
 													<a th:href="@{/deleteRecord/__${record.recordId}__}">削除</a></td>

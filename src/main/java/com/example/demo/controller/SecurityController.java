@@ -41,9 +41,7 @@ public class SecurityController {
 
 	// DI
 	private final SiteUserRepository userRepository;
-	private final MoneyRecordRepository moneyRecordRepository;
 	private final BCryptPasswordEncoder passwordEncoder;
-	private final CategoryRepository categoryRepository;
 	
 	@GetMapping("/")
 	public String index(@ModelAttribute("user") SiteUser user, Authentication loginUser) {
@@ -89,6 +87,9 @@ public class SecurityController {
 		} else {
 			user.setRole(Role.USER.name());
 		}
+		
+		//デフォルトのアイコン画像を設定
+		user.setIcon("default-icon.jpg");
 
 		// 現在日時を取得、登録日時にセット
 		LocalDateTime ldt = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);

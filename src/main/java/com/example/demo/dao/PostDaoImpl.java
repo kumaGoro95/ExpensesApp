@@ -31,7 +31,7 @@ public class PostDaoImpl implements PostDao<PostByNickname> {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<PostByNickname> findPostByWords(String words[]) {
-		String qstr1 = "select P.postId, U.username, U.userNickname, P.postBody, P.createdAt, P.updatedAt from Post P ";
+		String qstr1 = "select P.postId, P.postCategory, U.username, U.userNickname, P.postTitle, P.postBody, P.createdAt, P.updatedAt from Post P ";
 		String qstr2 = "left join SiteUser U on P.username = U.username where P.postBody like concat('%', ?1, '%') ";
 		String qstr3 = "and P.postBody like concat('%', ?number, '%')";
 		String qstr = qstr1 + qstr2;

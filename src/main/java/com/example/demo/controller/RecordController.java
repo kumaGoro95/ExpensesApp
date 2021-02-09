@@ -116,8 +116,6 @@ public class RecordController {
 		// 履歴データがあるかチェック用
 		List<MoneyRecordList> nullRecord = new ArrayList<MoneyRecordList>();
 
-		
-		
 		// 並べ替え用recordId一覧
 		List<Integer> intList = new ArrayList<Integer>();
 		for (int i = 0; i < records.size(); i++) {
@@ -125,6 +123,10 @@ public class RecordController {
 		}
 		Integer[] recordIds = intList.toArray(new Integer[records.size()]);
 		RecordDataList dataList = new RecordDataList(recordIds);
+
+		refineCondition.setCategoryCode("all");
+		refineCondition.setStartDate(mrService.getOldestDate(loginUser.getName()));
+		refineCondition.setEndDate(LocalDate.now().toString());
 
 		model.addAttribute("user", userRepository.findByUsername(loginUser.getName()));
 		model.addAttribute("records", records);
@@ -138,19 +140,29 @@ public class RecordController {
 	}
 
 	// 履歴画面へ遷移(日付昇順)
-	@GetMapping("/showRecords/orderByDateAsc")
-	public String showRecordsOrderByDateAsc(@ModelAttribute("dataList") @Validated RecordDataList dataList, BindingResult result, @ModelAttribute("refineCondition") RefineCondition refineCondition,
-			 Authentication loginUser, Model model) {
-		System.out.println(result.getClass());
+	@GetMapping("/showRecords/orderByDateAsc/{categoryCode}/{startDate}/{endDate}")
+	public String showRecordsOrderByDateAsc(@ModelAttribute("categoryCode") String categoryCode,
+			@ModelAttribute("startDate") String startDate, @ModelAttribute("endDate") String endDate,
+			@ModelAttribute("refineCondition") RefineCondition refineCondition, Authentication loginUser, Model model) {
 
-		List<MoneyRecordList> records = moneyRecordRepository.findMoneyRecordList(loginUser.getName());
+		// カテゴリ未選択の場合
+		if (categoryCode.equals("all")) {
+			categoryCode = "%";
+		}
+
+		// カテゴリ一覧を取得
+		Map<Integer, String> categories = CategoryCodeToName.Categories;
+		Map<Integer, String> categoriesToIcon = CategoryCodeToIcon.CategoriesToIcon;
+
+		// 上記の条件で絞り込み検索を実施
+		List<MoneyRecordList> records = moneyRecordRepository.findMoneyRecordListOrderByDateAsc(loginUser.getName(),
+				categoryCode, startDate, endDate);
+
 		for (int i = 0; i < records.size(); i++) {
 			if (records.get(i).getNote().length() > 13) {
 				records.get(i).setNote(records.get(i).getNote().substring(0, 10) + "…");
 			}
 		}
-
-		Map<Integer, String> categoriesToIcon = CategoryCodeToIcon.CategoriesToIcon;
 
 		// 履歴データがあるかチェック用
 		List<MoneyRecordList> nullRecord = new ArrayList<MoneyRecordList>();
@@ -159,18 +171,35 @@ public class RecordController {
 		model.addAttribute("records", records);
 		model.addAttribute("categoriesToIcon", categoriesToIcon);
 		model.addAttribute("nullRecord", nullRecord);
+		model.addAttribute("categories", categories);
+
 		return "record";
 	}
 
-	@GetMapping("/showRecordsOrderByMoneyDesc")
-	public String showRecordsOrderByMoneyDesc(Authentication loginUser, Model model) {
-		List<MoneyRecordList> records = moneyRecordRepository.findMoneyRecordListOrderByMoneyDesc(loginUser.getName());
+	// 金額降順
+	@GetMapping("/showRecords/orderByMoneyDesc/{categoryCode}/{startDate}/{endDate}")
+	public String showRecordsOrderByMoneyDesc(@ModelAttribute("categoryCode") String categoryCode,
+			@ModelAttribute("startDate") String startDate, @ModelAttribute("endDate") String endDate,
+			@ModelAttribute("refineCondition") RefineCondition refineCondition, Authentication loginUser, Model model) {
+
+		// カテゴリ未選択の場合
+		if (categoryCode.equals("all")) {
+			categoryCode = "%";
+		}
+
+		// カテゴリ一覧を取得
+		Map<Integer, String> categories = CategoryCodeToName.Categories;
+		Map<Integer, String> categoriesToIcon = CategoryCodeToIcon.CategoriesToIcon;
+
+		// 上記の条件で絞り込み検索を実施
+		List<MoneyRecordList> records = moneyRecordRepository.findMoneyRecordListOrderByMoneyDesc(loginUser.getName(),
+				categoryCode, startDate, endDate);
+
 		for (int i = 0; i < records.size(); i++) {
 			if (records.get(i).getNote().length() > 13) {
 				records.get(i).setNote(records.get(i).getNote().substring(0, 10) + "…");
 			}
 		}
-		Map<Integer, String> categoriesToIcon = CategoryCodeToIcon.CategoriesToIcon;
 
 		// 履歴データがあるかチェック用
 		List<MoneyRecordList> nullRecord = new ArrayList<MoneyRecordList>();
@@ -179,18 +208,34 @@ public class RecordController {
 		model.addAttribute("records", records);
 		model.addAttribute("categoriesToIcon", categoriesToIcon);
 		model.addAttribute("nullRecord", nullRecord);
+		model.addAttribute("categories", categories);
+
 		return "record";
 	}
 
-	@GetMapping("/showRecordsOrderByMoneyAsc")
-	public String showRecordsOrderByMoneyAsc(Authentication loginUser, Model model) {
-		List<MoneyRecordList> records = moneyRecordRepository.findMoneyRecordListOrderByMoneyAsc(loginUser.getName());
+	@GetMapping("/showRecords/orderByMoneyAsc/{categoryCode}/{startDate}/{endDate}")
+	public String showRecordsOrderByMoneyAsc(@ModelAttribute("categoryCode") String categoryCode,
+			@ModelAttribute("startDate") String startDate, @ModelAttribute("endDate") String endDate,
+			@ModelAttribute("refineCondition") RefineCondition refineCondition, Authentication loginUser, Model model) {
+
+		// カテゴリ未選択の場合
+		if (categoryCode.equals("all")) {
+			categoryCode = "%";
+		}
+
+		// カテゴリ一覧を取得
+		Map<Integer, String> categories = CategoryCodeToName.Categories;
+		Map<Integer, String> categoriesToIcon = CategoryCodeToIcon.CategoriesToIcon;
+
+		// 上記の条件で絞り込み検索を実施
+		List<MoneyRecordList> records = moneyRecordRepository.findMoneyRecordListOrderByMoneyAsc(loginUser.getName(),
+				categoryCode, startDate, endDate);
+
 		for (int i = 0; i < records.size(); i++) {
 			if (records.get(i).getNote().length() > 13) {
 				records.get(i).setNote(records.get(i).getNote().substring(0, 10) + "…");
 			}
 		}
-		Map<Integer, String> categoriesToIcon = CategoryCodeToIcon.CategoriesToIcon;
 
 		// 履歴データがあるかチェック用
 		List<MoneyRecordList> nullRecord = new ArrayList<MoneyRecordList>();
@@ -199,6 +244,8 @@ public class RecordController {
 		model.addAttribute("records", records);
 		model.addAttribute("categoriesToIcon", categoriesToIcon);
 		model.addAttribute("nullRecord", nullRecord);
+		model.addAttribute("categories", categories);
+
 		return "record";
 	}
 
@@ -207,7 +254,7 @@ public class RecordController {
 	public String refine(@ModelAttribute("refineCondition") RefineCondition refineCondition, Authentication loginUser,
 			Model model) {
 		// カテゴリ未選択の場合
-		if (refineCondition.getCategoryCode().equals("未選択")) {
+		if (refineCondition.getCategoryCode().equals("all")) {
 			refineCondition.setCategoryCode("%");
 		}
 		// 開始日未選択の場合
@@ -227,8 +274,8 @@ public class RecordController {
 		String endDate = refineCondition.getEndDate();
 
 		// 上記の条件で絞り込み検索を実施
-		List<MoneyRecordList> records = moneyRecordRepository.findMoneyRecordRefinedList(categoryCode, startDate,
-				endDate);
+		List<MoneyRecordList> records = moneyRecordRepository.findMoneyRecordRefinedList(loginUser.getName(),
+				categoryCode, startDate, endDate);
 		// 備考欄に表示する文字数を調整
 		for (int i = 0; i < records.size(); i++) {
 			if (records.get(i).getNote().length() > 13) {

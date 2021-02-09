@@ -19,85 +19,78 @@
 <body>
 	<div class="container">
 		<div class="row">
-			<div class="card">
-				<div class="card-content">
-					<div class="card-title">検索</div>
-					<form class="row s12" th:action="@{/search}" th:object="${swords}"
-						method="post">
-						<div class="input-field">
-							<i class="material-icons prefix">search</i> <input
-								id="input_text" type="text" data-length="10" th:field="*{word}">
-							<label for="icon_prefix2">検索ワード</label>
-							<div class="col s12 center">
-								<button class="waves-effect waves-light btn">検索</button>
+			<div class="col s4">
+				<div class="card">
+					<div class="card-content">
+						<div class="card-title center">検索</div>
+						<form class="row s12" th:action="@{/search}" th:object="${swords}"
+							method="post">
+							<div class="input-field">
+								<i class="material-icons prefix">search</i> <input
+									id="input_text" type="text" data-length="10" th:field="*{word}">
+								<label for="icon_prefix2">検索ワード</label>
+								<div class="col s12 center">
+									<button class="waves-effect waves-light btn">実行</button>
+								</div>
 							</div>
-						</div>
-					</form>
+						</form>
+					</div>
+				</div>
+
+				<div class="card">
+					<div class="card-content">
+						<div class="card-title center"><h5>カテゴリ</h5></div>
+						<div class="row"></div>
+						<span th:each="postCategory : ${postCategories}" th:inline="text">
+							<ul>
+								<li><a th:href="@{/showPost/__${postCategory['key']}__}"><i
+													th:class="${postCategoriesToIcon.get(postCategory['key'])}+' fa-lg'"></i><span class="black-text categories">[[${postCategory['value']}]]</span></a></li>
+							</ul>
+
+						</span>
+					</div>
 				</div>
 			</div>
-		</div>
+			<div class="col s8">
+			<div class="row center">
+						<span th:if="${checknull == false}"><h5>投稿はありません</h5></span>
+					</div>
 
-		<div class="row">
-			<div class="card">
-				<div class="card-content">
-					<div class="card-title">カテゴリ</div>
-					<span th:each="postCategory : ${postCategories}" th:inline="text">
-					<ul>
-					<li><a th:href="@{/showPost/__${postCategory['key']}__}">[[${postCategory['value']}]]</a></li>
-					</ul>
-					
-					</span>
-				</div>
-			</div>
-		</div>
-
-		<div class="record">
-			<h4>節約のコツ、悩みを共有しよう！</h4>
-
-			<div th:each="post : ${posts}" th:inline="text">
-				<div class="col s9">
-					<div class="card">
+				<div th:each="post : ${posts}" th:inline="text">
+					<div class="card posts">
 						<div class="card-content">
-							<div class="cared-title">
-								<h5>
-									<a th:href="@{/post/__${post.postId}__}">[[${post.postTitle}]]</a>
-								</h5>
+							<div class="row">
+								<div class="left">
+									<h5>
+										<a th:href="@{/post/__${post.postId}__}">[[${post.postTitle}]]</a>
+									</h5>
+								</div>
+								<div class="right">
+									<i class="fas fa-heart fa-lg pink-text text-accent-2"></i>[[${likeCount.get(post.postId)}]] 
+									<i class="far fa-comment-dots fa-lg"></i>[[${commentCount.get(post.postId)}]]
+								</div>
 							</div>
-							<div class="row postbody">[[${post.postBody}]]</div>
-							<div class="left">投稿日時：[[${post.createdAt}]]</div>
+							<div class="postbody">[[${post.postBody}]]</div>
 							<br>
 							<div class="divider"></div>
 							<div class="left">
-							[[${postCategories.get(post.postCategory)}]]
-							</div>
-
-
+									<div class="post-createdAt">投稿日時：[[${#temporals.format(post.createdAt, 'yyyy-MM-dd HH:ss')}]]</div></div>
 							<div class="right">
-								<a th:href="@{/post/__${post.postId}__}"> <i
-									class="far fa-comment-dots fa-2x"></i>[[${commentCount.get(post.postId)}]]
-								</a>
-								<th:block th:if="${myLikes.contains(post.postId) == true}">
-									<a th:href="@{/like/__${post.postId}__}"><i
-										class="fas fa-heart fa-2x pink-text text-accent-2"></i></a>[[${likeCount.get(post.postId)}]]
-									</th:block>
-								<th:block th:unless="${myLikes.contains(post.postId) == true}">
-									<a th:href="@{/like/__${post.postId}__}"><i
-										class="far fa-heart fa-2x pink-text text-accent-2"></i></a>[[${likeCount.get(post.postId)}]]
-									</th:block>
-							</div>
+									<div class="post-category"><a th:href="@{/showPost/__${post.postCategory}__}"><i
+													th:class="${postCategoriesToIcon.get(post.postCategory)}+' fa-lg'"></i><span class="black-text categories">[[${postCategories.get(post.postCategory)}]]</span></a></div>
+									</div>
 						</div>
 					</div>
 
 				</div>
+				<a th:href="@{/post}">
+					<button class="waves-effect waves-light btn-large postbtn">
+						共有する<i class="material-icons right">note_add</i>
+					</button>
+				</a>
 			</div>
 		</div>
-		<a th:href="@{/post}">
-			<button class="waves-effect waves-light btn-large postbtn">
-				共有する<i class="material-icons right">note_add</i>
-			</button>
-		</a>
 	</div>
-
 	<script>
 		$(document).ready(function() {
 			$(".dropdown-trigger").dropdown();

@@ -15,6 +15,7 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -26,6 +27,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.demo.util.CategoryCodeToIcon;
@@ -34,9 +37,11 @@ import com.example.demo.model.Category;
 import com.example.demo.model.Like;
 import com.example.demo.model.MoneyRecord;
 import com.example.demo.model.SiteUser;
+import com.example.demo.model.beans.FileUploadForm;
 import com.example.demo.model.beans.MoneyRecordList;
 import com.example.demo.model.beans.SummaryByCategory;
 import com.example.demo.repository.SiteUserRepository;
+import com.example.demo.service.FileUploadService;
 import com.example.demo.service.MoneyRecordService;
 import com.example.demo.repository.MoneyRecordRepository;
 import com.example.demo.repository.PostRepository;
@@ -59,6 +64,7 @@ public class HomeController {
 	private final PostRepository postRepository;
 	private final BCryptPasswordEncoder passwordEncoder;
 	private final LikeRepository likeRepository;
+	private final FileUploadService iResizer;
 
 	@PersistenceContext
 	EntityManager em;
@@ -70,45 +76,18 @@ public class HomeController {
 
 	// テスト
 	@GetMapping("/upload")
-	public String test(Authentication loginUser, Model model) {
+	public String test(@ModelAttribute("file") FileUploadForm file, Authentication loginUser, Model model) {
 		model.addAttribute("user", userRepository.findByUsername(loginUser.getName()));
+		
 
-		// カテゴリ取得
-		Map<Integer, String> categories = CategoryCodeToName.Categories;
-		model.addAttribute("categories", categories);
-
-		// カテゴリアイコン取得
-		Map<Integer, String> categoriesToIcon = CategoryCodeToIcon.CategoriesToIcon;
-		model.addAttribute("categoriesToIcon", categoriesToIcon);
-
-		// 現在の月を取得
-		LocalDate now = LocalDate.now();
-		String strNow = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-		String currentMonth = strNow.substring(0, 7);
-		String year = currentMonth.substring(0, 4);
-		String month = currentMonth.substring(5, 7);
-
-		// カテゴリ毎の合計を取得
-		List<SummaryByCategory> expenseByCategory = moneyRecordRepository.findCategorySummaries(loginUser.getName(),
-				currentMonth);
-		// 収入分を削除
-		expenseByCategory.remove(expenseByCategory.size() - 1);
-		// 月の合計額を算出
-		BigDecimal totalAmmount = new BigDecimal(0.0);
-		for (int i = 0; i < expenseByCategory.size(); i++) {
-			totalAmmount = totalAmmount.add(expenseByCategory.get(i).getSum());
-		}
-		// カテゴリ÷全体支出の割合を算出
-		Map<Integer, BigDecimal> percentages = new HashMap<Integer, BigDecimal>();
-		for (int i = 0; i < expenseByCategory.size(); i++) {
-			BigDecimal number = BigDecimal.valueOf(100);
-			BigDecimal result = expenseByCategory.get(i).getSum().divide(totalAmmount, 1, RoundingMode.DOWN)
-					.multiply(number);
-			percentages.put(i + 1, result);
-		}
-
-		model.addAttribute("percentages", percentages);
-		model.addAttribute("totalsByCategory", expenseByCategory);
+		return "test";
+	}
+	
+	@PostMapping("/upload")
+	public String upload(@ModelAttribute("file") FileUploadForm file, Authentication loginUser, Model model, HttpServletResponse response) {
+		model.addAttribute("user", userRepository.findByUsername(loginUser.getName()));
+		String str = iResizer.uploadImage(response, file.getUploadedFile());
+		System.out.println(str);
 
 		return "test";
 	}
@@ -222,14 +201,15 @@ public class HomeController {
 
 	// ユーザー設定変更画面へ遷移
 	@GetMapping("/setting")
-	public String setting(Authentication loginUser, Model model) {
+	public String setting(@ModelAttribute("file") FileUploadForm file, Authentication loginUser, Model model) {
 		model.addAttribute("user", userRepository.findByUsername(loginUser.getName()));
 		return "setting";
 	}
 
 	// ユーザー設定変更を実行
+	@Transactional
 	@PostMapping("/setting")
-	public String process(@Validated @ModelAttribute("user") SiteUser user, BindingResult result,
+	public String process(@Validated @ModelAttribute("user") SiteUser user, BindingResult result, @ModelAttribute("file") FileUploadForm file, HttpServletResponse response,
 			Authentication loginUser, RedirectAttributes redirectAttributes) {
 		// 同名ユーザー、メールアドレスのアカウントが存在していないか確認
 		SiteUser emailCheck = userRepository.findByUsername(loginUser.getName());
@@ -243,8 +223,13 @@ public class HomeController {
 
 		// @Validatedで入力値チェック→BindingResultに結果が入る→result.hasErrors()でエラーがあるか確認
 		if (result.hasErrors()) {
-			return "main";
+			System.out.println(result);
+			return "redirect:setting?setting";
 		}
+		//画像アップロード・リサイズ
+		String str = iResizer.uploadImage(response, file.getUploadedFile());
+
+		user.setIcon(str);
 		user.setPassword(passwordEncoder.encode(user.getPassword()));
 		LocalDateTime ldt = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
 		user.setUpdatedAt(ldt);

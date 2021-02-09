@@ -29,9 +29,11 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 	public List<Post> findByUsername(String username);
 
 	public List<Post> findByPostBody(String word);
+	
+	public boolean existsByPostCategory(int postCategory);
 
 	// コメント数を集計
-	@Query(value = "select post_id, count(*) from comments group by post_id", nativeQuery = true)
+	@Query(value = "select P.post_id, count(C.comment_id) from posts P left join comments C on P.post_id = C.post_id group by P.post_id", nativeQuery = true)
 	public List<Object[]> getCommentCount();
 
 	default Map<Integer, BigInteger> findCommentCount() {

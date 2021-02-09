@@ -104,5 +104,19 @@ public class MoneyRecordService {
 
 		return days;
 	}
+	
+	//一番古い記録を取得する
+	public String getOldestDate(String username) {
+		String oldestDate = null;
+		//出入金記録があるか確認
+		if(moneyRecordRepository.existsByUsername(username)) {
+			oldestDate = moneyRecordRepository.getOldestDate(username).toString();
+		}else {
+			LocalDate ld = LocalDate.now();
+			oldestDate = ld.toString();
+		}
+		
+		return oldestDate;
+	}
 
 }
