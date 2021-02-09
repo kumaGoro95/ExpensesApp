@@ -30,6 +30,8 @@ public interface MoneyRecordRepository extends JpaRepository<MoneyRecord, Long> 
 	public List<MoneyRecord> findByUsernameOrderByRecordDate(String username);
 
 	public List<MoneyRecord> findByRecordDateBetweenOrderByRecordDateAsc(LocalDate start, LocalDate end);
+	
+	public boolean existsByUsername(String username);
 
 	// 支出履歴（最新から10件取得・ホーム用）
 	@Query(value = "select record_id, record_date, concat(case when M.category_id not like '99%' then '-' else '' end, income_and_expense), "
@@ -54,43 +56,43 @@ public interface MoneyRecordRepository extends JpaRepository<MoneyRecord, Long> 
 	// 支出履歴絞り込み検索（日付降順）
 	@Query(value = "select record_id, record_date, concat(case when M.category_id not like '99%' then '-' else '' end, income_and_expense), "
 			+ "C.category_code, subcategory_name, record_note from money_records M left join categories C on C.category_id = M.category_id "
-			+ "where C.category_code like :categoryCode and M.record_date between :startDate and :endDate order by record_date desc", nativeQuery = true)
-	public List<Object[]> getMoneyRecordRefinedList(@Param("categoryCode") String categoryCode, @Param("startDate") String startDate, @Param("endDate") String endDate);
+			+ "where M.user_id = :username and C.category_code like :categoryCode and M.record_date between :startDate and :endDate order by record_date desc", nativeQuery = true)
+	public List<Object[]> getMoneyRecordRefinedList(@Param("username") String username, @Param("categoryCode") String categoryCode, @Param("startDate") String startDate, @Param("endDate") String endDate);
 
-	default List<MoneyRecordList> findMoneyRecordRefinedList(String categoryCode, String startDate, String endDate) {
-		return getMoneyRecordRefinedList(categoryCode, startDate, endDate).stream().map(MoneyRecordList::new).collect(Collectors.toList());
+	default List<MoneyRecordList> findMoneyRecordRefinedList(String username, String categoryCode, String startDate, String endDate) {
+		return getMoneyRecordRefinedList(username, categoryCode, startDate, endDate).stream().map(MoneyRecordList::new).collect(Collectors.toList());
 	}
 
-	// 支出履歴一覧（日付昇順）
+	// 並べ替え（日付昇順）
 	@Query(value = "select record_id, record_date, concat(case when M.category_id not like '99%' then '-' else '' end, income_and_expense), "
 			+ "C.category_code, subcategory_name, record_note from money_records M left join categories C on C.category_id = M.category_id "
-			+ "where M.user_id = :username and M.category_id order by record_date asc", nativeQuery = true)
-	public List<Object[]> getMoneyRecordListOrderByDateAsc(@Param("username") String username);
+			+ "where M.user_id = :username and C.category_code like :categoryCode and M.record_date between :startDate and :endDate order by record_date asc", nativeQuery = true)
+	public List<Object[]> getMoneyRecordListOrderByDateAsc(@Param("username") String username, @Param("categoryCode") String categoryCode, @Param("startDate") String startDate, @Param("endDate") String endDate);
 
-	default List<MoneyRecordList> findMoneyRecordListOrderByDateAsc(String username) {
-		return getMoneyRecordListOrderByDateAsc(username).stream().map(MoneyRecordList::new)
+	default List<MoneyRecordList> findMoneyRecordListOrderByDateAsc(String username, String categoryCode, String startDate, String endDate) {
+		return getMoneyRecordListOrderByDateAsc(username, categoryCode, startDate, endDate).stream().map(MoneyRecordList::new)
 				.collect(Collectors.toList());
 	}
 
 	// 支出履歴一覧（金額降順）
 	@Query(value = "select record_id, record_date, concat(case when M.category_id not like '99%' then '-' else '' end, income_and_expense), "
 			+ "C.category_code, subcategory_name, record_note from money_records M left join categories C on C.category_id = M.category_id "
-			+ "where M.user_id = :username and M.category_id order by income_and_expense desc", nativeQuery = true)
-	public List<Object[]> getMoneyRecordListOrderByMoneyDesc(@Param("username") String username);
+			+ "where M.user_id = :username and C.category_code like :categoryCode and M.record_date between :startDate and :endDate order by income_and_expense desc", nativeQuery = true)
+	public List<Object[]> getMoneyRecordListOrderByMoneyDesc(@Param("username") String username, @Param("categoryCode") String categoryCode, @Param("startDate") String startDate, @Param("endDate") String endDate);
 
-	default List<MoneyRecordList> findMoneyRecordListOrderByMoneyDesc(String username) {
-		return getMoneyRecordListOrderByMoneyDesc(username).stream().map(MoneyRecordList::new)
+	default List<MoneyRecordList> findMoneyRecordListOrderByMoneyDesc(String username, String categoryCode, String startDate, String endDate) {
+		return getMoneyRecordListOrderByMoneyDesc(username, categoryCode, startDate, endDate).stream().map(MoneyRecordList::new)
 				.collect(Collectors.toList());
 	}
 
 	// 支出履歴一覧（金額昇順）
 	@Query(value = "select record_id, record_date, concat(case when M.category_id not like '99%' then '-' else '' end, income_and_expense), "
 			+ "C.category_code, subcategory_name, record_note from money_records M left join categories C on C.category_id = M.category_id "
-			+ "where M.user_id = :username and M.category_id order by income_and_expense asc", nativeQuery = true)
-	public List<Object[]> getMoneyRecordListOrderByMoneyAsc(@Param("username") String username);
+			+ "where M.user_id = :username and C.category_code like :categoryCode and M.record_date between :startDate and :endDate order by income_and_expense asc", nativeQuery = true)
+	public List<Object[]> getMoneyRecordListOrderByMoneyAsc(@Param("username") String username, @Param("categoryCode") String categoryCode, @Param("startDate") String startDate, @Param("endDate") String endDate);
 
-	default List<MoneyRecordList> findMoneyRecordListOrderByMoneyAsc(String username) {
-		return getMoneyRecordListOrderByMoneyAsc(username).stream().map(MoneyRecordList::new)
+	default List<MoneyRecordList> findMoneyRecordListOrderByMoneyAsc(String username, String categoryCode, String startDate, String endDate) {
+		return getMoneyRecordListOrderByMoneyAsc(username, categoryCode, startDate, endDate).stream().map(MoneyRecordList::new)
 				.collect(Collectors.toList());
 	}
 

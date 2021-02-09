@@ -121,7 +121,7 @@
 			<div class="col s4">
 				<div class="row card">
 					<div class="card-content">
-						<h6 class="center gray-text">かんたん入力</h6>
+						<h6 class="center gray-text">家計簿入力</h6>
 						<form th:action="@{/record}" th:object="${moneyRecord}"
 							method="post" novalidate>
 							<input type="hidden" name="username" th:value="${user.username}" />
@@ -161,10 +161,10 @@
 									th:field="*{note}"></textarea>
 								<div class="invalid-feedback" th:errors="*{note}"></div>
 							</div>
-
+							<div class="center">
 							<button class="waves-effect waves-light btn-large">
 								記録する <i class="material-icons right">note_add</i>
-							</button>
+							</button></div>
 						</form>
 					</div>
 				</div>

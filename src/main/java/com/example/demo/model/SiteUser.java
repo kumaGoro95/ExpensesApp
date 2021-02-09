@@ -55,7 +55,7 @@ public class SiteUser{
 	@DateTimeFormat(pattern="yyyy-MM-dd")
 	private LocalDate dateOfBirth;
 	
-	@Max(100)
+	@Size(min = 4, max = 300)
 	@Column(name = "user_icon")
 	private String icon;
     

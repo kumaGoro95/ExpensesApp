@@ -21,59 +21,61 @@
 		<div class="row card">
 			<div class="list">
 				<span th:inline="text">
-					<div class="center">
-						<i class="medium material-icons">face</i>
+					<div class="user-icon center">
+						<img th:src="@{/icons/__${user.icon}__}">
 					</div>
 					<h4 class="center">[[${selectedUser.userNickname}]]</h4>
 					<div class="center">
 						<span class="grey-text">@[[${selectedUser.username}]]</span>
 					</div>
-					<div class="row"></div>
-					<th:block th:if="${user == selectedUser}">
-					<div class="center"><a th:href="@{/setting}" class="waves-effect waves-light btn"><i class="material-icons right">settings</i>プロフィール編集</a></div>
+					<div class="row"></div> <th:block th:if="${user == selectedUser}">
+						<div class="center">
+							<a th:href="@{/setting}" class="waves-effect waves-light btn"><i
+								class="material-icons right">settings</i>プロフィール編集</a>
+						</div>
 					</th:block>
 				</span>
 			</div>
 		</div>
 		<h3>投稿</h3>
 		<div th:each="post : ${usersPosts}" th:inline="text">
-					<div class="row card">
-						<div class="card-content">
-						<div class="right">
-									<span th:if="${selectedUser.username == post.username}"> <a
-										class="dropdown-trigger" href="#!" data-target="dropdown-post"><i
-											class="material-icons small">expand_more</i></a>
+			<div class="row card">
+				<div class="card-content">
+					<div class="right">
+						<span th:if="${selectedUser.username == post.username}"> <a
+							class="dropdown-trigger" href="#!" data-target="dropdown-post"><i
+								class="material-icons small">expand_more</i></a>
 
-										<ul id="dropdown-post" class="dropdown-content">
-											<li><a th:href="@{/editPost/__${post.postId}__}">編集</a></li>
-											<li><a th:href="@{/deletePost/__${post.postId}__}">削除</a></li>
-										</ul></span>
-								</div>
-								<div class="left">
-									<i class="medium material-icons">face</i>
-								</div>
-								<a th:href="@{/userdetail/__${post.username}__}"><h5>[[${post.userNickname}]]</h5></a>
-								<p th:text="${post.createdAt}"></p>
-								<div class="row postbody">[[${post.postBody}]]</div>
-								<div class="divider"></div>
+							<ul id="dropdown-post" class="dropdown-content">
+								<li><a th:href="@{/editPost/__${post.postId}__}">編集</a></li>
+								<li><a th:href="@{/deletePost/__${post.postId}__}">削除</a></li>
+							</ul></span>
+					</div>
+					<div class="left">
+						<i class="medium material-icons">face</i>
+					</div>
+					<a th:href="@{/userdetail/__${post.username}__}"><h5>[[${post.userNickname}]]</h5></a>
+					<p th:text="${post.createdAt}"></p>
+					<div class="row postbody">[[${post.postBody}]]</div>
+					<div class="divider"></div>
 
 
-								<div class="right">
-									<a th:href="@{/post/__${post.postId}__}"> <i
-										class="far fa-comment-dots fa-2x"></i>[[${commentCount.get(post.postId)}]]
-									</a>
-									<th:block th:if="${myLikes.contains(post.postId) == true}">
-										<a th:href="@{/like/__${post.postId}__}"><i
-											class="fas fa-heart fa-2x pink-text text-accent-2"></i></a>[[${likeCount.get(post.postId)}]]
+					<div class="right">
+						<a th:href="@{/post/__${post.postId}__}"> <i
+							class="far fa-comment-dots fa-2x"></i>[[${commentCount.get(post.postId)}]]
+						</a>
+						<th:block th:if="${myLikes.contains(post.postId) == true}">
+							<a th:href="@{/like/__${post.postId}__}"><i
+								class="fas fa-heart fa-2x pink-text text-accent-2"></i></a>[[${likeCount.get(post.postId)}]]
 									</th:block>
-									<th:block th:unless="${myLikes.contains(post.postId) == true}">
-										<a th:href="@{/like/__${post.postId}__}"><i
-											class="far fa-heart fa-2x pink-text text-accent-2"></i></a>[[${likeCount.get(post.postId)}]]
+						<th:block th:unless="${myLikes.contains(post.postId) == true}">
+							<a th:href="@{/like/__${post.postId}__}"><i
+								class="far fa-heart fa-2x pink-text text-accent-2"></i></a>[[${likeCount.get(post.postId)}]]
 									</th:block>
-								</div>
 					</div>
 				</div>
-				</div>
+			</div>
+		</div>
 	</div>
 	<script>
 		$(document).ready(function() {

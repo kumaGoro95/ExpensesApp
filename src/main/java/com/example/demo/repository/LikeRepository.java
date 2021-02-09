@@ -40,7 +40,7 @@ public interface LikeRepository extends JpaRepository<Like, Long> {
 	
 	
 	// いいねの数を集計
-	@Query(value = "select post_id, count(*) from likes group by post_id", nativeQuery = true)
+	@Query(value = "select P.post_id, count(L.like_id) from posts P left join likes L on P.post_id = L.post_id group by P.post_id;", nativeQuery = true)
 	public List<Object[]> getLikeCount();
 
 	default Map<Integer, BigInteger> findLikeCount() {

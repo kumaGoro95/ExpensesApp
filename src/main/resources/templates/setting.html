@@ -21,37 +21,51 @@
 	<div class="container">
 		<div class="row card hoverable">
 			<div class="card-content">
-				<h3 class="center gray-text">設定</h3>
-				<p>必要事項を入力してください。 *必須
-				<form th:action="@{/setting}" th:object="${user}" method="post"
+				<div class="card-title center">プロフィール編集</div>
+				<div class="row"></div>
+				<div class="row"></div>
+				<h6 class="center">アイコン画像</h6>
+				<div class="user-icon center">
+					<img th:src="@{/icons/__${user.icon}__}">
+				</div>
+
+					<form enctype="multipart/form-data" th:action="@{/setting}" method="post"
 					novalidate>
-					<input type="hidden" name="username" th:value="*{username}" /> <input
-						type="hidden" name="createdAt" th:value="*{createdAt}" /> <input
-						type="hidden" name="role" th:value="*{role}" />
-						<input
-					type="hidden" name="password"
-					th:value="*{password}" />
+						<div class="file-field input-field">
+							<div class="btn">
+								<span>アイコン画像選択</span> <input type="file"
+									th:field="${file.uploadedFile}">
+							</div>
+							<div class="file-path-wrapper">
+								<input class="file-path validate" type="text" th:field="${user.icon}">
+							</div>
+						</div>
+
+					<input type="hidden" name="username" th:value="${user.username}" /> <input
+						type="hidden" name="createdAt" th:value="${user.createdAt}" /> <input
+						type="hidden" name="role" th:value="${user.role}" /> <input
+						type="hidden" name="password" th:value="${user.password}" />
 					<div class="form-group">
-						<label for="name"> ユーザー名* </label> <input type="text"
-							th:errorclass="is-invalid" th:field="*{userNickname}">
-						<div class="invalid-feedback" th:errors="*{userNickname}"></div>
+						<label for="name"> ユーザー名（〇文字以内） </label> <input type="text"
+							th:errorclass="is-invalid" th:field="${user.userNickname}">
+						<div class="invalid-feedback" th:errors="${user.userNickname}"></div>
 					</div>
 					<div class="form-group">
-						<label for="email"> メールアドレス* </label> <input type="email"
-							th:errorclass="is-invalid" th:field="*{email}">
-						<div class="invalid-feedback" th:errors="*{email}"></div>
+						<label for="email"> メールアドレス </label> <input type="email"
+							th:errorclass="is-invalid" th:field="${user.email}">
+						<div class="invalid-feedback" th:errors="${user.email}"></div>
 					</div>
-					
+
 					<div class="form-group">
 						<label for="gender"> 性別 </label>
 						<div
 							th:each="gender:${T(com.example.demo.util.GenderType).GENDERS}">
 							<p>
 								<label> <input class="with-gap" type="radio"
-									th:errorclass="is-invalid" th:field="*{gender}"
+									th:errorclass="is-invalid" th:field="${user.gender}"
 									th:value="${gender.key}"> <span
 									th:for="${#ids.prev('gender')}" th:text="${gender.value}">
-										<div class="invalid-feedback" th:errors="*{gender}"></div>
+										<div class="invalid-feedback" th:errors="${user.gender}"></div>
 								</span>
 								</label>
 							</p>
@@ -61,17 +75,18 @@
 
 					<label for="dateOfBirth">生年月日</label> <input type="text"
 						class="datepicker" value="2000-01-01" th:errorclass="is-invalid"
-						th:field="*{dateOfBirth}" />
-					<div class="invalid-feedback" th:errors="*{dateOfBirth}"></div>
+						th:field="${user.dateOfBirth}" />
+					<div class="invalid-feedback" th:errors="${user.dateOfBirth}"></div>
 					<div class="form-check"></div>
 
 					<div class="form-group">
 						<label for="budget">月の予算</label> <input type="number"
-							th:errorclass="is-invalid" th:field="*{budget}">
-						<div class="invalid-feedback" th:errors="*{budget}"></div>
+							th:errorclass="is-invalid" th:field="${user.budget}">
+						<div class="invalid-feedback" th:errors="${user.budget}"></div>
 					</div>
 
-					<button class="btn setting-update">更新</button> <a th:href="@{/passwordSetting}">パスワード変更</a>
+					<button class="btn setting-update">更新</button>
+					<a th:href="@{/passwordSetting}">パスワード変更</a>
 				</form>
 			</div>
 		</div>
