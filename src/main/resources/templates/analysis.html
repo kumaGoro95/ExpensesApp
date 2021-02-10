@@ -21,19 +21,20 @@
 <body>
 	<div class="inline" th:inline="text">
 		<div class="container">
-		<!-- Dropdown Trigger -->
-			<a class='dropdown-trigger btn-large' href='#' data-target='dropdown1'>切り替え</a>
+			<!-- Dropdown Trigger -->
+			<a class='dropdown-trigger btn-large' href='#'
+				data-target='dropdown1'>切り替え</a>
 			<!-- Dropdown Structure -->
 			<ul id='dropdown1' class='dropdown-content'>
 				<div th:each="month : ${months}" th:inline="text">
 					<li><a th:href="@{/analysis/__${month}__}">[[${month}]]</a></li>
 				</div>
 			</ul>
-		<div class="row card">
-		<h2 class="center">[[${year}]]年[[${month}]]月</h2>
-		<h4 class="center">収支：[[${total}]]円</h4>
-		<h4 class="center">予算比：[[${budgetRatio}]]円</h4>
-		</div>
+			<div class="row card">
+				<h2 class="center">[[${year}]]年[[${month}]]月</h2>
+				<h4 class="center">収支：[[${total}]]円</h4>
+				<h4 class="center">予算比：[[${budgetRatio}]]円</h4>
+			</div>
 			<div class="row card">
 				<div class="col s12">
 					<ul class="tabs">
@@ -47,7 +48,8 @@
 					<div class="card-content">
 						<div class="card-title center">
 							<div class="cell">
-								<span class="money"><h3>合計 [[${totalAmmountExpense}]]円</h3></span>
+								<span class="money"><h3>合計
+										[[${totalAmmountExpense}]]円</h3></span>
 							</div>
 						</div>
 						<div class="row"></div>
@@ -92,7 +94,8 @@
 					<div class="card-content">
 						<div class="card-title center">
 							<div class="cell">
-								<span class="money"><h3>合計 [[${totalAmmountIncome}]]円</h3></span>
+								<span class="money"><h3>合計
+										[[${totalAmmountIncome}]]円</h3></span>
 							</div>
 						</div>
 						<div class="row"></div>
@@ -111,7 +114,6 @@
 									<th></th>
 									<th>金額</th>
 									<th>割合</th>
-									<th></th>
 								</tr>
 							</thead>
 							<tbody>
@@ -121,8 +123,6 @@
 										<td></td>
 										<td>[[${incomeTotal.sum}]]円</td>
 										<td>[[${incomePercentages.get(incomeTotal.categoryCode)}]]％</td>
-										<td><i class="fas fa-chevron-circle-down"></i></td>
-
 									</tr>
 								</span>
 							</tbody>
@@ -132,15 +132,15 @@
 			</div>
 			<div class="row card">
 				<div class="col s12">
-				<div class="dailyTotal">
-					<canvas id="dailyTotal"></canvas>
-				</div>
+					<div class="dailyTotal">
+						<canvas id="dailyTotal"></canvas>
+					</div>
 				</div>
 			</div>
 		</div>
 
 
-<script type="text/javascript" th:inline="javascript">	
+		<script type="text/javascript" th:inline="javascript">	
 	var ctx = document.getElementById("dailyTotal");
 	  var myBarChart = new Chart(ctx, {
 	    type: 'bar',
@@ -202,9 +202,14 @@
 	      }]
 	    },
 	    options: {
+	    	responsive: true,
+	    	legend: {
+	    		display:false
+	    	},
 	      title: {
 	        display: true,
-	        text: '収入の内訳'
+	        fontSize:30,
+	        text: '収入内訳'
 	      }
 	    }
 	  });
@@ -251,9 +256,14 @@
 	      }]
 	    },
 	    options: {
+	    	responsive: true,
+	    	legend: {
+	    		display:false
+	    	},
 	      title: {
 	        display: true,
-	        text: '支出の内訳'
+	        fontSize:30,
+	        text: '支出内訳'
 	      }
 	    }
 	  });

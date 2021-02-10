@@ -48,14 +48,10 @@ public class SiteUser{
 	@Column(name = "user_password", nullable = false)
 	private String password;
 	
-	@Column(name = "user_gender")
-	private int gender;
+	@Size(min = 0, max = 300)
+	@Column(name ="introduce")
+	private String introduce;
 	
-	@Column(name = "user_dob")
-	@DateTimeFormat(pattern="yyyy-MM-dd")
-	private LocalDate dateOfBirth;
-	
-	@Size(min = 4, max = 300)
 	@Column(name = "user_icon")
 	private String icon;
     

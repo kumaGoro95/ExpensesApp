@@ -93,7 +93,6 @@ public class PostController {
 		// カテゴリ
 		Map<Integer, String> postCategories = PostCategoryCodeToName.PostCategories;
 		Map<Integer, String> postCategoriesToIcon = PostCategoryCodeToIcon.PostCategoriesToIcon;
-		
 
 		model.addAttribute("user", userRepository.findByUsername(loginUser.getName()));
 		Map<Integer, BigInteger> commentCount = postRepository.findCommentCount();
@@ -124,15 +123,14 @@ public class PostController {
 		model.addAttribute("commentCount", commentCount);
 		model.addAttribute("user", userRepository.findByUsername(loginUser.getName()));
 		model.addAttribute("posts", postRepository.findPostByCategory(category));
-		
-		//当該カテゴリの投稿が存在するか・・・falseで「投稿がありません」メッセージを表示
+
+		// 当該カテゴリの投稿が存在するか・・・falseで「投稿がありません」メッセージを表示
 		model.addAttribute("checknull", postRepository.existsByPostCategory(category));
 		model.addAttribute("likeCount", likeCount);
 		model.addAttribute("myLikes", likeRepository.findMyLikes(loginUser.getName()));
 		model.addAttribute("swords", swords);
 		model.addAttribute("postCategories", postCategories);
 		model.addAttribute("postCategoriesToIcon", postCategoriesToIcon);
-		
 
 		return "postmain";
 	}
@@ -160,11 +158,6 @@ public class PostController {
 		}
 		LocalDateTime ldt = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
 
-		// ZonedDateTime zonedDateTime = ZonedDateTime.now();
-		// DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd
-		// HH:mm:ss.SSSxxxxx VV");
-		// String s = zonedDateTime.format(formatter);
-
 		post.setCreatedAt(ldt);
 		postRepository.save(post);
 
@@ -186,7 +179,7 @@ public class PostController {
 		Map<Integer, String> postCategoriesToIcon = PostCategoryCodeToIcon.PostCategoriesToIcon;
 
 		List<PostByNickname> list = postRepository.findPostByPostId(postId);
-		
+
 		model.addAttribute("user", userRepository.findByUsername(loginUser.getName()));
 		model.addAttribute("post", list.get(0));
 		model.addAttribute("comments", commentRepository.findCommentsByPostId(postId));
@@ -196,7 +189,6 @@ public class PostController {
 		model.addAttribute("swords", searchingWords);
 		model.addAttribute("postCategories", postCategories);
 		model.addAttribute("postCategoriesToIcon", postCategoriesToIcon);
-
 
 		return "postdetail";
 	}
@@ -211,11 +203,6 @@ public class PostController {
 			return "redirect:/post?post";
 		}
 		LocalDateTime ldt = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
-
-		// ZonedDateTime zonedDateTime = ZonedDateTime.now();
-		// DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd
-		// HH:mm:ss.SSSxxxxx VV");
-		// String s = zonedDateTime.format(formatter);
 
 		comment.setCreatedAt(ldt);
 		commentRepository.save(comment);
@@ -238,16 +225,7 @@ public class PostController {
 			likeRepository.save(like);
 		}
 
-		return "redirect:/postmain?postdetail";
-	}
-
-	// いいね一覧を表示
-	@RequestMapping("/likesList/{postId}")
-	public String showLikes(@PathVariable("postId") int postId, @ModelAttribute("likes") Like like,
-			Authentication loginUser, Model model) {
-		model.addAttribute("likes", likeRepository.findByPostId(postId));
-
-		return "likesDetail";
+		return "redirect:/post?postdetail";
 	}
 
 	// コメント削除
@@ -298,8 +276,12 @@ public class PostController {
 	public String editPost(@PathVariable("postId") int postId, Authentication loginUser, Model model) {
 		model.addAttribute("post", postRepository.findByPostId(postId));
 		model.addAttribute("user", userRepository.findByUsername(loginUser.getName()));
+		// カテゴリ
+		Map<Integer, String> postCategories = PostCategoryCodeToName.PostCategories;
 
-		return "postEdit";
+		model.addAttribute("postCategories", postCategories);
+
+		return "post";
 	}
 
 	// 投稿編集を実行

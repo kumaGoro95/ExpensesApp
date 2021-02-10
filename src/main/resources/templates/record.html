@@ -78,15 +78,6 @@
 
 			});
 
-	$('#deleteAssignmentModal').on('click', function(event) {
-		var button = $(event.relatedTarget); // Button that triggered the modal
-		var objectName = button.data('object-name'); // Extract info from data-object-name attribute
-		console.log();
-
-		// Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
-		var modal = $(this);
-		modal.find('.modal-footer p').text(objectName);
-	})
 	$('#message').fadeOut(2000);
 
 	//初期表示は非表示

@@ -33,6 +33,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.demo.util.CategoryCodeToIcon;
 import com.example.demo.util.CategoryCodeToName;
+import com.example.demo.util.PostCategoryCodeToIcon;
+import com.example.demo.util.PostCategoryCodeToName;
 import com.example.demo.model.Category;
 import com.example.demo.model.Like;
 import com.example.demo.model.MoneyRecord;
@@ -43,6 +45,7 @@ import com.example.demo.model.beans.SummaryByCategory;
 import com.example.demo.repository.SiteUserRepository;
 import com.example.demo.service.FileUploadService;
 import com.example.demo.service.MoneyRecordService;
+import com.example.demo.service.PostService;
 import com.example.demo.repository.MoneyRecordRepository;
 import com.example.demo.repository.PostRepository;
 import com.example.demo.repository.CategoryRepository;
@@ -65,6 +68,7 @@ public class HomeController {
 	private final BCryptPasswordEncoder passwordEncoder;
 	private final LikeRepository likeRepository;
 	private final FileUploadService iResizer;
+	private final PostService pService;
 
 	@PersistenceContext
 	EntityManager em;
@@ -78,15 +82,15 @@ public class HomeController {
 	@GetMapping("/upload")
 	public String test(@ModelAttribute("file") FileUploadForm file, Authentication loginUser, Model model) {
 		model.addAttribute("user", userRepository.findByUsername(loginUser.getName()));
-		
 
 		return "test";
 	}
-	
+
 	@PostMapping("/upload")
-	public String upload(@ModelAttribute("file") FileUploadForm file, Authentication loginUser, Model model, HttpServletResponse response) {
+	public String upload(@ModelAttribute("file") FileUploadForm file, Authentication loginUser, Model model,
+			HttpServletResponse response) {
 		model.addAttribute("user", userRepository.findByUsername(loginUser.getName()));
-		String str = iResizer.uploadImage(response, file.getUploadedFile());
+		String str = iResizer.uploadImage(response, file.getUploadedFile(), loginUser.getName());
 		System.out.println(str);
 
 		return "test";
@@ -139,10 +143,10 @@ public class HomeController {
 		BigDecimal budget = currentUser.getBudget().setScale(0, RoundingMode.DOWN);
 		// 予算－支出を計算
 		BigDecimal balance = budget.subtract(totalAmmount);
-		
-		//履歴データがあるかチェック用
+
+		// 履歴データがあるかチェック用
 		List<MoneyRecordList> nullRecord = new ArrayList<MoneyRecordList>();
-		
+
 		/* model */
 
 		model.addAttribute("user", currentUser);
@@ -163,8 +167,6 @@ public class HomeController {
 		model.addAttribute("recordsLimit10", recordsLimit10);
 		model.addAttribute("categoriesToIcon", categoriesToIcon);
 		model.addAttribute("nullRecord", nullRecord);
-		
-	
 
 		return "main";
 	}
@@ -172,14 +174,23 @@ public class HomeController {
 	// ユーザー詳細画面へ遷移
 	@GetMapping("/userdetail/{username}")
 	public String userDetail(@PathVariable("username") String username, Authentication loginUser, Model model) {
+
 		Map<Integer, BigInteger> commentCount = postRepository.findCommentCount();
 		Map<Integer, BigInteger> likeCount = likeRepository.findLikeCount();
+
+		// カテゴリ
+		Map<Integer, String> postCategories = PostCategoryCodeToName.PostCategories;
+		Map<Integer, String> postCategoriesToIcon = PostCategoryCodeToIcon.PostCategoriesToIcon;
+
 		model.addAttribute("commentCount", commentCount);
 		model.addAttribute("user", userRepository.findByUsername(loginUser.getName()));
 		model.addAttribute("selectedUser", userRepository.findByUsername(username));
 		model.addAttribute("likeCount", likeCount);
-		model.addAttribute("usersPosts", postRepository.findAllPostsByUsername(username));
+		model.addAttribute("usersPosts", pService.getSpecificPosts(username));
+		model.addAttribute("likedPosts", pService.getLikedPosts(username));
 		model.addAttribute("myLikes", likeRepository.findMyLikes(loginUser.getName()));
+		model.addAttribute("postCategories", postCategories);
+		model.addAttribute("postCategoriesToIcon", postCategoriesToIcon);
 
 		return "userdetail";
 	}
@@ -189,12 +200,20 @@ public class HomeController {
 	public String mypage(Authentication loginUser, Model model) {
 		Map<Integer, BigInteger> likeCount = likeRepository.findLikeCount();
 		Map<Integer, BigInteger> result = postRepository.findCommentCount();
+
+		// カテゴリ
+		Map<Integer, String> postCategories = PostCategoryCodeToName.PostCategories;
+		Map<Integer, String> postCategoriesToIcon = PostCategoryCodeToIcon.PostCategoriesToIcon;
+
 		model.addAttribute("selectedUser", userRepository.findByUsername(loginUser.getName()));
 		model.addAttribute("user", userRepository.findByUsername(loginUser.getName()));
 		model.addAttribute("commentCount", result);
 		model.addAttribute("usersPosts", postRepository.findAllPostsByUsername(loginUser.getName()));
+		model.addAttribute("likedPosts", pService.getLikedPosts(loginUser.getName()));
 		model.addAttribute("likeCount", likeCount);
 		model.addAttribute("myLikes", likeRepository.findMyLikes(loginUser.getName()));
+		model.addAttribute("postCategories", postCategories);
+		model.addAttribute("postCategoriesToIcon", postCategoriesToIcon);
 
 		return "userdetail";
 	}
@@ -209,8 +228,9 @@ public class HomeController {
 	// ユーザー設定変更を実行
 	@Transactional
 	@PostMapping("/setting")
-	public String process(@Validated @ModelAttribute("user") SiteUser user, BindingResult result, @ModelAttribute("file") FileUploadForm file, HttpServletResponse response,
-			Authentication loginUser, RedirectAttributes redirectAttributes) {
+	public String process(@Validated @ModelAttribute("user") SiteUser user, BindingResult result,
+			@ModelAttribute("file") FileUploadForm file, HttpServletResponse response, Authentication loginUser,
+			RedirectAttributes redirectAttributes) {
 		// 同名ユーザー、メールアドレスのアカウントが存在していないか確認
 		SiteUser emailCheck = userRepository.findByUsername(loginUser.getName());
 		if (user.getEmail().equals(emailCheck.getEmail()) && userRepository.countByEmail(user.getEmail()) > 1) {
@@ -226,11 +246,11 @@ public class HomeController {
 			System.out.println(result);
 			return "redirect:setting?setting";
 		}
-		//画像アップロード・リサイズ
-		String str = iResizer.uploadImage(response, file.getUploadedFile());
+		// 画像アップロード・リサイズ
+		String str = iResizer.uploadImage(response, file.getUploadedFile(), loginUser.getName());
 
 		user.setIcon(str);
-		user.setPassword(passwordEncoder.encode(user.getPassword()));
+		user.setPassword(user.getPassword());
 		LocalDateTime ldt = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
 		user.setUpdatedAt(ldt);
 		userRepository.save(user);

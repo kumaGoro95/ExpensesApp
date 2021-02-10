@@ -1,5 +1,4 @@
 /* 全般 */
-
 body {
 	background-color: rgb(255, 250, 250);
 }
@@ -8,13 +7,13 @@ nav .brand-logo {
 	padding: 0px 10px 0px 15px;
 }
 
-.backgroundimg img{
+.backgroundimg img {
 	padding: 0px;
-	width:100%;
+	width: 100%;
 }
 
-.header-menu{
-	font-size:18px;
+.header-menu {
+	font-size: 18px;
 }
 
 .card {
@@ -23,38 +22,52 @@ nav .brand-logo {
 	margin: 20px;
 }
 
+.forms{
+	padding:20px;
+}
+
 .divider {
 	margin: 5px 0 5px 0;
 }
 
-.user-icon img{
-	height:70px;
-	width:70px;
+.user-icon img {
+	height: 70px;
+	width: 70px;
 	border-radius: 50%;
 	-webkit-border-radius: 50%;
 	-moz-border-radius: 50%;
 }
 
+/* Home */
+.exChart-category {
+	font-size: 12px;
+}
+
+@media only screen and (min-width:1200px) {
+	.exChart-category {
+		font-size: 15px;
+	}
+}
 
 
 /* MoneyRecord */
-
 
 /*アイコンの色割り当て*/
 
 /*食費*/
 .fa-utensils {
 	color: rgb(255, 99, 71);
-	padding: 0 7px 0 0;
+	padding: 0 6px 0 2px;
 }
 /*日用品*/
 .fa-shopping-basket {
 	color: rgb(30, 144, 255);
+	padding: 0 2px 0 0;
 }
 /*交通費*/
 .fa-subway {
 	color: rgb(50, 205, 50);
-	padding: 0 7px 0 0;
+	padding: 0 4px 0 3px;
 }
 /*交際費*/
 .fa-glass-cheers {
@@ -63,60 +76,65 @@ nav .brand-logo {
 /*趣味・娯楽*/
 .fa-music {
 	color: rgb(255, 205, 86);
-	padding: 0 7px 0 0;
+	padding: 0 5px 0 0;
 }
 /*教育費*/
 .fa-book {
 	color: rgb(70, 130, 180);
-	padding: 0 7px 0 0;
+	padding: 0 5px 0 2px;
 }
 
 /*服・美容*/
-.fa-tshirt {
+.fa-magic {
 	color: rgb(221, 160, 221);
+	padding: 0 4px 0 0;
 }
 
 /*健康・医療*/
 .fa-notes-medical {
 	color: rgb(124, 252, 0);
-	padding: 0 7px 0 0;
+	padding: 0 7px 0 2px;
 }
 
 /*通信費*/
-.fa-wifi {
+.fa-mobile-alt {
 	color: rgb(135, 206, 250);
+	padding: 0 9px 0 3px;
 }
 
 /*水道・光熱費*/
 .fa-burn {
 	color: rgb(255, 255, 100);
-	padding: 0 7px 0 0;
+	padding: 0 8px 0 2px;
 }
 
 /*家・クルマ*/
 .fa-home {
 	color: rgb(220, 20, 60);
+	padding: 0 3px 0 0;
 }
 /*税金・保険*/
 .fa-money-check {
 	color: rgb(188, 143, 143);
+	padding: 0 1px 0 0;
 }
 
 /*大型出費*/
 .fa-luggage-cart {
 	color: rgb(72, 209, 204);
+	padding: 0 1px 0 0;
 }
 
 /*その他*/
 .fa-feather-alt {
 	color: rgb(192, 192, 192);
-	padding: 0 7px 0 0;
+	padding: 0 5px 0 0;
 }
 
 /*貯金*/
 .fa-coins {
 	color: rgb(230, 230, 250);
-	padding: 0 7px 0 0;
+	padding: 0 7px 0 1px;
 }
 
 /*収入*/
@@ -124,7 +142,7 @@ nav .brand-logo {
 	color: rgb(238, 110, 115);
 }
 
-.record-categories{
+.record-categories {
 	padding: 0 0 0 5px;
 }
 
@@ -167,7 +185,6 @@ nav .brand-logo {
 	color: rgb(238, 110, 115);
 }
 
-
 .calendar {
 	padding: 10px;
 }
@@ -181,13 +198,7 @@ nav .brand-logo {
 	opacity: 0.8;
 }
 
-.post-title {
-	padding: 0 0 0 20px;
-}
 
-.postbody {
-	padding: 20px 0 10px 20px;
-}
 
 .setting-update {
 	margin: 10px 10px 10px 0;
@@ -197,16 +208,7 @@ nav .brand-logo {
 	font-size: 12px;
 }
 
-textarea {
-	width: 100%;
-	height: 200px;
-	padding: 5px;
-	border-radius: 5px;
-	border: 1px solid #ccc;
-	appearance: none;
-	-webkit-appearance: none;
-	-moz-appearance: none;
-}
+
 
 .postbtn {
 	bottom: 40px;
@@ -215,17 +217,106 @@ textarea {
 	position: fixed;
 }
 
-
 .postbtnword {
 	font-size: 20px;
 }
 
 /* Post */
 
-.search{
+/* 投稿カテゴリアイコン用設定 */
+
+/*健康・ダイエット*/
+.fa-weight {
+	color: rgb(124, 252, 0);
+	padding: 0 4px 0 0px;
+}
+
+/*出産・子育て*/
+.fa-child {
+	color: rgb(255, 182, 193);
+	padding: 0 5px 0 3px;
+}
+
+/*ペット*/
+.fa-paw {
+	color: rgb(50, 205, 50);
+	padding: 0 6px 0 1px;
+}
+
+/*ライフプラン*/
+.fa-clipboard-list {
+	color: rgb(70, 130, 180);
+	padding: 0 4px 0 4px;
+}
+
+/*冠婚葬祭*/
+.fa-user-tie {
+	color: rgb(30, 144, 255);
+	padding: 0 6px 0 2px;
+}
+
+textarea {
+	width: 100%;
+	height: 150px;
+	padding: 10px;
+	border-radius: 5px;
+	border: 1px solid #ccc;
+	appearance: none;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+}
+
+.search {
 	display: none;
 }
 
-.categories{
+.categories {
 	padding: 0 0 0 5px;
 }
+
+.comment-like{
+	padding:0 10px 0px 0px;
+	font-size:9px;
+}
+
+.post-title{
+	padding:0 0 0 10px;
+	font-weight: bold;
+	font-size:13px;
+}
+
+.postbody {
+	padding: 0 0 10px 0;
+}
+.postdetail-post-title{
+	font-weight: bold;
+	font-size:16px;
+	
+}
+.postdetail-postbody{
+	padding: 30px 10px 20px 10px ;
+}
+
+.user-icon{
+	padding:0 10px 0 0;
+}
+
+.postuser{
+	padding:10px 0 2px 0;
+}
+
+@media only screen and (min-width:1200px) {
+	.post-title {
+		font-size: 20px;
+	}
+	.comment-like{
+	    font-size: 15px;
+	}
+	
+	.postdetail-post-title{
+	font-weight: bold;
+	font-size:20px;
+	}
+}
+
+

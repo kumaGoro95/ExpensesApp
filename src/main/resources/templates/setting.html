@@ -19,7 +19,10 @@
 </head>
 <body>
 	<div class="container">
-		<div class="row card hoverable">
+	<div class="row">
+	<div class="col s2"></div>
+	<div class="col s8">
+		<div class="card forms">
 			<div class="card-content">
 				<div class="card-title center">プロフィール編集</div>
 				<div class="row"></div>
@@ -29,55 +32,33 @@
 					<img th:src="@{/icons/__${user.icon}__}">
 				</div>
 
-					<form enctype="multipart/form-data" th:action="@{/setting}" method="post"
-					novalidate>
-						<div class="file-field input-field">
-							<div class="btn">
-								<span>アイコン画像選択</span> <input type="file"
-									th:field="${file.uploadedFile}">
-							</div>
-							<div class="file-path-wrapper">
-								<input class="file-path validate" type="text" th:field="${user.icon}">
-							</div>
+				<form enctype="multipart/form-data" th:action="@{/setting}"
+					method="post" novalidate>
+					<div class="file-field input-field">
+						<div class="btn">
+							<span>アイコン画像選択</span> <input type="file"
+								th:field="${file.uploadedFile}">
 						</div>
+						<div class="file-path-wrapper">
+							<input class="file-path validate" type="text"
+								th:field="${user.icon}">
+						</div>
+					</div>
 
-					<input type="hidden" name="username" th:value="${user.username}" /> <input
-						type="hidden" name="createdAt" th:value="${user.createdAt}" /> <input
-						type="hidden" name="role" th:value="${user.role}" /> <input
+					<input type="hidden" name="username" th:value="${user.username}" />
+					<input type="hidden" name="createdAt" th:value="${user.createdAt}" />
+					<input type="hidden" name="role" th:value="${user.role}" /> <input
 						type="hidden" name="password" th:value="${user.password}" />
 					<div class="form-group">
-						<label for="name"> ユーザー名（〇文字以内） </label> <input type="text"
+						<label for="name">ユーザー名（2文字以上20文字以内） </label> <input type="text"
 							th:errorclass="is-invalid" th:field="${user.userNickname}">
 						<div class="invalid-feedback" th:errors="${user.userNickname}"></div>
 					</div>
 					<div class="form-group">
-						<label for="email"> メールアドレス </label> <input type="email"
+						<label for="email">メールアドレス </label> <input type="email"
 							th:errorclass="is-invalid" th:field="${user.email}">
 						<div class="invalid-feedback" th:errors="${user.email}"></div>
 					</div>
-
-					<div class="form-group">
-						<label for="gender"> 性別 </label>
-						<div
-							th:each="gender:${T(com.example.demo.util.GenderType).GENDERS}">
-							<p>
-								<label> <input class="with-gap" type="radio"
-									th:errorclass="is-invalid" th:field="${user.gender}"
-									th:value="${gender.key}"> <span
-									th:for="${#ids.prev('gender')}" th:text="${gender.value}">
-										<div class="invalid-feedback" th:errors="${user.gender}"></div>
-								</span>
-								</label>
-							</p>
-						</div>
-					</div>
-
-
-					<label for="dateOfBirth">生年月日</label> <input type="text"
-						class="datepicker" value="2000-01-01" th:errorclass="is-invalid"
-						th:field="${user.dateOfBirth}" />
-					<div class="invalid-feedback" th:errors="${user.dateOfBirth}"></div>
-					<div class="form-check"></div>
 
 					<div class="form-group">
 						<label for="budget">月の予算</label> <input type="number"
@@ -85,13 +66,24 @@
 						<div class="invalid-feedback" th:errors="${user.budget}"></div>
 					</div>
 
-					<button class="btn setting-update">更新</button>
-					<a th:href="@{/passwordSetting}">パスワード変更</a>
+					<div class="form-group">
+						<label for="textarea1">自己紹介(300文字以内)</label>
+						<textarea id="textarea1" class="materialize-textarea"
+							th:errorclass="is-invalid" th:field="${user.introduce}"></textarea>
+
+						<div class="invalid-feedback" th:errors="${user.introduce}"></div>
+					</div>
+<div class="center">
+					<button class="waves-effect waves-light btn setting-update">更新</button>
+					</div>
+					<a th:href="@{/passwordSetting}">パスワード変更</a><br><br>
+					<a th:href="@{/deleteUser}">退会する</a>
 				</form>
 			</div>
+			</div>
+			<div class="col2"></div>
 		</div>
-
-		<a th:href="@{/deleteUser}">退会する</a>
+		</div>
 
 	</div>
 	<script>

@@ -22,7 +22,7 @@
 	<div class="container" th:inline="text">
 		<div class="row"></div>
 		<div class="row">
-			<div class="col s8">
+			<div class="col s9">
 				<div class="card">
 					<div class="card-content">
 						<div class="row">
@@ -71,6 +71,25 @@
 							<canvas id="expenseChart"
 								style="display: block; height: 320px; width: 640px;" width="800"
 								height="400" class="chartjs-render-monitor"></canvas>
+							<div class="row"></div>
+							<div class="exChart-category center">
+								<i th:class="${categoriesToIcon.get(1)}+' fa-lg'"></i>[[${categories.get(1)}]]&emsp;&emsp;&emsp;&emsp;
+								<i th:class="${categoriesToIcon.get(2)}+' fa-lg'"></i>[[${categories.get(2)}]]&emsp;&emsp;&emsp;
+								<i th:class="${categoriesToIcon.get(3)}+' fa-lg'"></i>[[${categories.get(3)}]]&emsp;&emsp;&emsp;
+								<i th:class="${categoriesToIcon.get(4)}+' fa-lg'"></i>[[${categories.get(4)}]]&emsp;&emsp;&emsp;<br>
+								<i th:class="${categoriesToIcon.get(5)}+' fa-lg'"></i>[[${categories.get(5)}]]&emsp;
+								<i th:class="${categoriesToIcon.get(6)}+' fa-lg'"></i>[[${categories.get(6)}]]&emsp;&emsp;&emsp;
+								<i th:class="${categoriesToIcon.get(7)}+' fa-lg'"></i>[[${categories.get(7)}]]&emsp;
+								<i th:class="${categoriesToIcon.get(8)}+' fa-lg'"></i>[[${categories.get(8)}]]&emsp;<br>
+								<i th:class="${categoriesToIcon.get(9)}+' fa-lg'"></i>[[${categories.get(9)}]]&emsp;&emsp;&emsp;
+								<i th:class="${categoriesToIcon.get(10)}+' fa-lg'"></i>[[${categories.get(10)}]]&emsp;
+								<i th:class="${categoriesToIcon.get(11)}+' fa-lg'"></i>[[${categories.get(11)}]]&emsp;
+								<i th:class="${categoriesToIcon.get(12)}+' fa-lg'"></i>[[${categories.get(12)}]]&emsp;<br>
+								<i th:class="${categoriesToIcon.get(13)}+' fa-lg'"></i>[[${categories.get(13)}]]&emsp;&emsp;
+								<i th:class="${categoriesToIcon.get(14)}+' fa-lg'"></i>[[${categories.get(14)}]]&emsp;&emsp;&emsp;
+								<i th:class="${categoriesToIcon.get(15)}+' fa-lg'"></i>[[${categories.get(15)}]]&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+
+							</div>
 							<div class="center">
 								<span class="noData" th:if="${expenseData == checknull}"><h6>表示できるデータがありません</h6></span>
 							</div>
@@ -118,10 +137,11 @@
 
 				</div>
 			</div>
-			<div class="col s4">
+			<div class="col s3">
 				<div class="row card">
 					<div class="card-content">
-						<h6 class="center gray-text">家計簿入力</h6>
+						<h5 class="center gray-text">家計簿入力</h5>
+						<div class="row"></div>
 						<form th:action="@{/record}" th:object="${moneyRecord}"
 							method="post" novalidate>
 							<input type="hidden" name="username" th:value="${user.username}" />
@@ -137,34 +157,46 @@
 								<div class="invalid-feedback" th:errors="*{incomeAndExpense}"></div>
 							</div>
 							<div class="form-group">
+								<label for="category">カテゴリ</label>
 								<div class="input-field col s12">
-									<select th:field="*{categoryId}">
-										<div th:each="category, index : ${categories}"
+									<div class="pulldownset">
+
+										<!-- 大カテゴリのプルダウン -->
+										<select name="mainselect">
+											<span th:each="category, index : ${categories}"
 											th:inline="text">
-											<optgroup th:label="${category['value']}">
-												<div th:each="subcategory : ${subcategories}"
-													th:inline="text">
-													<th:block
-														th:if="${subcategory.categoryCode == category['key']}">
-														<option th:value="${subcategory.categoryId}">[[${subcategory.subcategoryName}]]</option>
-													</th:block>
-											</optgroup>
-										</div>
-									</select> <label for="recordDate">カテゴリ</label>
+												<option th:value="${category['key']}"
+													th:class="${category['key']}">[[${category['value']}]]</option>
+										</span>
+										</select>
+
+										<!-- 小カテゴリのプルダウン -->
+											<select name="subbox"
+											th:field="*{categoryId}">
+											<option value=1 selected="selected" class="msg">都市を選択して下さい</option>
+												<span th:each="subcategory : ${subcategories}"
+												th:inline="text">
+														<option th:class="${subcategory.categoryCode}"
+															th:value="${subcategory.categoryId}">[[${subcategory.subcategoryName}]]</option>
+											</span>
+										</select>
+									</div>
 								</div>
-							</div>
+								</div>
 
 
-							<div class="form-group">
-								<label for="note">備考</label>
-								<textarea rows="10" cols="30" th:errorclass="is-invalid"
-									th:field="*{note}"></textarea>
-								<div class="invalid-feedback" th:errors="*{note}"></div>
-							</div>
-							<div class="center">
-							<button class="waves-effect waves-light btn-large">
-								記録する <i class="material-icons right">note_add</i>
-							</button></div>
+								<div class="form-group">
+									<label for="textarea1">備考</label>
+									<textarea id="textarea1" class="materialize-textarea"
+										th:errorclass="is-invalid" th:field="*{note}"></textarea>
+
+									<div class="invalid-feedback" th:errors="*{note}"></div>
+								</div>
+								<div class="center">
+									<button class="waves-effect waves-light btn-large">
+										記録する <i class="material-icons right">note_add</i>
+									</button>
+								</div>
 						</form>
 					</div>
 				</div>
@@ -216,14 +248,52 @@
       }]
     },
     options: {
+    	responsive: true,
+    	legend: {
+    		display:false
+    	},
       title: {
         display: true,
-        text: '支出の内訳'
+        text: '支出内訳',
+        fontSize:20
       }
     }
   });
   
-
+  
+  $(function() {
+  	
+  	// 国名が変更されたら発動
+  	$('select[name="mainselect"]').change(function() {
+  		
+  		// 選択されている国のクラス名を取得
+  		var category = $('select[name="mainselect"] option:selected').attr("class");
+  		
+  	    // 都市名の要素数を取得
+		var count = $('select[name="categoryId"]').children().length;
+		
+		// 都市名の要素数分、for文で回す
+		for (var i=0; i<count; i++) {
+			
+			var subcategory = $('select[name="categoryId"] option:eq(' + i + ')');
+			console.log("サブカテゴリ" + subcategory.attr("class"));
+			console.log("カテゴリ" + category);
+			console.log(subcategory.attr("class") == category);
+			
+			if(subcategory.attr("class") === category) {
+				// 選択した国と同じクラス名だった場合
+				
+				// 都市の要素を表示
+				$('select[name="categoryId"] option:eq(' + i + ')').show();
+			}else {
+				// 選択した国とクラス名が違った場合
+				
+				// 都市の要素を非表示
+				subcategory.css("visibility", "hidden");
+			}
+		}
+	})
+})
 
 	$(document).ready(
 			function() {
@@ -259,42 +329,7 @@
 						});
 			});
 	
-	var ctx = document.getElementById("total");
-	  var myBarChart = new Chart(ctx, {
-	    type: 'bar',
-	    data: {
-	      labels: [],
-	      datasets: [
-	        {
-	          label: '月',
-	          data: [[${total}]],
-	          backgroundColor: "rgba(219,39,91,0.5)"
-	        },{
-	          label: '日',
-	          data: [11],
-	          backgroundColor: "rgba(130,201,169,0.5)"
-	        }
-	      ]
-	    },
-	    options: {
-	      title: {
-	        display: true,
-	        text: '合計'
-	      },
-	      scales: {
-	        yAxes: [{
-	          ticks: {
-	            suggestedMax: 100,
-	            suggestedMin: 0,
-	            stepSize: 10,
-	            callback: function(value, index, values){
-	              return  value +  '%'
-	            }
-	          }
-	        }]
-	      },
-	    }
-	  });
+	
 </script>
 
 </body>
