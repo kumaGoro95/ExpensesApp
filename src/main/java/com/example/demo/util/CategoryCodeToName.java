@@ -19,7 +19,7 @@ public class CategoryCodeToName {
 		categories.put(7, "衣服・美容");
 		categories.put(8, "健康・医療");
 		categories.put(9, "通信費");
-		categories.put(10, "水道・光熱費");
+		categories.put(10, "水道光熱費");
 		categories.put(11, "家・クルマ");
 		categories.put(12, "税金・保険");
 		categories.put(13, "大型出費");

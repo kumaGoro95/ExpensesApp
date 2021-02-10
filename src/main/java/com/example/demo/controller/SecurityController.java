@@ -98,6 +98,6 @@ public class SecurityController {
 
 		redirectAttributes.addFlashAttribute("flashMsg", "登録しました");
 
-		return "redirect:/?register";
+		return "redirect:/top?register";
 	}
 }

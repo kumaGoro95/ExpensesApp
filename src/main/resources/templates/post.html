@@ -19,38 +19,52 @@
 </head>
 <body>
 	<div class="container">
-		<div class="row card hoverable">
-			<div class="card-content">
-				<h3 class="card-title center">投稿</h3>
-				<p>節約のコツ、悩みを共有しよう！</p>
-				<form th:action="@{/post}" th:object="${post}" method="post"
-					novalidate>
-					<input type="hidden" name="username" th:value="${user.username}" />
-					<div class="form-group">
-						<label>タイトル</label> <input type="text" th:field="*{postTitle}"
-							placeholder="安くて品質のいい化粧水を探してます！">
-					</div>
-					<div class="form-group">
-						<textarea rows="10" cols="40" th:errorclass="is-invalid"
-							th:field="*{postBody}" placeholder="本文"></textarea>
-						<div class="invalid-feedback" th:errors="*{postBody}"></div>
-					</div>
+		<div class="row">
+			<div class="col s2"></div>
+			<div class="col s8">
+				<div class="card forms">
+					<div class="card-content">
+						<h3 class="card-title center">質問投稿</h3>
+						<p class="center">節約でわからないこと・悩んでることを相談してみよう！</p>
+						<div class="row"></div>
+						<form th:action="@{/post}" th:object="${post}" method="post"
+							novalidate>
+							<input type="hidden" name="username" th:value="${user.username}" />
+							<div class="form-group">
+								<label>タイトル</label> <input type="text" th:field="*{postTitle}"
+									placeholder="安くて品質のいい化粧水を探してます！">
 
-					<div class="form-group">
-						<div class="input-field col s12">
-							<select th:field="*{postCategory}">
-								<option value="0" disabled selected>カテゴリを選択してください</option>
-								<span th:each="postCategory: ${postCategories}" th:inline="text">
-									<option th:value="${postCategory['key']}">[[${postCategory['value']}]]</option>
-							</span>
-							</select> <label>カテゴリ</label>
-						</div>
-					</div>
+							</div>
+							<div class="row"></div>
+							<div class="form-group">
+								<textarea rows="10" cols="40" th:errorclass="is-invalid"
+									th:field="*{postBody}" placeholder="本文"></textarea>
+								<div class="invalid-feedback" th:errors="*{postBody}"></div>
+							</div>
+							<div class="row"></div>
+							<div class="form-group">
+								<div class="input-field col s12">
+									<select th:field="*{postCategory}">
+										<option value="0" disabled selected>カテゴリを選択してください</option>
+										<span th:each="postCategory: ${postCategories}"
+										th:inline="text">
+											<option th:value="${postCategory['key']}">[[${postCategory['value']}]]</option>
+									</span>
+									</select>
+									<div class="invalid-feedback" th:errors="*{postCategory}"></div>
+									<label>カテゴリ</label>
+								</div>
+							</div>
 
-					<div class="form-check"></div>
-					<button class="btn">登録</button>
-				</form>
+							<div class="form-check"></div>
+							<div class="center">
+								<button class="waves-effect waves-light btn">投稿する</button>
+							</div>
+						</form>
+					</div>
+				</div>
 			</div>
+			<div class="col s2"></div>
 		</div>
 	</div>
 	<script>

@@ -23,11 +23,10 @@
 				<div class="card">
 					<div class="card-content">
 						<div class="card-title center">検索</div>
-						<form class="row s12" th:action="@{/search}" th:object="${swords}"
-							method="post">
+						<form th:action="@{/search}" th:object="${swords}" method="post">
 							<div class="input-field">
 								<i class="material-icons prefix">search</i> <input
-									id="input_text" type="text" data-length="10" th:field="*{word}">
+									id="input_text" type="text" data-length="20" th:field="*{word}">
 								<label for="icon_prefix2">検索ワード</label>
 								<div class="col s12 center">
 									<button class="waves-effect waves-light btn">実行</button>
@@ -37,14 +36,19 @@
 					</div>
 				</div>
 
+				<div class="row"></div>
+
 				<div class="card">
 					<div class="card-content">
-						<div class="card-title center"><h5>カテゴリ</h5></div>
+						<div class="card-title center">
+							<h5>カテゴリ</h5>
+						</div>
 						<div class="row"></div>
 						<span th:each="postCategory : ${postCategories}" th:inline="text">
 							<ul>
 								<li><a th:href="@{/showPost/__${postCategory['key']}__}"><i
-													th:class="${postCategoriesToIcon.get(postCategory['key'])}+' fa-lg'"></i><span class="black-text categories">[[${postCategory['value']}]]</span></a></li>
+										th:class="${postCategoriesToIcon.get(postCategory['key'])}+' fa-lg'"></i><span
+										class="black-text categories">[[${postCategory['value']}]]</span></a></li>
 							</ul>
 
 						</span>
@@ -52,40 +56,45 @@
 				</div>
 			</div>
 			<div class="col s8">
-			<div class="row center">
-						<span th:if="${checknull == false}"><h5>投稿はありません</h5></span>
-					</div>
+				<div class="row center">
+					<span th:if="${checknull == false}"><h5>投稿はありません</h5></span>
+				</div>
 
 				<div th:each="post : ${posts}" th:inline="text">
 					<div class="card posts">
 						<div class="card-content">
 							<div class="row">
 								<div class="left">
-									<h5>
-										<a th:href="@{/post/__${post.postId}__}">[[${post.postTitle}]]</a>
-									</h5>
+									<h6 class="post-title">
+										<a th:href="@{/post/__${post.postId}__}"><span
+											class="black-text">[[${post.postTitle}]]</span></a>
+									</h6>
 								</div>
-								<div class="right">
-									<i class="fas fa-heart fa-lg pink-text text-accent-2"></i>[[${likeCount.get(post.postId)}]] 
-									<i class="far fa-comment-dots fa-lg"></i>[[${commentCount.get(post.postId)}]]
+								<div class="right comment-like">
+									<i class="far fa-comment-dots fa-lg"></i>コメント数：[[${commentCount.get(post.postId)}]]<br>
+									<i class="fas fa-paperclip fa-lg red-text text-accent-3"></i>お気に入り：[[${likeCount.get(post.postId)}]]
 								</div>
 							</div>
 							<div class="postbody">[[${post.postBody}]]</div>
-							<br>
 							<div class="divider"></div>
 							<div class="left">
-									<div class="post-createdAt">投稿日時：[[${#temporals.format(post.createdAt, 'yyyy-MM-dd HH:ss')}]]</div></div>
+								<div class="post-createdAt">投稿日時：[[${#temporals.format(post.createdAt,
+									'yyyy-MM-dd HH:ss')}]]</div>
+							</div>
 							<div class="right">
-									<div class="post-category"><a th:href="@{/showPost/__${post.postCategory}__}"><i
-													th:class="${postCategoriesToIcon.get(post.postCategory)}+' fa-lg'"></i><span class="black-text categories">[[${postCategories.get(post.postCategory)}]]</span></a></div>
-									</div>
+								<div class="post-category">
+									<a th:href="@{/showPost/__${post.postCategory}__}"><i
+										th:class="${postCategoriesToIcon.get(post.postCategory)}+' fa-lg'"></i><span
+										class="black-text categories">[[${postCategories.get(post.postCategory)}]]</span></a>
+								</div>
+							</div>
 						</div>
 					</div>
 
 				</div>
 				<a th:href="@{/post}">
 					<button class="waves-effect waves-light btn-large postbtn">
-						共有する<i class="material-icons right">note_add</i>
+						質問する<i class="material-icons right">note_add</i>
 					</button>
 				</a>
 			</div>

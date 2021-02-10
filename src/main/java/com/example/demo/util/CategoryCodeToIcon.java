@@ -16,9 +16,9 @@ public class CategoryCodeToIcon {
 		categoriesToIcon.put(4, "fas fa-glass-cheers");
 		categoriesToIcon.put(5, "fas fa-music");
 		categoriesToIcon.put(6, "fas fa-book");
-		categoriesToIcon.put(7, "fas fa-tshirt");
+		categoriesToIcon.put(7, "fas fa-magic");
 		categoriesToIcon.put(8, "fas fa-notes-medical");
-		categoriesToIcon.put(9, "fas fa-wifi");
+		categoriesToIcon.put(9, "fas fa-mobile-alt");
 		categoriesToIcon.put(10, "fas fa-burn");
 		categoriesToIcon.put(11, "fas fa-home");
 		categoriesToIcon.put(12, "fas fa-money-check");

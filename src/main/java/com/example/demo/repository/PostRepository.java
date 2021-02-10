@@ -89,6 +89,29 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 		List<PostByNickname> returnList = list.stream().map(PostByNickname::new).collect(Collectors.toList());
 		return returnList;
 	}
+	
+	//固有のユーザーがお気に入りした投稿を取得
+	@Query(value = "select P.post_id, P.post_category, L.user_id, U.user_name, post_title, post_body, P.created_at, P.updated_at "
+			+ "from posts P inner join likes L on P.post_id = L.post_id "
+			+ "inner join users U on U.user_id = L.user_id where L.user_id = :username", nativeQuery = true)
+	public List<Object[]> getLikedPostsByUsername(@Param("username") String username);
+
+	default List<PostByNickname> findLikedPostsByUsername(String username) {
+		List<Object[]> list = getLikedPostsByUsername(username);
+		for (int i = 0; i < list.size(); i++) {
+			Timestamp tst1 = (Timestamp) list.get(i)[6];
+			LocalDateTime ldt1 = tst1.toLocalDateTime();
+			list.get(i)[6] = ldt1;
+
+			if (list.get(i)[7] != null) {
+				Timestamp tst2 = (Timestamp) list.get(i)[7];
+				LocalDateTime ldt2 = tst2.toLocalDateTime();
+				list.get(i)[7] = ldt2;
+			}
+		}
+		List<PostByNickname> returnList = list.stream().map(PostByNickname::new).collect(Collectors.toList());
+		return returnList;
+	}
 
 	// postIdで検索
 	@Query(value = "select post_id, post_category, U.user_id, U.user_name, post_title, post_body, P.created_at, P.updated_at "

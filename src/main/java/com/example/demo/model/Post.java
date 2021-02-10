@@ -8,6 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.Length;
@@ -29,7 +30,7 @@ public class Post{
 	@Column(name = "post_id")
 	private int postId;
 	
-	@NotNull
+	@Min(1)
 	@Column(name = "post_category")
 	private int postCategory;
 	

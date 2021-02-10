@@ -83,22 +83,52 @@ public class PostService {
 	// 投稿一覧を取得（posthome用）
 	public List<PostByNickname> getAllPosts() {
 		List<PostByNickname> posts = postRepository.findAllPosts();
-		
+
 		List<PostByNickname> allPosts = adjustPostBody(posts);
-		
+
 		return allPosts;
 	}
+
+	//特定のユーザーの投稿を取得
+	public List<PostByNickname> getSpecificPosts(String username) {
+		List<PostByNickname> posts = postRepository.findAllPostsByUsername(username);
+
+		List<PostByNickname> specificPosts = adjustPostBody(posts);
+
+		return specificPosts;
+
+	}
 	
+	//特定のユーザーの「お気に入り」投稿を取得
+	public List<PostByNickname> getLikedPosts(String username) {
+		List<PostByNickname> posts = postRepository.findLikedPostsByUsername(username);
+		System.out.println(posts.size());
+
+		List<PostByNickname> specificPosts = adjustPostBody(posts);
+
+		return specificPosts;
+
+	}
 	
-	//投稿本文省略メソッド（posthome用）
+
+	// 投稿タイトル・本文省略メソッド（posthome用）
 	public List<PostByNickname> adjustPostBody(List<PostByNickname> posts) {
 		List<PostByNickname> adjustedPosts = posts;
+
+		// 本文省略
 		for (int i = 0; i < adjustedPosts.size(); i++) {
 			if (adjustedPosts.get(i).getPostBody().length() > 40) {
 				adjustedPosts.get(i).setPostBody(adjustedPosts.get(i).getPostBody().substring(0, 40) + "…");
 			}
 		}
-		
+
+		// タイトル省略
+		for (int i = 0; i < adjustedPosts.size(); i++) {
+			if (adjustedPosts.get(i).getPostTitle().length() > 20) {
+				adjustedPosts.get(i).setPostTitle(adjustedPosts.get(i).getPostTitle().substring(0, 20) + "…");
+			}
+		}
+
 		return adjustedPosts;
 	}
 

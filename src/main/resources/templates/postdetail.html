@@ -38,13 +38,16 @@
 						</div>
 					</div>
 
+					<div class="row"></div>
+
 					<div class="card">
 						<div class="card-content">
 							<div class="card-title center">カテゴリ</div>
 							<span th:each="postCategory : ${postCategories}" th:inline="text">
 								<ul>
 									<li><a th:href="@{/showPost/__${postCategory['key']}__}"><i
-													th:class="${postCategoriesToIcon.get(postCategory['key'])}+' fa-lg'"></i><span class="black-text categories">[[${postCategory['value']}]]</span></a></li>
+											th:class="${postCategoriesToIcon.get(postCategory['key'])}+' fa-lg'"></i><span
+											class="black-text categories">[[${postCategory['value']}]]</span></a></li>
 								</ul>
 
 							</span>
@@ -55,15 +58,7 @@
 				<div class="col s8">
 					<div class="card">
 						<div class="card-content">
-							<h5 class="post-title">[[${post.postTitle}]]</h5>
-							投稿日時：[[${#temporals.format(post.createdAt, 'yyyy-MM-dd HH:ss')}]] 
-							<div class="right">
-								<div class="post-category">
-									<a th:href="@{/showPost/__${post.postCategory}__}"><i
-													th:class="${postCategoriesToIcon.get(post.postCategory)}+' fa-lg'"></i><span class="black-text categories">[[${postCategories.get(post.postCategory)}]]</span></a>
-								</div>
-							</div>
-							<div class="row postbody">[[${post.postBody}]]</div>
+							<h5 class="postdetail-post-title left">[[${post.postTitle}]]</h5>
 							<div class="right">
 								<span th:if="${user.username == post.username}"> <a
 									class="dropdown-trigger" href="#!" data-target="dropdown-post"><i
@@ -74,31 +69,52 @@
 										<li><a th:href="@{/deletePost/__${post.postId}__}">削除</a></li>
 									</ul></span>
 							</div>
-							<div class="user-icon left">
-								<img th:src="@{/icons/お天気　雨のフリーアイコン.jpg}">
+							<div class="row"></div>
+							投稿日時：[[${#temporals.format(post.createdAt, 'yyyy-MM-dd HH:ss')}]]
+							<div class="right">
+								<div class="post-category">
+									<a th:href="@{/showPost/__${post.postCategory}__}"><i
+										th:class="${postCategoriesToIcon.get(post.postCategory)}+' fa-lg'"></i><span
+										class="black-text categories">[[${postCategories.get(post.postCategory)}]]</span></a>
+								</div>
 							</div>
-							<a th:href="@{/userdetail/__${post.username}__}"><h6
-									class="black-text">[[${post.userNickname}]]</h6></a>
-									<div class="row"></div>
+							<div class="row postdetail-postbody">[[${post.postBody}]]</div>
+
+
+							<div class="user-icon left">
+								<a th:href="@{/userdetail/__${post.username}__}"> <img
+									th:src="@{/icons/__${user.icon}__}">
+								</a>
+							</div>
+							<div class="postuser">
+								<p class="black-text">投稿者</p>
+								<p class="black-text">
+									<a th:href="@{/userdetail/__${post.username}__}">[[${post.userNickname}]]</a>
+								</p>
+							</div>
+							<div class="row"></div>
 							<div class="divider"></div>
 
 
+
 							<div class="right">
-								<i class="far fa-comment-dots fa-2x"></i>[[${commentCount.get(post.postId)}]]
+								<span class="black-text">お気に入りに登録 </span>
 								<th:block th:if="${myLikes.contains(post.postId) == true}">
 									<a th:href="@{/like/__${post.postId}__}"><i
-										class="fas fa-heart fa-2x pink-text text-accent-2"></i></a>[[${likeCount.get(post.postId)}]]
+										class="fas fa-paperclip fa-2x red-text text-accent-3"></i></a>[[${likeCount.get(post.postId)}]]
 									</th:block>
 								<th:block th:unless="${myLikes.contains(post.postId) == true}">
 									<a th:href="@{/like/__${post.postId}__}"><i
-										class="far fa-heart fa-2x pink-text text-accent-2"></i></a>[[${likeCount.get(post.postId)}]]
+										class="fas fa-paperclip fa-2x grey-text"></i></a>[[${likeCount.get(post.postId)}]]
 									</th:block>
 							</div>
 						</div>
 					</div>
+					<div class="row"></div>
 					<div class="row center">
 						<span th:if="${commentCount.get(post.postId) == 0}"><h5>コメントはまだありません</h5></span>
 					</div>
+					<div class="row"></div>
 					<span th:each="comment : ${comments}" th:inline="text">
 						<div class="card">
 							<div class="card-content">
@@ -134,14 +150,17 @@
 								<input type="hidden" name="username" th:value="${user.username}" />
 								<input type="hidden" name="postId" th:value="${post.postId}" />
 								<div class="form-group">
-									<label for="note">本文</label>
+									<label for="note">コメント</label>
 									<textarea rows="5" cols="40" th:errorclass="is-invalid"
 										th:field="*{commentBody}"></textarea>
 									<div class="invalid-feedback" th:errors="*{commentBody}"></div>
 								</div>
 
 								<div class="form-check"></div>
-								<button class="btn">登録</button>
+								<div class="row"></div>
+								<div class="center">
+									<button class="waves-effect waves-light btn">投稿する</button>
+								</div>
 							</form>
 						</div>
 					</div>

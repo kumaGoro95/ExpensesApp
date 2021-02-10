@@ -25,7 +25,7 @@ import java.nio.file.Paths;
 public class FileUploadService {
 	
 	//画像アップロード
-	public String uploadImage(HttpServletResponse response, MultipartFile file) {
+	public String uploadImage(HttpServletResponse response, MultipartFile file, String username) {
 		// ファイルが空の場合は HTTP 400 を返す。
 		if (file.isEmpty()) {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -39,7 +39,7 @@ public class FileUploadService {
 			FileCopyUtils.copy(in, out);
 			
 			//画像のリサイズ
-			String filename = resizingImage(file.getOriginalFilename());
+			String filename = resizingImage(file.getOriginalFilename(), username);
 			
 			return filename;
 			
@@ -50,7 +50,7 @@ public class FileUploadService {
 	
 	
 	//リサイズする画像を取得し、リサイズする
-	public String resizingImage(String file) throws IOException{
+	public String resizingImage(String file, String username) throws IOException{
 			//拡張子を除いたファイル名を取得
 			int dotPlace = file.indexOf(".");
 			String filename = file.substring(0,dotPlace);
@@ -62,8 +62,8 @@ public class FileUploadService {
 			BufferedImage bi = scaleImage(new File(filepath), 120, 120);
 			
 			//リサイズ後のファイルを保存
-			String resizedFilepath = Paths.get("src/main/resources/static/icons/" + filename + ".jpg").toString();
-			String resizedFilename = filename + ".jpg";
+			String resizedFilepath = Paths.get("src/main/resources/static/icons/" + username + ".jpg").toString();
+			String resizedFilename = username + ".jpg";
 			
 			// 2番目の引数が画像の形式、3番目がファイル名
 			ImageIO.write(bi, "jpeg", new File(resizedFilepath));
