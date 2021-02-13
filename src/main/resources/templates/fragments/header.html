@@ -24,17 +24,17 @@
 							</a></li>
 						</ul>
 						<ul id="dropdown-header-record" class="dropdown-content">
-							<li><a th:href="@{/}"><i class="material-icons left">home</i>Top</a></li>
+							<li><a th:href="@{/}"><i class="material-icons left">home</i><span class="header-submenu">Top</span></a></li>
 							<li><a th:href="@{/showRecords}"><i
-									class="material-icons left">history</i>履歴</a></li>
+									class="material-icons left">history</i><span class="header-submenu">履歴</span></a></li>
 							<li><a th:href="@{/analysis}"><i
-									class="material-icons left">insert_chart</i>分析</a></li>
+									class="material-icons left">insert_chart</i><span class="header-submenu">分析</span></a></li>
 						</ul>
 						<ul id="dropdown-header-user" class="dropdown-content">
 							<li><a th:href="@{/mypage}"><i
-									class="material-icons left">settings</i>マイページ</a></li>
+									class="material-icons left">settings</i><span class="header-submenu">マイページ</span></a></li>
 							<li><a th:href="@{/logout}"><i
-									class="material-icons left">exit_to_app</i>ログアウト</a></li>
+									class="material-icons left">exit_to_app</i><span class="header-submenu">ログアウト</span></a></li>
 						</ul>
 					</span> <span th:if="${user.username == null}"> <a th:href="@{/}"
 						class="brand-logo">Piggy Bank<i
@@ -49,9 +49,9 @@
 			<!-- End of Header -->
 		</div>
 		<div class="row messagebar">
-			<div class="col s12 m4 l3"></div>
+			<div class="test"></div>
 			<th:block th:if="${flashMsg != null}">
-				<div class="col s12 m4 l6 light-green message" id="message">
+				<div class="test light-green message" id="message">
 					<h5 class="center-align yellow-text text-lighten-4"
 						th:text="${flashMsg}"></h5>
 				</div>

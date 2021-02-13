@@ -87,10 +87,7 @@
 								</a>
 							</div>
 							<div class="postuser">
-								<p class="black-text">投稿者</p>
-								<p class="black-text">
-									<a th:href="@{/userdetail/__${post.username}__}">[[${post.userNickname}]]</a>
-								</p>
+									<a th:href="@{/userdetail/__${post.username}__}"><h6 class="black-text">投稿者: [[${post.userNickname}]]</h6></a>
 							</div>
 							<div class="row"></div>
 							<div class="divider"></div>
@@ -131,15 +128,19 @@
 												th:href="@{/deleteComment/__${comment.commentId}__}">削除</a></li>
 										</ul></span>
 								</div>
-								<div class="left">
-									<i class="medium material-icons">face</i>
+								<div class="user-icon left">
+									<a th:href="@{/userdetail/__${post.username}__}"> <img
+										th:src="@{/icons/__${user.icon}__}">
+									</a>
 								</div>
-								<a th:href="@{/userdetail/__${comment.username}__}"><h5
-										class="black-text">[[${comment.userNickname}]]</h5></a>
+								<div class="commentuser">
+								<a th:href="@{/userdetail/__${comment.username}__}"><h6
+										class="black-text">[[${comment.userNickname}]]</h6></a>
 								[[${#temporals.format(post.createdAt, 'yyyy-MM-dd HH:ss')}]]
 								<div class="row"></div>
-								<div class="row commentbody">[[${comment.commentBody}]]</div>
+								<span class="row commentbody">[[${comment.commentBody}]]</span>
 							</div>
+						</div>
 						</div>
 					</span>
 					<div class="card">

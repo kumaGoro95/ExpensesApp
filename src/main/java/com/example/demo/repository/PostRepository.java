@@ -48,7 +48,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
 	// 全投稿を取得
 	@Query(value = "select post_id, post_category, U.user_id, U.user_name, post_title, post_body, P.created_at, P.updated_at "
-			+ "from posts P left join users U on P.user_id = U.user_id", nativeQuery = true)
+			+ "from posts P left join users U on P.user_id = U.user_id order by P.created_at desc", nativeQuery = true)
 	public List<Object[]> getAllPosts();
 
 	default List<PostByNickname> findAllPosts() {
@@ -70,7 +70,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
 	// 固有のユーザーの投稿を取得
 	@Query(value = "select post_id, post_category, U.user_id, U.user_name, post_title, post_body, P.created_at, P.updated_at "
-			+ "from posts P left join users U on P.user_id = U.user_id where P.user_id = :username", nativeQuery = true)
+			+ "from posts P left join users U on P.user_id = U.user_id where P.user_id = :username order by P.created_at desc", nativeQuery = true)
 	public List<Object[]> getAllPostsByUsername(@Param("username") String username);
 
 	default List<PostByNickname> findAllPostsByUsername(String username) {
@@ -93,7 +93,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 	//固有のユーザーがお気に入りした投稿を取得
 	@Query(value = "select P.post_id, P.post_category, L.user_id, U.user_name, post_title, post_body, P.created_at, P.updated_at "
 			+ "from posts P inner join likes L on P.post_id = L.post_id "
-			+ "inner join users U on U.user_id = L.user_id where L.user_id = :username", nativeQuery = true)
+			+ "inner join users U on U.user_id = L.user_id where L.user_id = :username order by P.created_at desc", nativeQuery = true)
 	public List<Object[]> getLikedPostsByUsername(@Param("username") String username);
 
 	default List<PostByNickname> findLikedPostsByUsername(String username) {
@@ -137,7 +137,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
 	//カテゴリで検索
 	@Query(value = "select post_id, post_category, U.user_id, U.user_name, post_title, post_body, P.created_at, P.updated_at "
-			+ "from posts P left join users U on P.user_id = U.user_id where P.post_category = :category", nativeQuery = true)
+			+ "from posts P left join users U on P.user_id = U.user_id where P.post_category = :category order by P.created_at desc", nativeQuery = true)
 	public List<Object[]> getPostByCategory(@Param("category") int category);
 
 	default List<PostByNickname> findPostByCategory(int category) {

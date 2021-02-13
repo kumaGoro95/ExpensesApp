@@ -102,8 +102,6 @@ public class PostService {
 	//特定のユーザーの「お気に入り」投稿を取得
 	public List<PostByNickname> getLikedPosts(String username) {
 		List<PostByNickname> posts = postRepository.findLikedPostsByUsername(username);
-		System.out.println(posts.size());
-
 		List<PostByNickname> specificPosts = adjustPostBody(posts);
 
 		return specificPosts;

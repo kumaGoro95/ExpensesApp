@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import com.example.demo.dao.MoneyRecordDaoImpl;
 import com.example.demo.model.Category;
@@ -213,6 +214,7 @@ public class RecordController {
 		return "record";
 	}
 
+	// 金額昇順
 	@GetMapping("/showRecords/orderByMoneyAsc/{categoryCode}/{startDate}/{endDate}")
 	public String showRecordsOrderByMoneyAsc(@ModelAttribute("categoryCode") String categoryCode,
 			@ModelAttribute("startDate") String startDate, @ModelAttribute("endDate") String endDate,
@@ -302,24 +304,39 @@ public class RecordController {
 
 	// カレンダーから一覧へ遷移
 	@GetMapping("/Records/{date}")
-	public String showRecordsByDate(@PathVariable("date") String date, Authentication loginUser, Model model) {
+	public String showRecordsByDate(@PathVariable("date") String date,
+			@ModelAttribute("refineCondition") RefineCondition refineCondition, Authentication loginUser, Model model) {
+
+		// カテゴリ一覧を取得
+		Map<Integer, String> categories = CategoryCodeToName.Categories;
+		Map<Integer, String> categoriesToIcon = CategoryCodeToIcon.CategoriesToIcon;
+
+		// 履歴データがあるかチェック用
+		List<MoneyRecordList> nullRecord = new ArrayList<MoneyRecordList>();
+
 		model.addAttribute("records", moneyRecordRepository.findOneDayRecord(loginUser.getName(), date));
 		model.addAttribute("user", userRepository.findByUsername(loginUser.getName()));
-		model.addAttribute("icon", "fas fa-utensils");
+		model.addAttribute("categoriesToIcon", categoriesToIcon);
+		model.addAttribute("categories", categories);
+		model.addAttribute("nullRecord", nullRecord);
 
 		return "record";
 	}
 
 	// 出入金記録を削除
 	@Transactional
-	@GetMapping("/deleteRecord/{recordId}")
-	public String deleteRecord(@PathVariable("recordId") int recordId, Model model,
-			RedirectAttributes redirectAttributes) {
+	@GetMapping("/deleteRecord/{recordId}/{pageNum}")
+	public String deleteRecord(@PathVariable("recordId") int recordId, @PathVariable("pageNum") int pageNum,
+			Model model, RedirectAttributes redirectAttributes, UriComponentsBuilder builder) {
 		moneyRecordRepository.deleteByRecordId(recordId);
 
 		redirectAttributes.addFlashAttribute("flashMsg", "削除しました");
 
-		return "redirect:/showRecords?showRecords";
+		if (pageNum == 1) {
+			return "redirect:/top?showRecords";
+		} else {
+			return "redirect:/showRecords?showRecords";
+		}
 	}
 
 	// 出入金記録編集画面へ遷移
@@ -456,7 +473,8 @@ public class RecordController {
 
 		// 今月の収支を計算
 		BigDecimal total = totalAmmountIncome.subtract(totalAmmountExpense);
-		BigDecimal totalRatio = currentUser.getBudget().subtract(totalAmmountExpense);
+		BigDecimal budget = currentUser.getBudget().setScale(0, RoundingMode.DOWN);
+		BigDecimal totalRatio = budget.subtract(totalAmmountExpense);
 
 		// 収支合計額表示
 		model.addAttribute("total", total);
@@ -500,6 +518,7 @@ public class RecordController {
 		return "analysis";
 	}
 
+	// 過去月の分析を表示
 	@GetMapping("/analysis/{month}")
 	// Authentication・・・認証済みのユーザー情報を取得
 	public String analysisByMonth(@PathVariable("month") String month, Authentication loginUser, Model model) {
