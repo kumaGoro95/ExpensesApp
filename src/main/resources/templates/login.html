@@ -24,6 +24,7 @@
 					<div class="card-content">
 						<h4 class="center gray-text">ログイン</h4>
 						<div class="row"></div>
+						<div class="row">
 						<div class="alert-danger" th:if="${param.error}">
 							<p>メールアドレスまたはパスワードが正しくありません</p>
 						</div>
@@ -33,18 +34,19 @@
 						<div class="alert-success" th:if="${param.logout}">
 							<p>ログアウトしました</p>
 						</div>
-						<form class="row s12" th:action="@{/login}" th:object="${user}"
+						</div>
+						<form  th:action="@{/login}" th:object="${user}"
 							method="post">
 							<div class="row">
 								<div class="input-field col s12">
 									<input type="text" name="email" placeholder="xxx@xxx.com">
-									<label for="address">メールアドレス</label>
+									<label for="address"><span class="label">メールアドレス</span></label>
 								</div>
 							</div>
 							<div class="row">
 								<div class="input-field col s12">
 									<input type="password" name="password" placeholder="password">
-									<label for="password">パスワード</label>
+									<label for="password"><span class="label">パスワード</span></label>
 								</div>
 							</div>
 							<div class="col s12 center">

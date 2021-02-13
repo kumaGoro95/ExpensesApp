@@ -153,7 +153,7 @@ public interface MoneyRecordRepository extends JpaRepository<MoneyRecord, Long> 
 	}
 
 	// 日ごとの支出合計を算出（カレンダー用）
-	@Query(value = "select CAST(concat(sum(income_and_expense), '円') as char), DATE_FORMAT(record_date, '%Y-%m-%d') "
+	@Query(value = "select CAST(concat(format(sum(income_and_expense), 0), '円') as char), DATE_FORMAT(record_date, '%Y-%m-%d') "
 			+ "from money_records where user_id = :username and category_id not like '99%' "
 			+ "group by record_date order by record_date asc", nativeQuery = true)
 	public List<Object[]> getDailyExpenseSummaries(@Param("username") String username);
@@ -163,7 +163,7 @@ public interface MoneyRecordRepository extends JpaRepository<MoneyRecord, Long> 
 	}
 
 	// 日ごとの収入合計を算出（カレンダー用）
-	@Query(value = "select CAST(concat(sum(income_and_expense), '円') as char), DATE_FORMAT(record_date, '%Y-%m-%d') "
+	@Query(value = "select CAST(concat(format(sum(income_and_expense), 0 ), '円') as char), DATE_FORMAT(record_date, '%Y-%m-%d') "
 			+ "from money_records where user_id = :username and category_id like '99%' "
 			+ "group by record_date order by record_date asc", nativeQuery = true)
 	public List<Object[]> getDailyIncomeSummaries(@Param("username") String username);

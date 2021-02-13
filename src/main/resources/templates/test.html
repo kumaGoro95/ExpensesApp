@@ -19,23 +19,92 @@
 </head>
 <body>
 	<div class="container">
-		<form id="form" enctype="multipart/form-data" th:action="@{/upload}"
-			method="post" th:object="${file}">
-			<div class="file-field input-field">
-				<div class="btn">
-					<span>アイコン画像選択</span> <input type="file" th:field="*{uploadedFile}">
-				</div>
-				<div class="file-path-wrapper">
-					<input class="file-path validate" type="text">
-				</div>
-				<button class="waves-effect waves-light btn">送信</button>
-			</div>
-		</form>
-		<span id="result" style="padding: 3px;"></span>
+		<div class="col s3">
+				<div class="row card">
+					<div class="card-content">
+						<h5 class="center gray-text">家計簿入力</h5>
+						<div class="row"></div>
+						<form th:action="@{/record}" th:object="${moneyRecord}"
+							method="post" novalidate>
+							<input type="hidden" name="username" th:value="${user.username}" />
+							<div class="form-group">
+								<label for="recordDate">日付</label> <input type="text"
+									class="datepicker" th:errorclass="is-invalid"
+									th:field="*{recordDate}">
+								<div class="invalid-feedback" th:errors="*{recordDate}"></div>
+							</div>
+							<div class="form-group">
+								<label for="incomeAndExpense">金額</label> <input type="number"
+									th:errorclass="is-invalid" th:field="*{incomeAndExpense}">
+								<div class="invalid-feedback" th:errors="*{incomeAndExpense}"></div>
+							</div>
+							
+							
+							
+							<div class="form-group">
+								<div class="test">
+									<select id="bigcategory">
+										<span th:each="category : ${categories}"
+											th:inline="text">
+											<option th:value="${category['key']}">[[${category['value']}]]</option>
+											</span>
+											</select>
+											
+											<span th:each="category : ${categories}"
+											th:inline="text">
+											<div id="smallcategory">
+											<select th:field="*{categoryId}">
+												<span th:each="subcategory : ${subcategories}"
+													th:inline="text">
+													<th:block
+														th:if="${subcategory.categoryCode == category['key']}">
+														<option th:value="${subcategory.categoryId}">[[${subcategory.subcategoryName}]]</option>
+														
+													</th:block>
+													</span>
+													</select>
+													</div>
+													</span>
+										<label for="recordDate">カテゴリ</label>
+								</div>
+							</div>
 
-	</div>
+
+								<div class="form-group">
+									<label for="textarea1">備考</label>
+									<textarea id="textarea1" class="materialize-textarea"
+										th:errorclass="is-invalid" th:field="*{note}"></textarea>
+
+									<div class="invalid-feedback" th:errors="*{note}"></div>
+								</div>
+								<div class="center">
+									<button class="waves-effect waves-light btn-large">
+										記録する <i class="material-icons right">note_add</i>
+									</button>
+								</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
 	<script type="text/javascript" th:inline="javascript">
+	$(function(){
+	    $('#bigcategory').bind('change',function(){
+	      var bigwordindex = $(this).prop('selectedIndex') - 1; 
+	      console.log(bigwordindex );
+	      if(bigwordindex < 0){
+	         $('#smallcategory select').removeClass('on');
+	      }else{
+	         $('#smallcategory select:not(:eq(bigwordindex)) option').attr('selected', false);
+	         $('#smallcategory select:not(:eq(bigwordindex))').removeClass('on');
+	         $('#smallcategory select').eq(bigwordindex).addClass('on');    
+	      }
+	    });
+	});
+	
+	
 		$('.dropdown-trigger').dropdown();
+
 		$(function() {
 			// アップロードボタンが押されたら実行。
 			$('#upload').click(function() {

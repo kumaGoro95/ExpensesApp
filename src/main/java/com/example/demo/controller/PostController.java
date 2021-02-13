@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import java.math.BigInteger;
+import java.net.URI;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import com.example.demo.model.Post;
 import com.example.demo.model.Like;
@@ -196,25 +198,31 @@ public class PostController {
 	// コメント投稿を実行
 	@PostMapping("/postComment")
 	public String postComment(@Validated @ModelAttribute("comment") PostComment comment, BindingResult result,
-			Authentication loginUser) {
+			Authentication loginUser, UriComponentsBuilder builder) {
+		
+		//リダイレクト先を指定
+		URI location = builder.path("/post/" + comment.getPostId()).build().toUri();
+		
 		if (result.hasErrors()) {
 			System.out.println(result);
 			System.out.println(comment.getCommentBody());
-			return "redirect:/post?post";
+			
+			return "redirect:" + location.toString();
 		}
 		LocalDateTime ldt = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
 
 		comment.setCreatedAt(ldt);
 		commentRepository.save(comment);
 
-		return "redirect:/postmain?postdetail";
+		return "redirect:" + location.toString();
+
 	}
 
 	// いいね実行
 	@RequestMapping("/like/{postId}")
 	@Transactional
 	public String Like(@PathVariable("postId") int postId, @ModelAttribute("like") Like like, Authentication loginUser,
-			Model model) {
+			Model model, UriComponentsBuilder builder) {
 		if (likeRepository.existsByUsernameAndPostId(loginUser.getName(), postId) == true) {
 			likeRepository.deleteByUsernameAndPostId(loginUser.getName(), postId);
 		} else {
@@ -225,7 +233,8 @@ public class PostController {
 			likeRepository.save(like);
 		}
 
-		return "redirect:/post?postdetail";
+		URI location = builder.path("/post/" + postId).build().toUri();
+	    return "redirect:" + location.toString();
 	}
 
 	// コメント削除

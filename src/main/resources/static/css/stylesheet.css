@@ -3,18 +3,46 @@ body {
 	background-color: rgb(255, 250, 250);
 }
 
+.tab-text{
+	font-size:16px;
+}
+
+.label{
+	display:block;
+	font-size:16px;
+}
+
+/* ヘッダー */
 nav .brand-logo {
 	padding: 0px 10px 0px 15px;
 }
 
-.backgroundimg img {
-	padding: 0px;
-	width: 100%;
+.header-submenu{
+	font-size: 14px;
 }
 
 .header-menu {
 	font-size: 18px;
 }
+
+.messagebar {
+	height: 50px;
+}
+
+.message {
+	border-radius: 5px;
+	padding:2px;
+	opacity: 0.8;
+}
+
+
+/* Index */
+.backgroundimg img {
+	padding: 0px;
+	width: 100%;
+}
+
+
 
 .card {
 	border-radius: 5px;
@@ -41,6 +69,12 @@ nav .brand-logo {
 /* Home */
 .exChart-category {
 	font-size: 12px;
+	padding:10px 0 0 0;
+}
+
+.exChart-top {
+	position: relative;
+	padding: 20px;
 }
 
 @media only screen and (min-width:1200px) {
@@ -49,6 +83,9 @@ nav .brand-logo {
 	}
 }
 
+.moneylabel {
+	font-size: 16px;
+}
 
 /* MoneyRecord */
 
@@ -156,12 +193,12 @@ nav .brand-logo {
 
 .exChart {
 	position: relative;
-	padding: 10px;
+	padding: 50px;
 }
 
-.incomeChart {
+.inChart {
 	position: relative;
-	padding: 10px;
+	padding: 50px;
 }
 
 .dailyTotal {
@@ -183,29 +220,18 @@ nav .brand-logo {
 
 .incomeDots {
 	color: rgb(238, 110, 115);
+	padding:0 5px 0 5px;
 }
 
 .calendar {
 	padding: 10px;
 }
 
-.messagebar {
-	height: 50px;
-}
-
-.message {
-	border-radius: 5px;
-	opacity: 0.8;
-}
 
 
 
 .setting-update {
 	margin: 10px 10px 10px 0;
-}
-
-.moneylabel {
-	font-size: 12px;
 }
 
 
@@ -274,10 +300,10 @@ textarea {
 	padding: 0 0 0 5px;
 }
 
-.comment-like{
-	padding:0 10px 0px 0px;
-	font-size:9px;
-}
+
+
+
+/* post部分 */
 
 .post-title{
 	padding:0 0 0 10px;
@@ -287,6 +313,7 @@ textarea {
 
 .postbody {
 	padding: 0 0 10px 0;
+	white-space: pre-wrap;
 }
 .postdetail-post-title{
 	font-weight: bold;
@@ -294,7 +321,8 @@ textarea {
 	
 }
 .postdetail-postbody{
-	padding: 30px 10px 20px 10px ;
+	padding: 30px 10px 20px 10px;
+	white-space: pre-wrap;
 }
 
 .user-icon{
@@ -303,6 +331,25 @@ textarea {
 
 .postuser{
 	padding:10px 0 2px 0;
+}
+
+.postuser h6{
+	padding:3px 0 0 0;
+}
+
+/*コメント部分*/
+.commentuser h6{
+	font-weight: bold;
+}
+
+.commentbody {
+  white-space: pre-wrap;
+  padding:0 0 0 15px;
+}
+
+.comment-like{
+	padding:0 10px 0px 0px;
+	font-size:9px;
 }
 
 @media only screen and (min-width:1200px) {
@@ -319,4 +366,17 @@ textarea {
 	}
 }
 
+
+
+/* Test */
+#smallcategory {
+  position:relative;
+}
+#smallcategory select {
+  display:none;
+  position:absolute;
+}
+#smallcategory select.on {
+  display:block;
+}
 

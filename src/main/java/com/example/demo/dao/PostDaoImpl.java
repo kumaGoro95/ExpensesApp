@@ -47,7 +47,6 @@ public class PostDaoImpl implements PostDao<PostByNickname> {
 				qstr3 = qstr3.replace(currentNumber, "number");
 			}
 		}
-		System.out.println(qstr);
 		Query query = em.createQuery(qstr);
 		//検索ワード数に応じて、パラメータをセット
 		for (int i = 0; i < words.length; i++) {

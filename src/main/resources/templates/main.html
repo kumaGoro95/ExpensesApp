@@ -36,7 +36,7 @@
 								<div class="cell">
 									<p class="frame">
 										<span class="moneylabel">予算</span><br> <span
-											class="money"><h5>[[${budget}]]円</h5></span>
+											class="money"><h5 th:text="${#numbers.formatDecimal(budget, 0, 'COMMA', 0, 'POINT')} + '円'"></h5></span>
 									</p>
 								</div>
 							</div>
@@ -48,7 +48,7 @@
 								<div class="cell">
 									<p class="frame">
 										<span class="moneylabel">支出</span><br> <span
-											class="money"><h5>[[${totalAmmount}]]円</h5></span>
+											class="money"><h5 th:text="${#numbers.formatDecimal(totalAmmount, 0, 'COMMA', 0, 'POINT')} + '円'"></h5></span>
 									</p>
 								</div>
 							</div>
@@ -60,14 +60,14 @@
 								<div class="cell">
 									<p class="frame">
 										<span class="moneylabel">残り</span><br> <span
-											class="money"><h5>[[${balance}]]円</h5></span> <span
+											class="money"><h5 th:text="${#numbers.formatDecimal(balance, 0, 'COMMA', 0, 'POINT')} + '円'"></h5></span> <span
 											class="moneylabel">使えます</span>
 									</p>
 								</div>
 							</div>
 						</div>
 						<div class="row"></div>
-						<div class="exChart">
+						<div class="exChart-top">
 							<canvas id="expenseChart"
 								style="display: block; height: 320px; width: 640px;" width="800"
 								height="400" class="chartjs-render-monitor"></canvas>
@@ -113,7 +113,7 @@
 								<span th:each="record : ${recordsLimit10}" th:inline="text">
 									<tr>
 										<td>[[${record.recordDate}]]</td>
-										<td>[[${record.incomeAndExpense}]]円</td>
+										<td><span th:text="${#numbers.formatDecimal(record.incomeAndExpense, 0, 'COMMA', 0, 'POINT')} + '円'"></span></td>
 										<td><i
 											th:class="${categoriesToIcon.get(record.categoryCode)}+' fa-lg'"></i>[[${record.subcategoryName}]]</td>
 										<td><a class="dropdown-trigger" href="#!"
@@ -123,7 +123,7 @@
 										<!-- ドロップダウンメニュー -->
 										<ul id="dropdown-record" class="dropdown-content">
 											<li><a th:href="@{/editRecord/__${record.recordId}__}">編集</a></li>
-											<li><a th:href="@{/deleteRecord/__${record.recordId}__}">削除</a></li>
+											<li><a th:href="@{/deleteRecord/__${record.recordId}__/1}">削除</a></li>
 										</ul>
 
 									</tr>
@@ -157,32 +157,22 @@
 								<div class="invalid-feedback" th:errors="*{incomeAndExpense}"></div>
 							</div>
 							<div class="form-group">
-								<label for="category">カテゴリ</label>
 								<div class="input-field col s12">
-									<div class="pulldownset">
-
-										<!-- 大カテゴリのプルダウン -->
-										<select name="mainselect">
-											<span th:each="category, index : ${categories}"
+									<select th:field="*{categoryId}">
+										<div th:each="category, index : ${categories}"
 											th:inline="text">
-												<option th:value="${category['key']}"
-													th:class="${category['key']}">[[${category['value']}]]</option>
-										</span>
-										</select>
-
-										<!-- 小カテゴリのプルダウン -->
-											<select name="subbox"
-											th:field="*{categoryId}">
-											<option value=1 selected="selected" class="msg">都市を選択して下さい</option>
-												<span th:each="subcategory : ${subcategories}"
-												th:inline="text">
-														<option th:class="${subcategory.categoryCode}"
-															th:value="${subcategory.categoryId}">[[${subcategory.subcategoryName}]]</option>
-											</span>
-										</select>
-									</div>
+											<optgroup th:label="${category['value']}">
+												<div th:each="subcategory : ${subcategories}"
+													th:inline="text">
+													<th:block
+														th:if="${subcategory.categoryCode == category['key']}">
+														<option th:value="${subcategory.categoryId}">[[${subcategory.subcategoryName}]]</option>
+													</th:block>
+											</optgroup>
+										</div>
+									</select> <label for="recordDate">カテゴリ</label>
 								</div>
-								</div>
+							</div>
 
 
 								<div class="form-group">

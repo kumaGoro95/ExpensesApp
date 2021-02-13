@@ -146,8 +146,10 @@
 		<div class="row card">
 			<div class="col s12">
 				<ul class="tabs">
-					<li class="tab col s6"><a href="#tab1">一覧</a></li>
-					<li class="tab col s6"><a href="#tab2">カレンダー</a></li>
+					<li class="tab col s6"><a href="#tab1"><span
+							class="tab-text">一覧</span></a></li>
+					<li class="tab col s6"><a href="#tab2"><span
+							class="tab-text">カレンダー</span></a></li>
 				</ul>
 			</div>
 			<div id="tab1" class="col s12">
@@ -165,9 +167,12 @@
 								<!-- Dropdown Structure -->
 								<ul id='dropdown1' class='dropdown-content'>
 									<li><a th:href="@{/showRecords}">日付（新しい順）</a></li>
-									<li><a th:href="@{/showRecords/orderByDateAsc/__${refineCondition.categoryCode}__/__${refineCondition.startDate}__/__${refineCondition.endDate}__}">日付（古い順）</a></li>
-									<li><a th:href="@{/showRecords/orderByMoneyDesc/__${refineCondition.categoryCode}__/__${refineCondition.startDate}__/__${refineCondition.endDate}__}">金額（多い順）</a></li>
-									<li><a th:href="@{/showRecords/orderByMoneyAsc/__${refineCondition.categoryCode}__/__${refineCondition.startDate}__/__${refineCondition.endDate}__}">金額（少ない順）</a></li>
+									<li><a
+										th:href="@{/showRecords/orderByDateAsc/__${refineCondition.categoryCode}__/__${refineCondition.startDate}__/__${refineCondition.endDate}__}">日付（古い順）</a></li>
+									<li><a
+										th:href="@{/showRecords/orderByMoneyDesc/__${refineCondition.categoryCode}__/__${refineCondition.startDate}__/__${refineCondition.endDate}__}">金額（多い順）</a></li>
+									<li><a
+										th:href="@{/showRecords/orderByMoneyAsc/__${refineCondition.categoryCode}__/__${refineCondition.startDate}__/__${refineCondition.endDate}__}">金額（少ない順）</a></li>
 								</ul>
 
 								<table>
@@ -184,12 +189,23 @@
 										<span th:each="record : ${records}" th:inline="text">
 											<tr>
 												<td>[[${record.recordDate}]]</td>
-												<td>[[${record.incomeAndExpense}]]円</td>
+												<td><span
+													th:text="${#numbers.formatDecimal(record.incomeAndExpense, 0, 'COMMA', 0, 'POINT')} + '円'"></span></td>
 												<td><i
-													th:class="${categoriesToIcon.get(record.categoryCode)}+' fa-lg'"></i><span class="record-categories">[[${record.subcategoryName}]]</span></td>
+													th:class="${categoriesToIcon.get(record.categoryCode)}+' fa-lg'"></i><span
+													class="record-categories">[[${record.subcategoryName}]]</span></td>
 												<td>[[${record.note}]]</td>
-												<td><a th:href="@{/editRecord/__${record.recordId}__}">編集</a>
-													<a th:href="@{/deleteRecord/__${record.recordId}__}">削除</a></td>
+												<td><a class="dropdown-trigger" href="#!"
+													data-target="dropdown-record"><i
+														class="fas fa-caret-down fa-lg"></i></a></td>
+														
+														
+												<!-- ドロップダウンメニュー -->
+												<ul id="dropdown-record" class="dropdown-content">
+													<li><a th:href="@{/editRecord/__${record.recordId}__}">編集</a></li>
+													<li><a
+														th:href="@{/deleteRecord/__${record.recordId}__/2}">削除</a></li>
+												</ul>
 
 											</tr>
 									</tbody>
