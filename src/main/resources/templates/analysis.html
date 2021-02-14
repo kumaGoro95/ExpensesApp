@@ -22,7 +22,7 @@
 	<div class="inline" th:inline="text">
 		<div class="container">
 			<!-- Dropdown Trigger -->
-			<a class='dropdown-trigger btn-large' href='#'
+			<a class='dropdown-trigger select-month btn-large' href='#'
 				data-target='dropdown1'>切り替え</a>
 			<!-- Dropdown Structure -->
 			<ul id='dropdown1' class='dropdown-content'>
@@ -32,131 +32,196 @@
 			</ul>
 			<div class="row card">
 				<h2 class="center">[[${year}]]年[[${month}]]月</h2>
-				<h4 class="center">収支：[[${total}]]円</h4>
-				<h4 class="center">予算比：[[${budgetRatio}]]円</h4>
+				<h4 class="center"
+					th:text="'収支：' + ${#numbers.formatDecimal(total, 0, 'COMMA', 0, 'POINT')} + '円'"></h4>
+				<h4 class="center"
+					th:text="'予算比：' + ${#numbers.formatDecimal(budgetRatio, 0, 'COMMA', 0, 'POINT')} + '円'"></h4>
+			</div>
+			<div class="row">
+				<ul class="tabs">
+					<li class="tab col s6"><a href="#tab1"><span
+							class="tab-text">支出</span></a></li>
+					<li class="tab col s6"><a href="#tab2"><span
+							class="tab-text">収入</span></a></li>
+				</ul>
 			</div>
 			<div class="row card">
-				<div class="col s12">
-					<ul class="tabs">
-						<li class="tab col s6"><a href="#tab1">支出</a></li>
-						<li class="tab col s6"><a href="#tab2">収入</a></li>
-					</ul>
-				</div>
+
 
 				<!-- 支出タブ -->
 				<div id="tab1" class="col s12">
-					<div class="card-content">
-						<div class="card-title center">
-							<div class="cell">
-								<span class="money"><h3>合計
-										[[${totalAmmountExpense}]]円</h3></span>
-							</div>
-						</div>
-						<div class="row"></div>
-						<div class="exChart">
-							<canvas id="expenseChart"
-								style="display: block; height: 320px; width: 640px;" width="800"
-								height="400" class="chartjs-render-monitor"></canvas>
-							<div class="center">
-								<span class="noData" th:if="${expenseData == checknull}"><h6>表示できるデータがありません</h6></span>
-							</div>
-						</div>
-						<table>
-							<thead>
-								<tr>
-									<th>カテゴリ</th>
-									<th></th>
-									<th>金額</th>
-									<th>割合</th>
-									<th></th>
-								</tr>
-							</thead>
-							<tbody>
-								<span th:each="totalByCategory : ${totalsByCategory}"
-									th:inline="text">
-									<tr>
-										<td><i
-											th:class="${categoriesToIcon.get(totalByCategory.categoryCode)}+' fa-lg'"></i>[[${categories.get(totalByCategory.categoryCode)}]]</td>
-										<td></td>
-										<td>[[${totalByCategory.sum}]]円</td>
-										<td>[[${percentages.get(totalByCategory.categoryCode)}]]％</td>
-										<td><i class="fas fa-chevron-circle-down"></i></td>
+					<ul class="tabs">
+						<li class="tab col s6"><a href="#tab3"><span
+								class="tab-text">月ごと</span></a></li>
+						<li class="tab col s6"><a href="#tab4"><span
+								class="tab-text">日ごと</span></a></li>
+					</ul>
 
+					<!-- 支出　月ごと -->
+					<div id="tab3" class="col s12">
+						<div class="card-content">
+
+							<div class="card-title center">
+								<div class="cell">
+									<span class="money"><h3
+											th:text="'合計' + ${#numbers.formatDecimal(totalAmmountExpense, 0, 'COMMA', 0, 'POINT')} + '円'">
+										</h3>
+								</div>
+							</div>
+							<div class="row"></div>
+							<div class="exChart">
+								<canvas id="expenseChart" class="chartjs-render-monitor"></canvas>
+								<div class="center">
+									<span class="noData" th:if="${expenseData == checknull}"><h6>表示できるデータがありません</h6></span>
+								</div>
+							</div>
+							<table>
+								<thead>
+									<tr>
+										<th>カテゴリ</th>
+										<th></th>
+										<th>金額</th>
+										<th>割合</th>
 									</tr>
-								</span>
-							</tbody>
-						</table>
+								</thead>
+								<tbody>
+									<span th:each="totalByCategory : ${totalsByCategory}"
+										th:inline="text">
+										<tr>
+											<td><i
+												th:class="${categoriesToIcon.get(totalByCategory.categoryCode)}+' fa-lg'"></i>[[${categories.get(totalByCategory.categoryCode)}]]</td>
+											<td></td>
+											<td><span
+												th:text="${#numbers.formatDecimal(totalByCategory.sum, 0, 'COMMA', 0, 'POINT')} + '円'"></span></td>
+											<td>[[${percentages.get(totalByCategory.categoryCode)}]]％</td>
+
+										</tr>
+									</span>
+								</tbody>
+							</table>
+						</div>
 					</div>
+					<!-- 支出　月ごと終わり -->
+
+					<!-- 支出　日ごと -->
+					<div id="tab4" class="col s12">
+						<div class="card-content">
+
+							<div class="card-title center">
+								<div class="cell">
+									<span class="money"><h3
+											th:text="'合計' + ${#numbers.formatDecimal(totalAmmountExpense, 0, 'COMMA', 0, 'POINT')} + '円'">
+										</h3>
+								</div>
+							</div>
+							<div class="col s12">
+								<div class="dailyTotal">
+									<canvas id="dailyTotalExpense"></canvas>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- 支出　日ごと終わり -->
+
 				</div>
 
 				<!-- 収入タブ -->
 				<div id="tab2" class="col s12">
-					<div class="card-content">
-						<div class="card-title center">
-							<div class="cell">
-								<span class="money"><h3>合計
-										[[${totalAmmountIncome}]]円</h3></span>
+					<ul class="tabs">
+						<li class="tab col s6"><a href="#tab5"><span
+								class="tab-text">月ごと</span></a></li>
+						<li class="tab col s6"><a href="#tab6"><span
+								class="tab-text">日ごと</span></a></li>
+					</ul>
+
+					<!-- 収入　月ごと -->
+					<div id="tab5" class="col s12">
+						<div class="card-content">
+							<div class="card-title center">
+								<div class="cell">
+									<span class="money"><h3
+											th:text="'合計' + ${#numbers.formatDecimal(totalAmmountIncome, 0, 'COMMA', 0, 'POINT')} + '円'"></h3></span>
+								</div>
 							</div>
-						</div>
-						<div class="row"></div>
-						<div class="inChart">
-							<canvas id="incomeChart"
-								style="display: block; height: 320px; width: 640px;" width="800"
-								height="400" class="chartjs-render-monitor"></canvas>
-							<div class="center">
-								<span class="noData" th:if="${incomeData == checknullIncome}"><h6>表示できるデータがありません</h6></span>
+							<div class="row"></div>
+							<div class="inChart">
+								<canvas id="incomeChart" class="chartjs-render-monitor"></canvas>
+								<div class="center">
+									<span class="noData" th:if="${incomeData == checknullIncome}"><h6>表示できるデータがありません</h6></span>
+								</div>
 							</div>
-						</div>
-						<table>
-							<thead>
-								<tr>
-									<th>カテゴリ</th>
-									<th></th>
-									<th>金額</th>
-									<th>割合</th>
-								</tr>
-							</thead>
-							<tbody>
-								<span th:each="incomeTotal : ${incomeTotals}" th:inline="text">
+							<table>
+								<thead>
 									<tr>
-										<td><span class="incomeDots">●</span>[[${incomeSubcategories.get(incomeTotal.categoryCode)}]]</td>
-										<td></td>
-										<td>[[${incomeTotal.sum}]]円</td>
-										<td>[[${incomePercentages.get(incomeTotal.categoryCode)}]]％</td>
+										<th>カテゴリ</th>
+										<th></th>
+										<th>金額</th>
+										<th>割合</th>
 									</tr>
-								</span>
-							</tbody>
-						</table>
+								</thead>
+								<tbody>
+									<span th:each="incomeTotal : ${incomeTotals}" th:inline="text">
+										<tr>
+											<td><span class="incomeDots">●</span>[[${incomeSubcategories.get(incomeTotal.categoryCode)}]]</td>
+											<td></td>
+											<td><span
+												th:text="${#numbers.formatDecimal(incomeTotal.sum, 0, 'COMMA', 0, 'POINT')} + '円'"></span></td>
+											<td>[[${incomePercentages.get(incomeTotal.categoryCode)}]]％</td>
+										</tr>
+									</span>
+								</tbody>
+							</table>
+						</div>
 					</div>
-				</div>
-			</div>
-			<div class="row card">
-				<div class="col s12">
-					<div class="dailyTotal">
-						<canvas id="dailyTotal"></canvas>
+					<!-- 収入　月ごと終了 -->
+
+					<!-- 収入　日ごと -->
+					<div id="tab6" class="col s12">
+						<div class="card-content">
+
+							<div class="card-title center">
+								<div class="cell">
+									<span class="money"><h3
+											th:text="'合計' + ${#numbers.formatDecimal(totalAmmountIncome, 0, 'COMMA', 0, 'POINT')} + '円'">
+										</h3>
+								</div>
+							</div>
+							<div class="col s12">
+								<div class="dailyTotal">
+									<canvas id="dailyTotalIncome"></canvas>
+								</div>
+							</div>
+						</div>
 					</div>
+					<!-- 収入　日ごと終了 -->
 				</div>
 			</div>
 		</div>
 
 
-		<script type="text/javascript" th:inline="javascript">	
-	var ctx = document.getElementById("dailyTotal");
-	  var myBarChart = new Chart(ctx, {
+		<script type="text/javascript" th:inline="javascript">
+		
+	var ctx = document.getElementById("dailyTotalExpense");
+	  var myExpenseBarChart = new Chart(ctx, {
 	    type: 'bar',
 	    data: {
 	      labels:  [[ ${label} ]],
 	      datasets: [
 	        {
 	          label: '月',
-	          data: [[${data}]],
+	          data: [[ ${dailyAmmountExpense} ]],
 	          backgroundColor: "rgba(238,110,115,0.7)"
 	        }
 	      ]
 	    },
 	    options: {
+	    	responsive: true,
+	    	legend: {
+	    		display:false
+	    	},
 	      title: {
 	        display: true,
+	        fontSize:30,
 	        text: '日ごとの支出'
 	      },
 	      scales: {
@@ -184,6 +249,55 @@
 	    }
 	  });
 	  
+	  var ctx = document.getElementById("dailyTotalIncome");
+	  var myIncomeBarChart = new Chart(ctx, {
+	    type: 'bar',
+	    data: {
+	      labels:  [[ ${label} ]],
+	      datasets: [
+	        {
+	          label: '月',
+	          data: [[ ${dailyAmmountIncome} ]],
+	          backgroundColor: "rgba(238,110,115,0.7)"
+	        }
+	      ]
+	    },
+	    options: {
+	    	responsive: true,
+	    	legend: {
+	    		display:false
+	    	},
+	      title: {
+	        display: true,
+	        fontSize:30,
+	        text: '日ごとの収入'
+	      },
+	      scales: {
+	       xAxes: [{
+	          ticks: {
+	            suggestedMax: 31,
+	            suggestedMin: 0,
+	            stepSize: 10,
+	            callback: function(value, index, values){
+	              return  value +  '日'
+	            }
+	          }
+	        }],
+	        yAxes: [{
+		          ticks: {
+		            suggestedMax: 100,
+		            suggestedMin: 0,
+		            stepSize: 1000,
+		            callback: function(value, index, values){
+		              return  value +  '円'
+		            }
+		          }
+		        }],
+	      },
+	    }
+	  });
+	  
+		  
 	  var ctx = document.getElementById("incomeChart");
 	  var expenseChart = new Chart(ctx, {
 	    type: 'pie',

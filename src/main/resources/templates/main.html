@@ -146,18 +146,18 @@
 							method="post" novalidate>
 							<input type="hidden" name="username" th:value="${user.username}" />
 							<div class="form-group">
-								<label for="recordDate">日付</label> <input type="text"
+								<label for="recordDate"><span class="label">日付</span></label> <input type="text"
 									class="datepicker" th:errorclass="is-invalid"
 									th:field="*{recordDate}">
 								<div class="invalid-feedback" th:errors="*{recordDate}"></div>
 							</div>
 							<div class="form-group">
-								<label for="incomeAndExpense">金額</label> <input type="number"
+								<label for="incomeAndExpense"><span class="label">金額</span></label> <input type="number"
 									th:errorclass="is-invalid" th:field="*{incomeAndExpense}">
 								<div class="invalid-feedback" th:errors="*{incomeAndExpense}"></div>
 							</div>
 							<div class="form-group">
-								<div class="input-field col s12">
+								<div class="input-field">
 									<select th:field="*{categoryId}">
 										<div th:each="category, index : ${categories}"
 											th:inline="text">
@@ -170,13 +170,13 @@
 													</th:block>
 											</optgroup>
 										</div>
-									</select> <label for="recordDate">カテゴリ</label>
+									</select> <label for="recordDate"><span class="label">カテゴリ</span></label>
 								</div>
 							</div>
 
 
 								<div class="form-group">
-									<label for="textarea1">備考</label>
+									<label for="textarea1"><span class="label">備考</span></label>
 									<textarea id="textarea1" class="materialize-textarea"
 										th:errorclass="is-invalid" th:field="*{note}"></textarea>
 

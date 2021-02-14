@@ -35,7 +35,7 @@
 				<form enctype="multipart/form-data" th:action="@{/setting}"
 					method="post" novalidate>
 					<div class="file-field input-field">
-						<div class="btn">
+						<div class="waves-effect waves-light btn">
 							<span>アイコン画像選択</span> <input type="file"
 								th:field="${file.uploadedFile}">
 						</div>
@@ -50,24 +50,24 @@
 					<input type="hidden" name="role" th:value="${user.role}" /> <input
 						type="hidden" name="password" th:value="${user.password}" />
 					<div class="form-group">
-						<label for="name">ユーザー名（2文字以上20文字以内） </label> <input type="text"
+						<label for="name"><span class="label">ユーザー名（2文字以上20文字以内）</span> </label> <input type="text"
 							th:errorclass="is-invalid" th:field="${user.userNickname}">
 						<div class="invalid-feedback" th:errors="${user.userNickname}"></div>
 					</div>
 					<div class="form-group">
-						<label for="email">メールアドレス </label> <input type="email"
+						<label for="email"><span class="label">メールアドレス</span> </label> <input type="email"
 							th:errorclass="is-invalid" th:field="${user.email}">
 						<div class="invalid-feedback" th:errors="${user.email}"></div>
 					</div>
 
 					<div class="form-group">
-						<label for="budget">月の予算</label> <input type="number"
+						<label for="budget"><span class="label">月の予算</span></label> <input type="number"
 							th:errorclass="is-invalid" th:field="${user.budget}">
 						<div class="invalid-feedback" th:errors="${user.budget}"></div>
 					</div>
 
 					<div class="form-group">
-						<label for="textarea1">自己紹介(300文字以内)</label>
+						<label for="textarea1"><span class="label">自己紹介(300文字以内)</span></label>
 						<textarea id="textarea1" class="materialize-textarea"
 							th:errorclass="is-invalid" th:field="${user.introduce}"></textarea>
 

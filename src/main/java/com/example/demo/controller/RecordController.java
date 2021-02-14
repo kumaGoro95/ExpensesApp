@@ -391,7 +391,10 @@ public class RecordController {
 		String month = currentMonth.substring(5, 7);
 
 		// 日ごとグラフ用のパラメータ
+		//支出
 		BigDecimal dailyAmmount[] = mrService.getDailyAmmount(loginUser.getName(), currentMonth);
+		//収入
+		BigDecimal dailyAmmountIncome[] = mrService.getDailyAmmountIncome(loginUser.getName(), currentMonth);
 		Integer days[] = mrService.getDays(loginUser.getName(), currentMonth);
 
 		// 収支別円グラフパラメータ
@@ -449,14 +452,15 @@ public class RecordController {
 		}
 
 		Map<Integer, BigDecimal> incomePercentages = new HashMap<Integer, BigDecimal>();
-		for (int i = 0; i < incomeTotalsBySubCategory.size(); i++) {
+		for (int i = 0; i < 0 + incomeTotalsBySubCategory.size(); i++) {
 			if (totalAmmountIncome == BigDecimal.valueOf(0)) {
 				break;
 			}
+			int incomeSubcateFirstNumber = 9901;
 			BigDecimal number = BigDecimal.valueOf(100);
 			BigDecimal result = incomeTotalsBySubCategory.get(i).getSum()
 					.divide(totalAmmountIncome, 3, RoundingMode.DOWN).multiply(number).setScale(1, RoundingMode.DOWN);
-			incomePercentages.put(i + 1, result);
+			incomePercentages.put(i + incomeSubcateFirstNumber, result);
 		}
 
 		// 円グラフに表示するデータがあるか確認
@@ -505,7 +509,8 @@ public class RecordController {
 
 		// 日ごとグラフ
 		model.addAttribute("label", days);
-		model.addAttribute("data", dailyAmmount);
+		model.addAttribute("dailyAmmountExpense", dailyAmmount);
+		model.addAttribute("dailyAmmountIncome", dailyAmmountIncome);
 
 		// 月切り替え用パラメータ
 		model.addAttribute("months", allMonths);
