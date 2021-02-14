@@ -183,6 +183,18 @@ nav .brand-logo {
 	padding: 0 0 0 5px;
 }
 
+.search-btn{
+	margin:0 0 0 20px;
+}
+
+.sort-content{
+	font-size:14px;
+}
+
+.select-month{
+	margin:0 0 0 20px;
+}
+
 .expense {
 	color: red;
 }

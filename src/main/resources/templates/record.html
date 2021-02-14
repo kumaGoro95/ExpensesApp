@@ -4,13 +4,13 @@
 <meta charset="UTF-8">
 <th:block th:insert="fragments/header :: header"></th:block>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel='stylesheet'
-	th:href="@{/webjars/fullcalendar/3.5.1/dist/fullcalendar.css}">
 <script th:src="@{/webjars/jquery/3.5.1/jquery.min.js}"></script>
 <script th:src="@{/webjars/moment/2.19.1/min/moment.min.js}"></script>
 <script th:src="@{/webjars/fullcalendar/3.5.1/dist/fullcalendar.js}"></script>
 <script type="text/javascript"
 	th:src="@{/webjars/materializecss/1.0.0/js/materialize.min.js/}"></script>
+<link rel='stylesheet'
+	th:href="@{/webjars/fullcalendar/3.5.1/dist/fullcalendar.css}">
 <link rel="stylesheet"
 	th:href="@{/webjars/materializecss/1.0.0/css/materialize.min.css}">
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
@@ -38,6 +38,7 @@
 								element.find('span.fc-title').html(
 										element.find('span.fc-title').text());
 							}
+							
 						});
 
 				$('.tabs').tabs();
@@ -101,9 +102,9 @@
 <body>
 	<div class="container">
 		<div class="row"></div>
-		<div class="row">
+		<div class="row col s12">
 
-			<div class="waves-effect waves-light btn-large" id="search-btn"
+			<div class="waves-effect waves-light btn search-btn" id="search-btn"
 				onclick="clickBtn1()">
 				絞り込み<i class="material-icons left">search</i>
 			</div>
@@ -111,13 +112,13 @@
 		</div>
 		<div id="search" class="row card search">
 			<div class="card-content">
-				<div class="card-title">絞り込み</div>
+				<div class="card-title center">絞り込み</div>
 				<form th:action="@{/showRecords/refine}"
 					th:object="${refineCondition}" method="post" novalidate>
 
 					<div class="form-group">
-						<label for="name">カテゴリ</label>
-						<div class="input-field col s12">
+						<label for="name"><span class="label">カテゴリ</span></label>
+						<div class="input-field">
 							<select th:field="*{categoryCode}">
 								<option th:value="all" selected>カテゴリを選択してください</option>
 								<span th:each="category: ${categories}" th:inline="text">
@@ -128,18 +129,20 @@
 					</div>
 
 					<div class="form-group">
-						<label for="startDate">開始日</label> <input type="text"
+						<label for="startDate"><span class="label">開始日</span></label> <input type="text"
 							class="datepicker" th:errorclass="is-invalid" name="startDate" />
 						<div class="invalid-feedback" th:errors="*{startDate}"></div>
 					</div>
 					<div class="form-group">
-						<label for="endDate">終了日</label> <input type="text"
+						<label for="endDate"><span class="label">終了日</span></label> <input type="text"
 							class="datepicker" th:errorclass="is-invalid"
 							th:field="*{endDate}" />
 						<div class="invalid-feedback" th:errors="*{endDate}"></div>
 					</div>
-
+					<div class="row"></div>
+					<div class="center">
 					<button class="btn refine-exe">この条件で絞り込む</button>
+					</div>
 				</form>
 			</div>
 		</div>
@@ -166,13 +169,13 @@
 
 								<!-- Dropdown Structure -->
 								<ul id='dropdown1' class='dropdown-content'>
-									<li><a th:href="@{/showRecords}">日付（新しい順）</a></li>
+									<li><a th:href="@{/showRecords}"><span class="sort-content">日付（新しい順）</span></a></li>
 									<li><a
-										th:href="@{/showRecords/orderByDateAsc/__${refineCondition.categoryCode}__/__${refineCondition.startDate}__/__${refineCondition.endDate}__}">日付（古い順）</a></li>
+										th:href="@{/showRecords/orderByDateAsc/__${refineCondition.categoryCode}__/__${refineCondition.startDate}__/__${refineCondition.endDate}__}"><span class="sort-content">日付（古い順）</span></a></li>
 									<li><a
-										th:href="@{/showRecords/orderByMoneyDesc/__${refineCondition.categoryCode}__/__${refineCondition.startDate}__/__${refineCondition.endDate}__}">金額（多い順）</a></li>
+										th:href="@{/showRecords/orderByMoneyDesc/__${refineCondition.categoryCode}__/__${refineCondition.startDate}__/__${refineCondition.endDate}__}"><span class="sort-content">金額（多い順）</span></a></li>
 									<li><a
-										th:href="@{/showRecords/orderByMoneyAsc/__${refineCondition.categoryCode}__/__${refineCondition.startDate}__/__${refineCondition.endDate}__}">金額（少ない順）</a></li>
+										th:href="@{/showRecords/orderByMoneyAsc/__${refineCondition.categoryCode}__/__${refineCondition.startDate}__/__${refineCondition.endDate}__}"><span class="sort-content">金額（少ない順）</span></a></li>
 								</ul>
 
 								<table>

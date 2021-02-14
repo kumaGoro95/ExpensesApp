@@ -151,7 +151,7 @@
 								<input type="hidden" name="username" th:value="${user.username}" />
 								<input type="hidden" name="postId" th:value="${post.postId}" />
 								<div class="form-group">
-									<label for="note">コメント</label>
+									<label for="note"><span class="label">コメント</span></label>
 									<textarea rows="5" cols="40" th:errorclass="is-invalid"
 										th:field="*{commentBody}"></textarea>
 									<div class="invalid-feedback" th:errors="*{commentBody}"></div>

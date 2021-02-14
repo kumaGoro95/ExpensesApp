@@ -77,6 +77,7 @@ public class MoneyRecordService {
 	
     //日ごとグラフの支出金額を算出
 	public BigDecimal[] getDailyAmmount(String username, String currentMonth) {
+		//その月の初日を取得
 		String firstDayStr = currentMonth + "-01";
 		LocalDate firstDay = LocalDate.parse(firstDayStr, DateTimeFormatter.ISO_DATE);
 		LocalDate lastDay = YearMonth.now().atEndOfMonth();
@@ -88,6 +89,24 @@ public class MoneyRecordService {
 		BigDecimal dailyAmmount[] = dailyAmmountList.toArray(new BigDecimal[dailyAmmountList.size()]);
 
 		return dailyAmmount;
+	}
+	
+	//日ごとグラフの収入金額を算出
+	public BigDecimal[] getDailyAmmountIncome(String username, String currentMonth) {
+		//その月の初日を取得
+		String firstDayStr = currentMonth + "-01";
+		LocalDate firstDay = LocalDate.parse(firstDayStr, DateTimeFormatter.ISO_DATE);
+		//その月の末日を取得
+		LocalDate lastDay = YearMonth.now().atEndOfMonth();
+		
+		List<DailySumGraph> dailySum = moneyRecordRepository.findDailyGraphIncome(username, firstDay, lastDay);
+		List<BigDecimal> dailyAmmountList = new ArrayList<BigDecimal>();
+		for (int i = 0; i < dailySum.size(); i++) {
+			dailyAmmountList.add(dailySum.get(i).getSum());
+		}
+		BigDecimal dailyAmmountIncome[] = dailyAmmountList.toArray(new BigDecimal[dailyAmmountList.size()]);
+
+		return dailyAmmountIncome;
 	}
 
 	//日ごとグラフの日付一覧を取得
