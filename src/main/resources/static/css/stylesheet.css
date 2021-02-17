@@ -1,7 +1,14 @@
 /* 全般 */
 body {
 	background-color: rgb(255, 250, 250);
+	display: flex;
+    min-height: 100vh;
+    flex-direction: column;
 }
+
+main {
+    flex: 1 0 auto;
+  }
 
 .tab-text{
 	font-size:16px;
@@ -34,6 +41,14 @@ nav .brand-logo {
 	padding:2px;
 	opacity: 0.8;
 }
+
+/* フッター */
+.footer-copyright{
+	background-color:rgb(238, 110, 115);
+	padding:15px;
+	color:white;
+}
+
 
 
 /* Index */
