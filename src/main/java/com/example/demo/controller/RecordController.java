@@ -391,9 +391,9 @@ public class RecordController {
 		String month = currentMonth.substring(5, 7);
 
 		// 日ごとグラフ用のパラメータ
-		//支出
+		// 支出
 		BigDecimal dailyAmmount[] = mrService.getDailyAmmount(loginUser.getName(), currentMonth);
-		//収入
+		// 収入
 		BigDecimal dailyAmmountIncome[] = mrService.getDailyAmmountIncome(loginUser.getName(), currentMonth);
 		Integer days[] = mrService.getDays(loginUser.getName(), currentMonth);
 
@@ -543,6 +543,8 @@ public class RecordController {
 		// 日ごとグラフ用のパラメータ
 		BigDecimal dailyAmmount[] = mrService.getDailyAmmount(loginUser.getName(), month);
 		Integer days[] = mrService.getDays(loginUser.getName(), month);
+		// 収入
+		BigDecimal dailyAmmountIncome[] = mrService.getDailyAmmountIncome(loginUser.getName(), month);
 
 		// 収支別円グラフパラメータ
 		String expenseLabel[] = mrService.getExpenseLabel();
@@ -654,7 +656,8 @@ public class RecordController {
 
 		// 日ごとグラフ
 		model.addAttribute("label", days);
-		model.addAttribute("data", dailyAmmount);
+		model.addAttribute("dailyAmmountExpense", dailyAmmount);
+		model.addAttribute("dailyAmmountIncome", dailyAmmountIncome);
 
 		// 月切り替え用パラメータ
 		model.addAttribute("months", allMonths);
