@@ -60,7 +60,7 @@ public class PostController {
 	}
 
 	// 投稿系ホーム画面
-	@GetMapping("/postmain")
+	@GetMapping("/qanda")
 	public String goToPost(@ModelAttribute("posts") Post post, Authentication loginUser, Model model) {
 		Map<Integer, BigInteger> commentCount = postRepository.findCommentCount();
 		Map<Integer, BigInteger> likeCount = likeRepository.findLikeCount();
@@ -83,10 +83,10 @@ public class PostController {
 		model.addAttribute("postCategories", postCategories);
 		model.addAttribute("postCategoriesToIcon", postCategoriesToIcon);
 
-		return "postmain";
+		return "qanda";
 	}
 
-	@PostMapping("/search")
+	@PostMapping("/qanda/search")
 	public String post(@ModelAttribute("swords") SearchingWords swords, Authentication loginUser, Model model) {
 
 		List<PostByNickname> list = pService.getWords(swords.getWord());
@@ -106,10 +106,10 @@ public class PostController {
 		model.addAttribute("postCategories", postCategories);
 		model.addAttribute("postCategoriesToIcon", postCategoriesToIcon);
 
-		return "postmain";
+		return "qanda";
 	}
 
-	@GetMapping("/showPost/{category}")
+	@GetMapping("qanda/category/{category}")
 	public String showPostByCategory(@PathVariable("category") int category, @ModelAttribute("posts") Post post,
 			Authentication loginUser, Model model) {
 		Map<Integer, BigInteger> commentCount = postRepository.findCommentCount();
@@ -124,7 +124,7 @@ public class PostController {
 
 		model.addAttribute("commentCount", commentCount);
 		model.addAttribute("user", userRepository.findByUsername(loginUser.getName()));
-		model.addAttribute("posts", postRepository.findPostByCategory(category));
+		model.addAttribute("posts", pService.getPostsByCategory(category));
 
 		// 当該カテゴリの投稿が存在するか・・・falseで「投稿がありません」メッセージを表示
 		model.addAttribute("checknull", postRepository.existsByPostCategory(category));
@@ -134,11 +134,11 @@ public class PostController {
 		model.addAttribute("postCategories", postCategories);
 		model.addAttribute("postCategoriesToIcon", postCategoriesToIcon);
 
-		return "postmain";
+		return "qanda";
 	}
 
 	// 投稿画面へ遷移
-	@GetMapping("/post")
+	@GetMapping("/qanda/post")
 	public String post(@ModelAttribute("post") Post post, Authentication loginUser, Model model) {
 		model.addAttribute("user", userRepository.findByUsername(loginUser.getName()));
 
@@ -147,27 +147,27 @@ public class PostController {
 
 		model.addAttribute("postCategories", postCategories);
 
-		return "post";
+		return "qanda-post";
 	}
 
 	// 投稿実行
-	@PostMapping("/post")
+	@PostMapping("/qanda/post")
 	public String post(@Validated @ModelAttribute("post") Post post, BindingResult result, Authentication loginUser) {
 		if (result.hasErrors()) {
 			System.out.println(result);
 			System.out.println(post.getPostBody());
-			return "redirect:/post?post";
+			return "redirect:/qanda-post?qanda-post";
 		}
 		LocalDateTime ldt = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
 
 		post.setCreatedAt(ldt);
 		postRepository.save(post);
 
-		return "redirect:/postmain?recordPost";
+		return "redirect:/qanda?qanda-post";
 	}
 
 	// 投稿内容詳細画面へ遷移
-	@RequestMapping("/post/{postId}")
+	@RequestMapping("/qanda/{postId}")
 	public String showPost(@PathVariable("postId") int postId, @ModelAttribute("comment") PostComment comment,
 			Authentication loginUser, Model model) {
 		Map<Integer, BigInteger> commentCount = postRepository.findCommentCount();
@@ -192,21 +192,21 @@ public class PostController {
 		model.addAttribute("postCategories", postCategories);
 		model.addAttribute("postCategoriesToIcon", postCategoriesToIcon);
 
-		return "postdetail";
+		return "qanda-postdetail";
 	}
 
 	// コメント投稿を実行
-	@PostMapping("/postComment")
+	@PostMapping("qanda/comment")
 	public String postComment(@Validated @ModelAttribute("comment") PostComment comment, BindingResult result,
 			Authentication loginUser, UriComponentsBuilder builder) {
-		
-		//リダイレクト先を指定
-		URI location = builder.path("/post/" + comment.getPostId()).build().toUri();
-		
+
+		// リダイレクト先を指定
+		URI location = builder.path("/qanda/" + comment.getPostId()).build().toUri();
+
 		if (result.hasErrors()) {
 			System.out.println(result);
 			System.out.println(comment.getCommentBody());
-			
+
 			return "redirect:" + location.toString();
 		}
 		LocalDateTime ldt = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
@@ -219,7 +219,7 @@ public class PostController {
 	}
 
 	// いいね実行
-	@RequestMapping("/like/{postId}")
+	@RequestMapping("qanda/like/{postId}")
 	@Transactional
 	public String Like(@PathVariable("postId") int postId, @ModelAttribute("like") Like like, Authentication loginUser,
 			Model model, UriComponentsBuilder builder) {
@@ -233,34 +233,38 @@ public class PostController {
 			likeRepository.save(like);
 		}
 
-		URI location = builder.path("/post/" + postId).build().toUri();
-	    return "redirect:" + location.toString();
+		URI location = builder.path("/qanda/" + postId).build().toUri();
+		return "redirect:" + location.toString();
 	}
 
 	// コメント削除
 	@Transactional
-	@GetMapping("/deleteComment/{commentId}")
+	@GetMapping("qanda/comment/{commentId}/delete")
 	public String deleteComment(@PathVariable("commentId") int commentId, Model model) {
 		commentRepository.deleteByCommentId(commentId);
 
-		return "redirect:/postmain?postdetail";
+		return "redirect:/qanda?qanda-postdetail";
 	}
 
 	// コメント編集画面へ遷移
-	@GetMapping("/editComment/{commentId}")
+	@GetMapping("/qanda/comment/{commentId}/edit")
 	public String editComment(@PathVariable("commentId") int commentId, Authentication loginUser, Model model) {
 		model.addAttribute("comment", commentRepository.findByCommentId(commentId));
 		model.addAttribute("user", userRepository.findByUsername(loginUser.getName()));
 
-		return "commentEdit";
+		return "qanda-comment-edit";
 	}
 
 	// コメント編集を実行
-	@PostMapping("/updateComment")
+	@PostMapping("/qanda/updateComment")
 	public String updateComment(@Validated @ModelAttribute("comment") PostComment comment, BindingResult result,
-			Authentication loginUser) {
+			Authentication loginUser, UriComponentsBuilder builder) {
+
+		// リダイレクト先を指定
+		URI location = builder.path("/qanda/" + comment.getPostId()).build().toUri();
+
 		if (result.hasErrors()) {
-			return "main";
+			return "redirect:" + location.toString();
 		}
 
 		LocalDateTime ldt = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
@@ -268,20 +272,20 @@ public class PostController {
 
 		commentRepository.save(comment);
 
-		return "redirect:/postmain?commentEdit";
+		return "redirect:" + location.toString();
 	}
 
 	// 投稿削除
 	@Transactional
-	@GetMapping("/deletePost/{postId}")
+	@GetMapping("/qanda/{postId}/delete")
 	public String deletePost(@PathVariable("postId") int postId, Model model) {
 		postRepository.deleteByPostId(postId);
 
-		return "redirect:/postmain?postdetail";
+		return "redirect:/qanda?qanda-postdetail";
 	}
 
 	// 投稿編集画面へ遷移
-	@GetMapping("/editPost/{postId}")
+	@GetMapping("/qanda/{postId}/edit")
 	public String editPost(@PathVariable("postId") int postId, Authentication loginUser, Model model) {
 		model.addAttribute("post", postRepository.findByPostId(postId));
 		model.addAttribute("user", userRepository.findByUsername(loginUser.getName()));
@@ -290,23 +294,31 @@ public class PostController {
 
 		model.addAttribute("postCategories", postCategories);
 
-		return "post";
+		return "qanda-post-edit";
 	}
 
 	// 投稿編集を実行
-	@PostMapping("/updatePost")
+	@PostMapping("/qanda/updatePost")
 	public String updatePost(@Validated @ModelAttribute("post") Post post, BindingResult result,
-			Authentication loginUser) {
+			Authentication loginUser, UriComponentsBuilder builder) {
+
+		// エラー時のリダイレクト先を指定
+		URI locationForErrors = builder.path("/qanda/" + post.getPostId() + "/edit").build().toUri();
+
 		if (result.hasErrors()) {
-			return "main";
+			System.out.println(result);
+
+			return "redirect:" + locationForErrors.toString();
+
 		}
-
-		LocalDateTime ldt = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
-		post.setUpdatedAt(ldt);
-
-		postRepository.save(post);
-
-		return "redirect:/postmain?postEdit";
+		
+		//投稿を更新
+		pService.updatePost(post);
+		
+		//リダイレクト先を指定
+		URI location = builder.replacePath("/qanda/" + post.getPostId()).build().toUri();
+		
+		return "redirect:" + location.toString();
 	}
 
 }

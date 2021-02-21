@@ -46,7 +46,7 @@ public class SecurityController {
 	@GetMapping("/")
 	public String index(@ModelAttribute("user") SiteUser user, Authentication loginUser) {
 		if (loginUser != null) {
-			return "redirect:/top?/";
+			return "redirect:/money-record?/";
 		}
 		return "index";
 	}
@@ -98,6 +98,6 @@ public class SecurityController {
 
 		redirectAttributes.addFlashAttribute("flashMsg", "登録しました");
 
-		return "redirect:/top?register";
+		return "redirect:/money-record?register";
 	}
 }

@@ -24,7 +24,7 @@
 					<div class="card">
 						<div class="card-content">
 							<div class="card-title center">検索</div>
-							<form class="row s12" th:action="@{/search}"
+							<form class="row s12" th:action="@{/qanda/search}"
 								th:object="${swords}" method="post">
 								<div class="input-field">
 									<i class="material-icons prefix">search</i> <input
@@ -45,7 +45,7 @@
 							<div class="card-title center">カテゴリ</div>
 							<span th:each="postCategory : ${postCategories}" th:inline="text">
 								<ul>
-									<li><a th:href="@{/showPost/__${postCategory['key']}__}"><i
+									<li><a th:href="@{/qanda/category/__${postCategory['key']}__}"><i
 											th:class="${postCategoriesToIcon.get(postCategory['key'])}+' fa-lg'"></i><span
 											class="black-text categories">[[${postCategory['value']}]]</span></a></li>
 								</ul>
@@ -65,15 +65,15 @@
 										class="material-icons small">expand_more</i></a>
 
 									<ul id="dropdown-post" class="dropdown-content">
-										<li><a th:href="@{/editPost/__${post.postId}__}">編集</a></li>
-										<li><a th:href="@{/deletePost/__${post.postId}__}">削除</a></li>
+										<li><a th:href="@{/qanda/__${post.postId}__/edit}">編集</a></li>
+										<li><a th:href="@{/qanda/__${post.postId}__/delete}">削除</a></li>
 									</ul></span>
 							</div>
 							<div class="row"></div>
-							投稿日時：[[${#temporals.format(post.createdAt, 'yyyy-MM-dd HH:ss')}]]
+							投稿日時：[[${#temporals.format(post.createdAt, 'yyyy-MM-dd HH:mm')}]]<span th:unless="${post.updatedAt == null}"> ([[${#temporals.format(post.updatedAt, 'yyyy-MM-dd HH:mm')}]]に編集)</span>
 							<div class="right">
 								<div class="post-category">
-									<a th:href="@{/showPost/__${post.postCategory}__}"><i
+									<a th:href="@{/qanda/category/__${post.postCategory}__}"><i
 										th:class="${postCategoriesToIcon.get(post.postCategory)}+' fa-lg'"></i><span
 										class="black-text categories">[[${postCategories.get(post.postCategory)}]]</span></a>
 								</div>
@@ -82,12 +82,12 @@
 
 
 							<div class="user-icon left">
-								<a th:href="@{/userdetail/__${post.username}__}"> <img
+								<a th:href="@{/user/__${post.username}__}"> <img
 									th:src="@{/icons/__${user.icon}__}">
 								</a>
 							</div>
 							<div class="postuser">
-									<a th:href="@{/userdetail/__${post.username}__}"><h6 class="black-text">投稿者: [[${post.userNickname}]]</h6></a>
+									<a th:href="@{/user/__${post.username}__}"><h6 class="black-text">投稿者: [[${post.userNickname}]]</h6></a>
 							</div>
 							<div class="row"></div>
 							<div class="divider"></div>
@@ -97,11 +97,11 @@
 							<div class="right">
 								<span class="black-text">お気に入りに登録 </span>
 								<th:block th:if="${myLikes.contains(post.postId) == true}">
-									<a th:href="@{/like/__${post.postId}__}"><i
+									<a th:href="@{/qanda/like/__${post.postId}__}"><i
 										class="fas fa-paperclip fa-2x red-text text-accent-3"></i></a>[[${likeCount.get(post.postId)}]]
 									</th:block>
 								<th:block th:unless="${myLikes.contains(post.postId) == true}">
-									<a th:href="@{/like/__${post.postId}__}"><i
+									<a th:href="@{/qanda/like/__${post.postId}__}"><i
 										class="fas fa-paperclip fa-2x grey-text"></i></a>[[${likeCount.get(post.postId)}]]
 									</th:block>
 							</div>
@@ -123,18 +123,18 @@
 
 										<ul id="dropdown-comment" class="dropdown-content">
 											<li><a
-												th:href="@{/editComment/__${comment.commentId}__}">編集</a></li>
+												th:href="@{/qanda/comment/__${comment.commentId}__/edit}">編集</a></li>
 											<li><a
-												th:href="@{/deleteComment/__${comment.commentId}__}">削除</a></li>
+												th:href="@{/qanda/comment/__${comment.commentId}__/delete}">削除</a></li>
 										</ul></span>
 								</div>
 								<div class="user-icon left">
-									<a th:href="@{/userdetail/__${post.username}__}"> <img
+									<a th:href="@{/user/__${post.username}__}"> <img
 										th:src="@{/icons/__${user.icon}__}">
 									</a>
 								</div>
 								<div class="commentuser">
-								<a th:href="@{/userdetail/__${comment.username}__}"><h6
+								<a th:href="@{/user/__${comment.username}__}"><h6
 										class="black-text">[[${comment.userNickname}]]</h6></a>
 								[[${#temporals.format(post.createdAt, 'yyyy-MM-dd HH:ss')}]]
 								<div class="row"></div>
@@ -146,7 +146,7 @@
 					<div class="card">
 						<div class="card-content">
 							<div class="card-title"></div>
-							<form th:action="@{/postComment}" th:object="${comment}"
+							<form th:action="@{/qanda/comment}" th:object="${comment}"
 								method="post" novalidate>
 								<input type="hidden" name="username" th:value="${user.username}" />
 								<input type="hidden" name="postId" th:value="${post.postId}" />

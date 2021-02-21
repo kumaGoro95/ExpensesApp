@@ -122,8 +122,8 @@
 
 										<!-- ドロップダウンメニュー -->
 										<ul id="dropdown-record" class="dropdown-content">
-											<li><a th:href="@{/editRecord/__${record.recordId}__}">編集</a></li>
-											<li><a th:href="@{/deleteRecord/__${record.recordId}__/1}">削除</a></li>
+											<li><a th:href="@{/money-record/edit/__${record.recordId}__/1}">編集</a></li>
+											<li><a th:href="@{/money-record/delete/__${record.recordId}__/1}">削除</a></li>
 										</ul>
 
 									</tr>
@@ -142,7 +142,7 @@
 					<div class="card-content">
 						<h5 class="center gray-text">家計簿入力</h5>
 						<div class="row"></div>
-						<form th:action="@{/record}" th:object="${moneyRecord}"
+						<form th:action="@{/money-record/post}" th:object="${moneyRecord}"
 							method="post" novalidate>
 							<input type="hidden" name="username" th:value="${user.username}" />
 							<div class="form-group">

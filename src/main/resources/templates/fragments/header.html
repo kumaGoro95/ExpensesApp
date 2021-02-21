@@ -10,13 +10,13 @@
 			<nav>
 				<div class="nav-wrapper">
 					<span th:if="${user.username != null}" th:inline="text"> <a
-						th:href="@{/top}" class="brand-logo">Piggy Bank<i
+						th:href="@{/money-record}" class="brand-logo">Piggy Bank<i
 							class="fas fa-piggy-bank fa-lg right"></i></a>
 						<ul id="nav-mobile" class="right hide-on-med-and-down">
 							<li><a class="dropdown-trigger" href="#!"
 								data-target="dropdown-header-record"><span class="header-menu">家計簿</span><i
 									class="material-icons left">description</i></a></li>
-							<li><a th:href="@{/postmain}"><i
+							<li><a th:href="@{/qanda}"><i
 									class="material-icons left">people_outline</i><span class="header-menu">みんなの節約術</span></a></li>
 							<li><a class="dropdown-trigger" href="#!"
 								data-target="dropdown-header-user"><span class="header-menu">[[${user.userNickname}]]</span>
@@ -25,9 +25,9 @@
 						</ul>
 						<ul id="dropdown-header-record" class="dropdown-content">
 							<li><a th:href="@{/}"><i class="material-icons left">home</i><span class="header-submenu">Top</span></a></li>
-							<li><a th:href="@{/showRecords}"><i
+							<li><a th:href="@{/money-record/history}"><i
 									class="material-icons left">history</i><span class="header-submenu">履歴</span></a></li>
-							<li><a th:href="@{/analysis}"><i
+							<li><a th:href="@{/money-record/analysis}"><i
 									class="material-icons left">insert_chart</i><span class="header-submenu">分析</span></a></li>
 						</ul>
 						<ul id="dropdown-header-user" class="dropdown-content">

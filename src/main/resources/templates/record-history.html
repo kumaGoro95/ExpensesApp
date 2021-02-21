@@ -113,7 +113,7 @@
 		<div id="search" class="row card search">
 			<div class="card-content">
 				<div class="card-title center">絞り込み</div>
-				<form th:action="@{/showRecords/refine}"
+				<form th:action="@{/money-record/history/refine}"
 					th:object="${refineCondition}" method="post" novalidate>
 
 					<div class="form-group">
@@ -169,13 +169,13 @@
 
 								<!-- Dropdown Structure -->
 								<ul id='dropdown1' class='dropdown-content'>
-									<li><a th:href="@{/showRecords}"><span class="sort-content">日付（新しい順）</span></a></li>
+									<li><a th:href="@{/money-record/history}"><span class="sort-content">日付（新しい順）</span></a></li>
 									<li><a
-										th:href="@{/showRecords/orderByDateAsc/__${refineCondition.categoryCode}__/__${refineCondition.startDate}__/__${refineCondition.endDate}__}"><span class="sort-content">日付（古い順）</span></a></li>
+										th:href="@{/money-record/history/date-asc/__${refineCondition.categoryCode}__/__${refineCondition.startDate}__/__${refineCondition.endDate}__}"><span class="sort-content">日付（古い順）</span></a></li>
 									<li><a
-										th:href="@{/showRecords/orderByMoneyDesc/__${refineCondition.categoryCode}__/__${refineCondition.startDate}__/__${refineCondition.endDate}__}"><span class="sort-content">金額（多い順）</span></a></li>
+										th:href="@{/money-record/history/money-desc/__${refineCondition.categoryCode}__/__${refineCondition.startDate}__/__${refineCondition.endDate}__}"><span class="sort-content">金額（多い順）</span></a></li>
 									<li><a
-										th:href="@{/showRecords/orderByMoneyAsc/__${refineCondition.categoryCode}__/__${refineCondition.startDate}__/__${refineCondition.endDate}__}"><span class="sort-content">金額（少ない順）</span></a></li>
+										th:href="@{/money-record/history/money-asc/__${refineCondition.categoryCode}__/__${refineCondition.startDate}__/__${refineCondition.endDate}__}"><span class="sort-content">金額（少ない順）</span></a></li>
 								</ul>
 
 								<table>
@@ -205,9 +205,9 @@
 														
 												<!-- ドロップダウンメニュー -->
 												<ul id="dropdown-record" class="dropdown-content">
-													<li><a th:href="@{/editRecord/__${record.recordId}__}">編集</a></li>
+													<li><a th:href="@{/money-record/edit/__${record.recordId}__/2}">編集</a></li>
 													<li><a
-														th:href="@{/deleteRecord/__${record.recordId}__/2}">削除</a></li>
+														th:href="@{/money-record/delete/__${record.recordId}__/2}">削除</a></li>
 												</ul>
 
 											</tr>

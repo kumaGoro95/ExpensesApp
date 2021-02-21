@@ -50,7 +50,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		    //ログイン時のURLを指定
 		    .loginPage("/login")
 		    //認証後にリダイレクトする場所を指定
-		    .defaultSuccessUrl("/top")
+		    .defaultSuccessUrl("/money-record")
 		    .usernameParameter("email")
 		    .passwordParameter("password")
 		    .and()
