@@ -1,5 +1,7 @@
 package com.example.demo.service;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.dao.MoneyRecordDaoImpl;
 import com.example.demo.dao.PostDaoImpl;
+import com.example.demo.model.Post;
 import com.example.demo.model.beans.PostByNickname;
 import com.example.demo.repository.DateRepository;
 import com.example.demo.repository.MoneyRecordRepository;
@@ -80,7 +83,7 @@ public class PostService {
 
 	}
 
-	// 投稿一覧を取得（posthome用）
+	// 投稿一覧を取得（qanda-home用）
 	public List<PostByNickname> getAllPosts() {
 		List<PostByNickname> posts = postRepository.findAllPosts();
 
@@ -89,7 +92,17 @@ public class PostService {
 		return allPosts;
 	}
 
-	//特定のユーザーの投稿を取得
+	// 特定のユーザーの投稿を取得
+	public List<PostByNickname> getPostsByCategory(int category) {
+		List<PostByNickname> posts = postRepository.findPostByCategory(category);
+
+		List<PostByNickname> specificPosts = adjustPostBody(posts);
+
+		return specificPosts;
+
+	}
+
+	// 特定のユーザーの投稿を取得
 	public List<PostByNickname> getSpecificPosts(String username) {
 		List<PostByNickname> posts = postRepository.findAllPostsByUsername(username);
 
@@ -98,8 +111,8 @@ public class PostService {
 		return specificPosts;
 
 	}
-	
-	//特定のユーザーの「お気に入り」投稿を取得
+
+	// 特定のユーザーの「お気に入り」投稿を取得
 	public List<PostByNickname> getLikedPosts(String username) {
 		List<PostByNickname> posts = postRepository.findLikedPostsByUsername(username);
 		List<PostByNickname> specificPosts = adjustPostBody(posts);
@@ -107,7 +120,6 @@ public class PostService {
 		return specificPosts;
 
 	}
-	
 
 	// 投稿タイトル・本文省略メソッド（posthome用）
 	public List<PostByNickname> adjustPostBody(List<PostByNickname> posts) {
@@ -128,6 +140,21 @@ public class PostService {
 		}
 
 		return adjustedPosts;
+	}
+	
+	//投稿編集実行メソッド
+	public void updatePost(Post post) {
+
+		//投稿日時をセット
+		post.setCreatedAt(postRepository.findByPostId(post.getPostId()).getCreatedAt());
+		
+		//更新日時をセット
+		LocalDateTime ldt = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
+		post.setUpdatedAt(ldt);
+
+		postRepository.save(post);
+
+		
 	}
 
 }

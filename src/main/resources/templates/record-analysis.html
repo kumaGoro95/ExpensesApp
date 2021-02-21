@@ -27,7 +27,7 @@
 			<!-- Dropdown Structure -->
 			<ul id='dropdown1' class='dropdown-content'>
 				<div th:each="month : ${months}" th:inline="text">
-					<li><a th:href="@{/analysis/__${month}__}">[[${month}]]</a></li>
+					<li><a th:href="@{/money-record/analysis/__${month}__}">[[${month}]]</a></li>
 				</div>
 			</ul>
 			<div class="row card">

@@ -26,7 +26,7 @@
 					<div class="card-content">
 						<h4 class="center gray-text">パスワード変更</h4>
 						<div class="row"></div>
-						<form th:action="@{/setting}" th:object="${user}" method="post"
+						<form th:action="@{/setting/pass}" th:object="${user}" method="post"
 							name="passform" onsubmit="return passwordCheckFunction()"
 							novalidate>
 							<input type="hidden" name="username" th:value="*{username}" /> <input
@@ -68,7 +68,7 @@
 			var loginPass1 = document.getElementById("pass1").value;
 			var loginPass2 = document.getElementById("pass2").value;
 
-			if (pass1 !== pass2) {
+			if (loginPass1 != loginPass2) {
 				alert("パスワードが一致していません。")
 				return false;
 			}

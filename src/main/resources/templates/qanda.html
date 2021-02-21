@@ -23,7 +23,7 @@
 				<div class="card">
 					<div class="card-content">
 						<div class="card-title center">検索</div>
-						<form th:action="@{/search}" th:object="${swords}" method="post">
+						<form th:action="@{/qanda/search}" th:object="${swords}" method="post">
 							<div class="input-field">
 								<i class="material-icons prefix">search</i> <input
 									id="input_text" type="text" data-length="20" th:field="*{word}">
@@ -46,7 +46,7 @@
 						<div class="row"></div>
 						<span th:each="postCategory : ${postCategories}" th:inline="text">
 							<ul>
-								<li><a th:href="@{/showPost/__${postCategory['key']}__}"><i
+								<li><a th:href="@{/qanda/category/__${postCategory['key']}__}"><i
 										th:class="${postCategoriesToIcon.get(postCategory['key'])}+' fa-lg'"></i><span
 										class="black-text categories">[[${postCategory['value']}]]</span></a></li>
 							</ul>
@@ -66,7 +66,7 @@
 							<div class="row">
 								<div class="left">
 									<h6 class="post-title">
-										<a th:href="@{/post/__${post.postId}__}"><span
+										<a th:href="@{/qanda/__${post.postId}__}"><span
 											class="black-text">[[${post.postTitle}]]</span></a>
 									</h6>
 								</div>
@@ -83,7 +83,7 @@
 							</div>
 							<div class="right">
 								<div class="post-category">
-									<a th:href="@{/showPost/__${post.postCategory}__}"><i
+									<a th:href="@{/qanda/category/__${post.postCategory}__}"><i
 										th:class="${postCategoriesToIcon.get(post.postCategory)}+' fa-lg'"></i><span
 										class="black-text categories">[[${postCategories.get(post.postCategory)}]]</span></a>
 								</div>
@@ -92,7 +92,7 @@
 					</div>
 
 				</div>
-				<a th:href="@{/post}">
+				<a th:href="@{/qanda/post}">
 					<button class="waves-effect waves-light btn-large postbtn">
 						質問する<i class="material-icons right">note_add</i>
 					</button>

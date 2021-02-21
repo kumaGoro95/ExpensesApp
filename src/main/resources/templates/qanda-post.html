@@ -27,7 +27,7 @@
 						<h3 class="card-title center">質問投稿</h3>
 						<p class="center">節約でわからないこと・悩んでることを相談してみよう！</p>
 						<div class="row"></div>
-						<form th:action="@{/post}" th:object="${post}" method="post"
+						<form th:action="@{/qanda/post}" th:object="${post}" method="post"
 							novalidate>
 							<input type="hidden" name="username" th:value="${user.username}" />
 							<div class="form-group">

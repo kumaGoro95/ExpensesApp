@@ -1,0 +1,79 @@
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<th:block th:replace="fragments/header :: header"></th:block>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script th:src="@{/webjars/jquery/3.5.1/jquery.min.js}"></script>
+<script type="text/javascript"
+	th:src="@{/webjars/materializecss/1.0.0/js/materialize.min.js/}"></script>
+<link rel="stylesheet"
+	th:href="@{/webjars/materializecss/1.0.0/css/materialize.min.css}">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+	rel="stylesheet">
+<link href="https://use.fontawesome.com/releases/v5.6.1/css/all.css"
+	rel="stylesheet">
+<link rel="stylesheet" th:href="@{/css/stylesheet.css}">
+<title>title</title>
+</head>
+<body>
+	<div class="container">
+		<div class="row">
+			<div class="col s2"></div>
+			<div class="col s8">
+				<div class="card forms">
+					<div class="card-content">
+						<h3 class="card-title center">質問投稿</h3>
+						<p class="center">節約でわからないこと・悩んでることを相談してみよう！</p>
+						<div class="row"></div>
+						<form th:action="@{/qanda/updatePost}" th:object="${post}" method="post"
+							novalidate>
+							<input type="hidden" name="username" th:value="${user.username}" />
+							<input type="hidden" name="postId" th:value="${post.postId}" />
+							<div class="form-group">
+								<label><span class="label">タイトル</span></label> <input type="text" th:field="*{postTitle}"
+									placeholder="安くて品質のいい化粧水を探してます！">
+
+							</div>
+							<div class="row"></div>
+							<div class="form-group">
+								<textarea rows="10" cols="40" th:errorclass="is-invalid"
+									th:field="*{postBody}" placeholder="本文"></textarea>
+								<div class="invalid-feedback" th:errors="*{postBody}"></div>
+							</div>
+							<div class="row"></div>
+							<div class="form-group">
+								<div class="input-field">
+									<select th:field="*{postCategory}">
+										<option value="0" disabled selected>カテゴリを選択してください</option>
+										<span th:each="postCategory: ${postCategories}"
+										th:inline="text">
+											<option th:value="${postCategory['key']}">[[${postCategory['value']}]]</option>
+									</span>
+									</select>
+									<div class="invalid-feedback" th:errors="*{postCategory}"></div>
+									<label><span class="label">カテゴリ</span></label>
+								</div>
+							</div>
+
+							<div class="form-check"></div>
+							<div class="center">
+								<button class="waves-effect waves-light btn">投稿する</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+			<div class="col s2"></div>
+		</div>
+	</div>
+	<script>
+		$(document).ready(function() {
+			$(".dropdown-trigger").dropdown();
+			$('select').formSelect();
+		});
+	</script>
+</body>
+<th:block th:insert="fragments/footer :: footer"></th:block>
+</html>

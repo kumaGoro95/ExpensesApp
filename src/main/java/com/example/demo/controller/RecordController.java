@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.net.URI;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
@@ -70,25 +71,13 @@ public class RecordController {
 		mrDao = new MoneyRecordDaoImpl(em);
 	}
 
-	// 出入金記録登録画面へ遷移
-	@GetMapping("/record")
-	public String record(@ModelAttribute("moneyRecord") MoneyRecord moneyRecord, Authentication loginUser,
-			Model model) {
-		model.addAttribute("user", userRepository.findByUsername(loginUser.getName()));
-		model.addAttribute("subcategories", categoryRepository.findAll());
-		Map<Integer, String> categories = CategoryCodeToName.Categories;
-		model.addAttribute("categories", categories);
-
-		return "recordPost";
-	}
-
 	// 出入金記録を登録
-	@PostMapping("/record")
+	@PostMapping("/money-record/post")
 	public String process(@Validated @ModelAttribute("moneyRecord") MoneyRecord moneyRecord, BindingResult result,
 			Authentication loginUser, RedirectAttributes redirectAttributes) {
 		if (result.hasErrors()) {
 			System.out.println(result);
-			return "redirect:/recordPost?recordPost";
+			return "redirect:/money-record?money-record";
 		}
 		LocalDateTime ldt = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
 
@@ -96,11 +85,11 @@ public class RecordController {
 		moneyRecordRepository.save(moneyRecord);
 		redirectAttributes.addFlashAttribute("flashMsg", "投稿しました");
 
-		return "redirect:/?recordPost";
+		return "redirect:/money-record?money-record";
 	}
 
 	// 履歴画面へ遷移(日付降順)
-	@GetMapping("/showRecords")
+	@GetMapping("/money-record/history")
 	public String showRecords(@ModelAttribute("refineCondition") RefineCondition refineCondition,
 			Authentication loginUser, Model model) {
 		List<MoneyRecordList> records = moneyRecordRepository.findMoneyRecordList(loginUser.getName());
@@ -137,11 +126,11 @@ public class RecordController {
 		model.addAttribute("refineCondition", refineCondition);
 		model.addAttribute("dataList", dataList);
 
-		return "record";
+		return "record-history";
 	}
 
 	// 履歴画面へ遷移(日付昇順)
-	@GetMapping("/showRecords/orderByDateAsc/{categoryCode}/{startDate}/{endDate}")
+	@GetMapping("/money-record/history/date-asc/{categoryCode}/{startDate}/{endDate}")
 	public String showRecordsOrderByDateAsc(@ModelAttribute("categoryCode") String categoryCode,
 			@ModelAttribute("startDate") String startDate, @ModelAttribute("endDate") String endDate,
 			@ModelAttribute("refineCondition") RefineCondition refineCondition, Authentication loginUser, Model model) {
@@ -174,11 +163,11 @@ public class RecordController {
 		model.addAttribute("nullRecord", nullRecord);
 		model.addAttribute("categories", categories);
 
-		return "record";
+		return "record-history";
 	}
 
 	// 金額降順
-	@GetMapping("/showRecords/orderByMoneyDesc/{categoryCode}/{startDate}/{endDate}")
+	@GetMapping("/money-record/history/money-desc/{categoryCode}/{startDate}/{endDate}")
 	public String showRecordsOrderByMoneyDesc(@ModelAttribute("categoryCode") String categoryCode,
 			@ModelAttribute("startDate") String startDate, @ModelAttribute("endDate") String endDate,
 			@ModelAttribute("refineCondition") RefineCondition refineCondition, Authentication loginUser, Model model) {
@@ -211,11 +200,11 @@ public class RecordController {
 		model.addAttribute("nullRecord", nullRecord);
 		model.addAttribute("categories", categories);
 
-		return "record";
+		return "record-history";
 	}
 
 	// 金額昇順
-	@GetMapping("/showRecords/orderByMoneyAsc/{categoryCode}/{startDate}/{endDate}")
+	@GetMapping("/money-record/history/money-asc/{categoryCode}/{startDate}/{endDate}")
 	public String showRecordsOrderByMoneyAsc(@ModelAttribute("categoryCode") String categoryCode,
 			@ModelAttribute("startDate") String startDate, @ModelAttribute("endDate") String endDate,
 			@ModelAttribute("refineCondition") RefineCondition refineCondition, Authentication loginUser, Model model) {
@@ -248,11 +237,11 @@ public class RecordController {
 		model.addAttribute("nullRecord", nullRecord);
 		model.addAttribute("categories", categories);
 
-		return "record";
+		return "record-history";
 	}
 
 	// 絞込検索
-	@PostMapping("/showRecords/refine")
+	@PostMapping("/money-record/history/refine")
 	public String refine(@ModelAttribute("refineCondition") RefineCondition refineCondition, Authentication loginUser,
 			Model model) {
 		// カテゴリ未選択の場合
@@ -285,6 +274,11 @@ public class RecordController {
 			}
 		}
 
+		// カテゴリ未選択の場合(文字列を%からallに戻す)
+		if (refineCondition.getCategoryCode().equals("%")) {
+			refineCondition.setCategoryCode("all");
+		}
+
 		// カテゴリ一覧を取得
 		Map<Integer, String> categories = CategoryCodeToName.Categories;
 		Map<Integer, String> categoriesToIcon = CategoryCodeToIcon.CategoriesToIcon;
@@ -299,11 +293,13 @@ public class RecordController {
 		model.addAttribute("nullRecord", nullRecord);
 		model.addAttribute("refineCondition", refineCondition);
 
-		return "record";
+		System.out.println(refineCondition);
+
+		return "record-history";
 	}
 
 	// カレンダーから一覧へ遷移
-	@GetMapping("/Records/{date}")
+	@GetMapping("/money-record/history/{date}")
 	public String showRecordsByDate(@PathVariable("date") String date,
 			@ModelAttribute("refineCondition") RefineCondition refineCondition, Authentication loginUser, Model model) {
 
@@ -320,55 +316,70 @@ public class RecordController {
 		model.addAttribute("categories", categories);
 		model.addAttribute("nullRecord", nullRecord);
 
-		return "record";
+		return "record-history";
 	}
 
 	// 出入金記録を削除
 	@Transactional
-	@GetMapping("/deleteRecord/{recordId}/{pageNum}")
+	@GetMapping("/money-record/delete/{recordId}/{pageNum}")
 	public String deleteRecord(@PathVariable("recordId") int recordId, @PathVariable("pageNum") int pageNum,
 			Model model, RedirectAttributes redirectAttributes, UriComponentsBuilder builder) {
 		moneyRecordRepository.deleteByRecordId(recordId);
 
 		redirectAttributes.addFlashAttribute("flashMsg", "削除しました");
 
+		// ホーム画面から削除したか、履歴画面から削除したかでリダイレクト先が異なる
 		if (pageNum == 1) {
-			return "redirect:/top?showRecords";
+			return "redirect:/money-record?history";
 		} else {
-			return "redirect:/showRecords?showRecords";
+			return "redirect:/money-record/history?history";
 		}
 	}
 
 	// 出入金記録編集画面へ遷移
-	@GetMapping("/editRecord/{recordId}")
-	public String editRecord(@PathVariable("recordId") int recordId, Authentication loginUser, Model model) {
+	@GetMapping("/money-record/edit/{recordId}/{pageNum}")
+	public String editRecord(@PathVariable("recordId") int recordId, @PathVariable("pageNum") int pageNum,
+			Authentication loginUser, Model model) {
 		model.addAttribute("record", moneyRecordRepository.findByRecordId(recordId));
 		model.addAttribute("user", userRepository.findByUsername(loginUser.getName()));
 		model.addAttribute("subcategories", categoryRepository.findAll());
 		Map<Integer, String> categories = CategoryCodeToName.Categories;
 		model.addAttribute("categories", categories);
+		model.addAttribute("pageNum", pageNum);
 
-		return "recordEdit";
+		return "record-edit";
 	}
 
 	// 出入金記録の編集を実行
-	@PostMapping("/updateRecord")
+	@PostMapping("money-record/updateRecord")
 	public String updateRecord(@Validated @ModelAttribute("moneyRecord") MoneyRecord moneyRecord, BindingResult result,
-			Authentication loginUser, RedirectAttributes redirectAttributes) {
+			@ModelAttribute("pageNum") int pageNum, Authentication loginUser, RedirectAttributes redirectAttributes,
+			UriComponentsBuilder builder) {
+
+		// リダイレクト先を指定
+		URI location = builder.path("/money-record/edit/" + moneyRecord.getRecordId() + "/" + pageNum).build().toUri();
+
 		if (result.hasErrors()) {
-			return "/";
+			return "redirect:" + location.toString();
 		}
 
 		LocalDateTime ldt = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
 		moneyRecord.setUpdatedAt(ldt);
 
 		moneyRecordRepository.save(moneyRecord);
+
 		redirectAttributes.addFlashAttribute("flashMsg", "変更しました");
 
-		return "redirect:/showRecords?editRecord";
+		// ホーム画面から削除したか、履歴画面から削除したかでリダイレクト先が異なる
+		if (pageNum == 1) {
+			return "redirect:/money-record?editRecord";
+		} else {
+			return "redirect:/money-record/history?editRecord";
+		}
+
 	}
 
-	@GetMapping("/analysis")
+	@GetMapping("/money-record/analysis")
 	// Authentication・・・認証済みのユーザー情報を取得
 	public String analysis(@ModelAttribute("moneyRecord") MoneyRecord moneyRecord, Authentication loginUser,
 			Model model) {
@@ -520,11 +531,11 @@ public class RecordController {
 		// 現在の月をドロップダウンに表示
 		model.addAttribute("currentMonth", currentMonth);
 
-		return "analysis";
+		return "record-analysis";
 	}
 
 	// 過去月の分析を表示
-	@GetMapping("/analysis/{month}")
+	@GetMapping("/money-record/analysis/{month}")
 	// Authentication・・・認証済みのユーザー情報を取得
 	public String analysisByMonth(@PathVariable("month") String month, Authentication loginUser, Model model) {
 		SiteUser currentUser = userRepository.findByUsername(loginUser.getName());
@@ -667,7 +678,7 @@ public class RecordController {
 		// ドロップダウン用
 		model.addAttribute("currentMonth", month);
 
-		return "analysis";
+		return "record-analysis";
 
 	}
 }
