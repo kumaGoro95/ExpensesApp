@@ -18,222 +18,227 @@
 <link href="https://use.fontawesome.com/releases/v5.6.1/css/all.css"
 	rel="stylesheet">
 <link rel="stylesheet" th:href="@{/css/stylesheet.css}">
-<title>title</title>
-
-<script>
-	$(document).ready(
-			function() {
-				$('#calendar').fullCalendar(
-						{
-							events : {
-								url : '/api/event/all'
-							},
-							//イベントの色を変える
-							eventColor : '#FFFFFF',
-							//イベントの文字色を変える
-
-							eventRender : function(event, element) {
-								element.css("font-size", "0.9em");
-								element.css("padding", "5px");
-								element.find('span.fc-title').html(
-										element.find('span.fc-title').text());
-							}
-							
-						});
-
-				$('.tabs').tabs();
-
-				$('.dropdown-trigger').dropdown();
-
-				$('select').formSelect();
-
-				$('.datepicker')
-						.datepicker(
-								{
-									format : "yyyy-mm-dd",
-									i18n : {
-										months : [ "1月", "2月", "3月", "4月",
-												"5月", "6月", "7月", "8月", "9月",
-												"10月", "11月", "12月" ],
-										monthsShort : [ "1月", "2月", "3月", "4月",
-												"5月", "6月", "7月", "8月", "9月",
-												"10月", "11月", "12月" ],
-										weekdays : [ "日曜日", "月曜日", "火曜日",
-												"水曜日", "木曜日", "金曜日", "土曜日" ],
-										weekdaysShort : [ "日", "月", "火", "水",
-												"木", "金", "土" ],
-										weekdaysAbbrev : [ "日", "月", "火", "水",
-												"木", "金", "土" ],
-										nextMonth : "翌月",
-										previousMonth : "前月",
-										labelMonthSelect : "月を選択",
-										labelYearSelect : "年を選択",
-										setDefaultDate : true,
-										cancel : 'キャンセル',
-										clear : 'クリア',
-										done : 'OK',
-										close : "閉じる",
-										format : "yyyy-mm-dd",
-									}
-								});
-
-			});
-
-	$('#message').fadeOut(2000);
-
-	//初期表示は非表示
-	const searchbox = document.getElementById("search");
-	searchbox.style.display == "none";
-
-	function clickBtn1() {
-		const p1 = document.getElementById("search");
-
-		if (p1.style.display == "block") {
-			// noneで非表示
-			p1.style.display = "none";
-		} else {
-			// blockで表示
-			p1.style.display = "block";
-		}
-	}
-</script>
-
+<title>Piggy Bank</title>
 </head>
 <body>
-	<div class="container">
-		<div class="row"></div>
-		<div class="row col s12">
+	<main>
+		<div class="container">
+			<div class="row"></div>
+			<div class="row col s12">
 
-			<div class="waves-effect waves-light btn search-btn" id="search-btn"
-				onclick="clickBtn1()">
-				絞り込み<i class="material-icons left">search</i>
+				<div class="waves-effect waves-light btn search-btn" id="search-btn"
+					onclick="clickBtn1()">
+					絞り込み<i class="material-icons left">search</i>
+				</div>
+
 			</div>
-
-		</div>
-		<div id="search" class="row card search">
-			<div class="card-content">
-				<div class="card-title center">絞り込み</div>
-				<form th:action="@{/money-record/history/refine}"
-					th:object="${refineCondition}" method="post" novalidate>
-
-					<div class="form-group">
-						<label for="name"><span class="label">カテゴリ</span></label>
-						<div class="input-field">
-							<select th:field="*{categoryCode}">
-								<option th:value="all" selected>カテゴリを選択してください</option>
-								<span th:each="category: ${categories}" th:inline="text">
-									<option th:value="${category['key']}">[[${category['value']}]]</option>
-							</span>
-							</select>
-						</div>
-					</div>
-
-					<div class="form-group">
-						<label for="startDate"><span class="label">開始日</span></label> <input type="text"
-							class="datepicker" th:errorclass="is-invalid" name="startDate" />
-						<div class="invalid-feedback" th:errors="*{startDate}"></div>
-					</div>
-					<div class="form-group">
-						<label for="endDate"><span class="label">終了日</span></label> <input type="text"
-							class="datepicker" th:errorclass="is-invalid"
-							th:field="*{endDate}" />
-						<div class="invalid-feedback" th:errors="*{endDate}"></div>
-					</div>
-					<div class="row"></div>
-					<div class="center">
-					<button class="btn refine-exe">この条件で絞り込む</button>
-					</div>
-				</form>
-			</div>
-		</div>
-		<div class="row card">
-			<div class="col s12">
-				<ul class="tabs">
-					<li class="tab col s6"><a href="#tab1"><span
-							class="tab-text">一覧</span></a></li>
-					<li class="tab col s6"><a href="#tab2"><span
-							class="tab-text">カレンダー</span></a></li>
-				</ul>
-			</div>
-			<div id="tab1" class="col s12">
+			<div id="search" class="row card search">
 				<div class="card-content">
-					<div class="card-title">履歴一覧</div>
-					<div class="row"></div>
-					<div class="row">
-						<div id="tab1" class="col s12">
-							<div class="record">
-								<!-- Dropdown Trigger -->
-								<a class='dropdown-trigger btn' href='#' data-target='dropdown1'>並び替え<i
-									class="material-icons left">sort</i></a>
-								<div class="row"></div>
+					<div class="card-title center">絞り込み</div>
+					<form th:action="@{/money-record/history/refine}"
+						th:object="${refineCondition}" method="post" novalidate>
 
-								<!-- Dropdown Structure -->
-								<ul id='dropdown1' class='dropdown-content'>
-									<li><a th:href="@{/money-record/history}"><span class="sort-content">日付（新しい順）</span></a></li>
-									<li><a
-										th:href="@{/money-record/history/date-asc/__${refineCondition.categoryCode}__/__${refineCondition.startDate}__/__${refineCondition.endDate}__}"><span class="sort-content">日付（古い順）</span></a></li>
-									<li><a
-										th:href="@{/money-record/history/money-desc/__${refineCondition.categoryCode}__/__${refineCondition.startDate}__/__${refineCondition.endDate}__}"><span class="sort-content">金額（多い順）</span></a></li>
-									<li><a
-										th:href="@{/money-record/history/money-asc/__${refineCondition.categoryCode}__/__${refineCondition.startDate}__/__${refineCondition.endDate}__}"><span class="sort-content">金額（少ない順）</span></a></li>
-								</ul>
-
-								<table>
-									<thead>
-										<tr>
-											<th>日付</th>
-											<th>金額</th>
-											<th>カテゴリ</th>
-											<th>備考</th>
-											<th></th>
-										</tr>
-									</thead>
-									<tbody>
-										<span th:each="record : ${records}" th:inline="text">
-											<tr>
-												<td>[[${record.recordDate}]]</td>
-												<td><span
-													th:text="${#numbers.formatDecimal(record.incomeAndExpense, 0, 'COMMA', 0, 'POINT')} + '円'"></span></td>
-												<td><i
-													th:class="${categoriesToIcon.get(record.categoryCode)}+' fa-lg'"></i><span
-													class="record-categories">[[${record.subcategoryName}]]</span></td>
-												<td>[[${record.note}]]</td>
-												<td><a class="dropdown-trigger" href="#!"
-													data-target="dropdown-record"><i
-														class="fas fa-caret-down fa-lg"></i></a></td>
-														
-														
-												<!-- ドロップダウンメニュー -->
-												<ul id="dropdown-record" class="dropdown-content">
-													<li><a th:href="@{/money-record/edit/__${record.recordId}__/2}">編集</a></li>
-													<li><a
-														th:href="@{/money-record/delete/__${record.recordId}__/2}">削除</a></li>
-												</ul>
-
-											</tr>
-									</tbody>
-								</table>
+						<div class="form-group">
+							<label for="name"><span class="label">カテゴリ</span></label>
+							<div class="input-field">
+								<select th:field="*{categoryCode}">
+									<option th:value="all" selected>カテゴリを選択してください</option>
+									<span th:each="category: ${categories}" th:inline="text">
+										<option th:value="${category['key']}">[[${category['value']}]]</option>
 								</span>
-								<div class="center">
-									<span th:if="${records == nullRecord}"><h6>表示できるデータがありません</h6></span>
+								</select>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label for="startDate"><span class="label">開始日</span></label> <input
+								type="text" class="datepicker" th:errorclass="is-invalid"
+								name="startDate" />
+							<div class="invalid-feedback" th:errors="*{startDate}"></div>
+						</div>
+						<div class="form-group">
+							<label for="endDate"><span class="label">終了日</span></label> <input
+								type="text" class="datepicker" th:errorclass="is-invalid"
+								th:field="*{endDate}" />
+							<div class="invalid-feedback" th:errors="*{endDate}"></div>
+						</div>
+						<div class="row"></div>
+						<div class="center">
+							<button class="btn refine-exe">この条件で絞り込む</button>
+						</div>
+					</form>
+				</div>
+			</div>
+			<div class="row card">
+				<div class="col s12">
+					<ul class="tabs">
+						<li class="tab col s6"><a href="#tab1"><span
+								class="tab-text">一覧</span></a></li>
+						<li class="tab col s6"><a href="#tab2"><span
+								class="tab-text">カレンダー</span></a></li>
+					</ul>
+				</div>
+				<div id="tab1" class="col s12">
+					<div class="card-content">
+						<div class="card-title">履歴一覧</div>
+						<div class="row"></div>
+						<div class="row">
+							<div id="tab1" class="col s12">
+								<div class="record">
+									<!-- Dropdown Trigger -->
+									<a class='dropdown-trigger btn' href='#'
+										data-target='dropdown1'>並び替え<i class="material-icons left">sort</i></a>
+									<div class="row"></div>
+
+									<!-- Dropdown Structure -->
+									<ul id='dropdown1' class='dropdown-content'>
+										<li><a th:href="@{/money-record/history}"><span
+												class="sort-content">日付（新しい順）</span></a></li>
+										<li><a
+											th:href="@{/money-record/history/date-asc/__${refineCondition.categoryCode}__/__${refineCondition.startDate}__/__${refineCondition.endDate}__}"><span
+												class="sort-content">日付（古い順）</span></a></li>
+										<li><a
+											th:href="@{/money-record/history/money-desc/__${refineCondition.categoryCode}__/__${refineCondition.startDate}__/__${refineCondition.endDate}__}"><span
+												class="sort-content">金額（多い順）</span></a></li>
+										<li><a
+											th:href="@{/money-record/history/money-asc/__${refineCondition.categoryCode}__/__${refineCondition.startDate}__/__${refineCondition.endDate}__}"><span
+												class="sort-content">金額（少ない順）</span></a></li>
+									</ul>
+
+									<table>
+										<thead>
+											<tr>
+												<th>日付</th>
+												<th>金額</th>
+												<th>カテゴリ</th>
+												<th>備考</th>
+												<th></th>
+											</tr>
+										</thead>
+										<tbody>
+											<span th:each="record : ${records}" th:inline="text">
+												<tr>
+													<td>[[${record.recordDate}]]</td>
+													<td><span
+														th:text="${#numbers.formatDecimal(record.incomeAndExpense, 0, 'COMMA', 0, 'POINT')} + '円'"></span></td>
+													<td><i
+														th:class="${categoriesToIcon.get(record.categoryCode)}+' fa-lg'"></i><span
+														class="record-categories">[[${record.subcategoryName}]]</span></td>
+													<td>[[${record.note}]]</td>
+													<td><a class="dropdown-trigger" href="#!"
+														data-target="dropdown-record"><i
+															class="fas fa-caret-down fa-lg"></i></a></td>
+
+
+													<!-- ドロップダウンメニュー -->
+													<ul id="dropdown-record" class="dropdown-content">
+														<li><a
+															th:href="@{/money-record/edit/__${record.recordId}__/2}">編集</a></li>
+														<li><a
+															th:href="@{/money-record/delete/__${record.recordId}__/2}">削除</a></li>
+													</ul>
+
+												</tr>
+										</tbody>
+									</table>
+									</span>
+									<div class="center">
+										<span th:if="${records == nullRecord}"><h6>表示できるデータがありません</h6></span>
+									</div>
 								</div>
 							</div>
 						</div>
 					</div>
 				</div>
-			</div>
-			<div id="tab2" class="col s12">
-				<div class="card-content">
-					<div class="row">
-						<div class="card center">
-							<div class="calendar" id='calendar'></div>
+				<div id="tab2" class="col s12">
+					<div class="card-content">
+						<div class="row">
+							<div class="card center">
+								<div class="calendar" id='calendar'></div>
+							</div>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-	</div>
+	</main>
+	<script>
+		$(document).ready(
+				function() {
+					$('#calendar').fullCalendar(
+							{
+								events : {
+									url : '/api/event/all'
+								},
+								//イベントの色を変える
+								eventColor : '#FFFFFF',
+								//イベントの文字色を変える
 
+								eventRender : function(event, element) {
+									element.css("font-size", "0.9em");
+									element.css("padding", "5px");
+									element.find('span.fc-title').html(
+											element.find('span.fc-title')
+													.text());
+								}
+
+							});
+
+					$('.tabs').tabs();
+
+					$('.dropdown-trigger').dropdown();
+
+					$('select').formSelect();
+
+					$('.datepicker').datepicker(
+							{
+								format : "yyyy-mm-dd",
+								i18n : {
+									months : [ "1月", "2月", "3月", "4月", "5月",
+											"6月", "7月", "8月", "9月", "10月",
+											"11月", "12月" ],
+									monthsShort : [ "1月", "2月", "3月", "4月",
+											"5月", "6月", "7月", "8月", "9月",
+											"10月", "11月", "12月" ],
+									weekdays : [ "日曜日", "月曜日", "火曜日", "水曜日",
+											"木曜日", "金曜日", "土曜日" ],
+									weekdaysShort : [ "日", "月", "火", "水", "木",
+											"金", "土" ],
+									weekdaysAbbrev : [ "日", "月", "火", "水", "木",
+											"金", "土" ],
+									nextMonth : "翌月",
+									previousMonth : "前月",
+									labelMonthSelect : "月を選択",
+									labelYearSelect : "年を選択",
+									setDefaultDate : true,
+									cancel : 'キャンセル',
+									clear : 'クリア',
+									done : 'OK',
+									close : "閉じる",
+									format : "yyyy-mm-dd",
+								}
+							});
+
+				});
+
+		$('#message').fadeOut(2000);
+
+		//初期表示は非表示
+		const searchbox = document.getElementById("search");
+		searchbox.style.display == "none";
+
+		function clickBtn1() {
+			const p1 = document.getElementById("search");
+
+			if (p1.style.display == "block") {
+				// noneで非表示
+				p1.style.display = "none";
+			} else {
+				// blockで表示
+				p1.style.display = "block";
+			}
+		}
+	</script>
 </body>
 <th:block th:insert="fragments/footer :: footer"></th:block>
 </html>

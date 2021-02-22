@@ -13,9 +13,10 @@
 <link href="https://use.fontawesome.com/releases/v5.6.1/css/all.css"
 	rel="stylesheet">
 <link rel="stylesheet" th:href="@{/css/stylesheet.css}">
-<title>title</title>
+<title>Piggy Bank</title>
 </head>
 <body>
+<main>
 	<div class="container">
 		<div class="row">
 			<div class="col s2"></div>
@@ -40,13 +41,13 @@
 							<div class="row">
 								<div class="input-field col s12">
 									<input type="text" name="email" placeholder="xxx@xxx.com">
-									<label for="address"><span class="label">メールアドレス</span></label>
+									<label for="address"><span class="label"><span class="label">メールアドレス</span></span></label>
 								</div>
 							</div>
 							<div class="row">
 								<div class="input-field col s12">
 									<input type="password" name="password" placeholder="password">
-									<label for="password"><span class="label">パスワード</span></label>
+									<label for="password"><span class="label"><span class="label">パスワード</span></span></label>
 								</div>
 							</div>
 							<div class="col s12 center">
@@ -61,6 +62,7 @@
 		</div>
 
 	</div>
+	</main>
 	<script>
 		$('#message').fadeOut(2000);
 	</script>
