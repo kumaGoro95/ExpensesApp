@@ -8,8 +8,6 @@ import javax.persistence.Query;
 
 import org.springframework.stereotype.Repository;
 
-import com.example.demo.model.MoneyRecord;
-import com.example.demo.model.beans.MoneyRecordList;
 import com.example.demo.model.beans.PostByNickname;
 
 @Repository

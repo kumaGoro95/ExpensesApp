@@ -12,12 +12,9 @@ import javax.persistence.PersistenceContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.demo.dao.MoneyRecordDaoImpl;
 import com.example.demo.dao.PostDaoImpl;
 import com.example.demo.model.Post;
 import com.example.demo.model.beans.PostByNickname;
-import com.example.demo.repository.DateRepository;
-import com.example.demo.repository.MoneyRecordRepository;
 import com.example.demo.repository.PostRepository;
 
 @Service
