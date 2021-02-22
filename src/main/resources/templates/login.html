@@ -27,13 +27,13 @@
 						<div class="row"></div>
 						<div class="row">
 						<div class="alert-danger" th:if="${param.error}">
-							<p>メールアドレスまたはパスワードが正しくありません</p>
+							<p class="red-text alert">メールアドレスまたはパスワードが正しくありません</p>
 						</div>
 						<div class="alert-success" th:if="${param.register}">
-							<p>新規登録が完了しました</p>
+							<p class="red-text alert">新規登録が完了しました</p>
 						</div>
 						<div class="alert-success" th:if="${param.logout}">
-							<p>ログアウトしました</p>
+							<p class="red-text alert">ログアウトしました</p>
 						</div>
 						</div>
 						<form  th:action="@{/login}" th:object="${user}"

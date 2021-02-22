@@ -30,6 +30,7 @@
 						<div class="row"></div>
 						<form th:action="@{/qanda/updatePost}" th:object="${post}" method="post"
 							novalidate>
+							<p class="text-danger red-text" th:errors="*{*}"></p>
 							<input type="hidden" name="username" th:value="${user.username}" />
 							<input type="hidden" name="postId" th:value="${post.postId}" />
 							<div class="form-group">

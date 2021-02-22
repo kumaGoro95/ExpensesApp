@@ -9,6 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.Length;
@@ -39,10 +40,12 @@ public class Post{
 	private String username;
 	
 	@Length(min=0, max=60)
+	@NotBlank
 	@Column(name = "post_title")
 	private String postTitle;
 	
 	@Length(min=0, max=500)
+	@NotBlank
 	@Column(name = "post_body")
 	private String postBody;
 	

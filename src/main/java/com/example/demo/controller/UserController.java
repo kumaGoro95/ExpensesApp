@@ -1,14 +1,8 @@
 package com.example.demo.controller;
 
-import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.math.RoundingMode;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
@@ -25,22 +19,15 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.example.demo.util.CategoryCodeToIcon;
-import com.example.demo.util.CategoryCodeToName;
 import com.example.demo.util.PostCategoryCodeToIcon;
 import com.example.demo.util.PostCategoryCodeToName;
-import com.example.demo.model.MoneyRecord;
 import com.example.demo.model.SiteUser;
 import com.example.demo.model.beans.FileUploadForm;
-import com.example.demo.model.beans.MoneyRecordList;
-import com.example.demo.model.beans.SummaryByCategory;
 import com.example.demo.repository.SiteUserRepository;
 import com.example.demo.service.FileUploadService;
-import com.example.demo.service.MoneyRecordService;
 import com.example.demo.service.PostService;
 import com.example.demo.repository.MoneyRecordRepository;
 import com.example.demo.repository.PostRepository;
-import com.example.demo.repository.CategoryRepository;
 import com.example.demo.repository.LikeRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -52,102 +39,12 @@ public class UserController {
 	// DI
 	private final SiteUserRepository userRepository;
 	private final MoneyRecordRepository moneyRecordRepository;
-	private final MoneyRecordService mrService;
-	private final CategoryRepository categoryRepository;
 	private final PostRepository postRepository;
 	private final LikeRepository likeRepository;
 	private final FileUploadService iResizer;
 	private final PostService pService;
 	private final BCryptPasswordEncoder passwordEncoder;
 
-
-
-	@PostMapping("/upload")
-	public String upload(@ModelAttribute("file") FileUploadForm file, Authentication loginUser, Model model,
-			HttpServletResponse response) {
-		model.addAttribute("user", userRepository.findByUsername(loginUser.getName()));
-		String str = iResizer.uploadImage(response, file.getUploadedFile(), loginUser.getName());
-		System.out.println(str);
-
-		return "test";
-	}
-
-	//アプリホーム画面
-	@GetMapping("/money-record")
-	// Authentication・・・認証済みのユーザー情報を取得
-	public String loginProcess(@ModelAttribute("moneyRecord") MoneyRecord moneyRecord, Authentication loginUser,
-			Model model) {
-		SiteUser currentUser = userRepository.findByUsername(loginUser.getName());
-
-		// カテゴリ一覧を取得
-		Map<Integer, String> categories = CategoryCodeToName.Categories;
-
-		// 現在の月を取得
-		LocalDate now = LocalDate.now();
-		String strNow = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-		String currentMonth = strNow.substring(0, 7);
-		String year = currentMonth.substring(0, 4);
-		String month = currentMonth.substring(5, 7);
-
-		/* 円グラフ用 */
-
-		// 収支別円グラフパラメータ
-		String expenseLabel[] = mrService.getExpenseLabel();
-		BigDecimal expenseData[] = mrService.getExpenseData(loginUser.getName(), currentMonth);
-
-		// 円グラフに表示するデータがあるか確認
-		List<BigDecimal> checknullList = new ArrayList<BigDecimal>();
-		for (int i = 0; i < 15; i++) {
-			checknullList.add(BigDecimal.valueOf(0));
-		}
-		BigDecimal checknull[] = checknullList.toArray(new BigDecimal[checknullList.size()]);
-
-		/* 最近の履歴表示用 */
-		List<MoneyRecordList> recordsLimit10 = moneyRecordRepository.findMoneyRecordListLimit10(loginUser.getName());
-		Map<Integer, String> categoriesToIcon = CategoryCodeToIcon.CategoriesToIcon;
-
-		/* 予算-収入=残金用 */
-
-		// 支出合計を算出
-		List<SummaryByCategory> expenseByCategory = moneyRecordRepository.findCategorySummaries(loginUser.getName(),
-				currentMonth);
-		BigDecimal totalAmmount = new BigDecimal(0.0);
-		//収入分を除く
-		for (int i = 0; i < expenseByCategory.size() -1; i++) {
-			totalAmmount = totalAmmount.add(expenseByCategory.get(i).getSum());
-		}
-
-		// 予算を取得
-		BigDecimal budget = currentUser.getBudget().setScale(0, RoundingMode.DOWN);
-		// 予算－支出を計算
-		BigDecimal balance = budget.subtract(totalAmmount);
-
-		// 履歴データがあるかチェック用
-		List<MoneyRecordList> nullRecord = new ArrayList<MoneyRecordList>();
-
-		/* model */
-
-		model.addAttribute("user", currentUser);
-		model.addAttribute("subcategories", categoryRepository.findAll());
-		model.addAttribute("categories", categories);
-		// 円グラフ
-		model.addAttribute("expenseLabel", expenseLabel);
-		model.addAttribute("expenseData", expenseData);
-		// 〇年〇月の状況 用
-		model.addAttribute("year", year);
-		model.addAttribute("month", month);
-		// 予算-収入＝残金
-		model.addAttribute("checknull", checknull);
-		model.addAttribute("budget", budget);
-		model.addAttribute("totalAmmount", totalAmmount);
-		model.addAttribute("balance", balance);
-		// 履歴10件
-		model.addAttribute("recordsLimit10", recordsLimit10);
-		model.addAttribute("categoriesToIcon", categoriesToIcon);
-		model.addAttribute("nullRecord", nullRecord);
-
-		return "record-home";
-	}
 
 	// ユーザー詳細画面へ遷移
 	@GetMapping("/user/{username}")
@@ -225,10 +122,11 @@ public class UserController {
 			return "redirect:setting?setting";
 		}
 		// 画像アップロード・リサイズ
-		String str = iResizer.uploadImage(response, file.getUploadedFile(), loginUser.getName());
+		String str = iResizer.uploadImage(response, file.getUploadedFile());
 
 		user.setIcon(str);
 		user.setPassword(user.getPassword());
+		System.out.println(user.getPassword());
 		LocalDateTime ldt = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
 		user.setUpdatedAt(ldt);
 		userRepository.save(user);
@@ -258,7 +156,9 @@ public class UserController {
 		LocalDateTime ldt = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
 		user.setUpdatedAt(ldt);
 		
+		System.out.println("変更前:" + user.getPassword());
 		user.setPassword(passwordEncoder.encode(user.getPassword()));
+		System.out.println("変更後:" + user.getPassword());
 		
 		userRepository.save(user);
 
