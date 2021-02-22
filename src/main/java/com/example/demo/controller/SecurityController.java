@@ -54,7 +54,7 @@ public class SecurityController {
 		if (result.hasErrors()) {
 			System.out.println(result);
 
-			return "redirect:/register?register";
+			return "register";
 		}
 		
 		boolean register = sService.registUser(user);

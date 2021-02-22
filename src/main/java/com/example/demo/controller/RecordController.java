@@ -54,6 +54,85 @@ public class RecordController {
 	private final DateService dService;
 	private final CategoryRepository categoryRepository;
 
+	// アプリホーム画面
+	@GetMapping("/money-record")
+	// Authentication・・・認証済みのユーザー情報を取得
+	public String loginProcess(@ModelAttribute("moneyRecord") MoneyRecord moneyRecord, Authentication loginUser,
+			Model model) {
+		SiteUser currentUser = userRepository.findByUsername(loginUser.getName());
+
+		// カテゴリ一覧を取得
+		Map<Integer, String> categories = CategoryCodeToName.Categories;
+
+		// 現在の月を取得
+		LocalDate now = LocalDate.now();
+		String strNow = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+		String currentMonth = strNow.substring(0, 7);
+		String year = currentMonth.substring(0, 4);
+		String month = currentMonth.substring(5, 7);
+
+		/* 円グラフ用 */
+
+		// 収支別円グラフパラメータ
+		String expenseLabel[] = mrService.getExpenseLabel();
+		BigDecimal expenseData[] = mrService.getExpenseData(loginUser.getName(), currentMonth);
+
+		// 円グラフに表示するデータがあるか確認
+		List<BigDecimal> checknullList = new ArrayList<BigDecimal>();
+		for (int i = 0; i < 15; i++) {
+			checknullList.add(BigDecimal.valueOf(0));
+		}
+		BigDecimal checknull[] = checknullList.toArray(new BigDecimal[checknullList.size()]);
+
+		/* 最近の履歴表示用 */
+		List<MoneyRecordList> recordsLimit10 = moneyRecordRepository.findMoneyRecordListLimit10(loginUser.getName());
+		Map<Integer, String> categoriesToIcon = CategoryCodeToIcon.CategoriesToIcon;
+
+		/* 予算-収入=残金用 */
+
+		// 支出合計を算出
+		List<SummaryByCategory> expenseByCategory = moneyRecordRepository.findCategorySummaries(loginUser.getName(),
+				currentMonth);
+		BigDecimal totalAmmount = new BigDecimal(0.0);
+		// 収入分を除く
+		for (int i = 0; i < expenseByCategory.size() - 1; i++) {
+			totalAmmount = totalAmmount.add(expenseByCategory.get(i).getSum());
+		}
+
+		// 予算を取得
+		BigDecimal budget = currentUser.getBudget().setScale(0, RoundingMode.DOWN);
+		// 予算－支出を計算
+		BigDecimal balance = budget.subtract(totalAmmount);
+
+		// 履歴データがあるかチェック用
+		List<MoneyRecordList> nullRecord = new ArrayList<MoneyRecordList>();
+
+		/* model */
+
+		model.addAttribute("user", currentUser);
+		model.addAttribute("subcategories", categoryRepository.findAll());
+		model.addAttribute("categories", categories);
+		// 円グラフ
+		model.addAttribute("expenseLabel", expenseLabel);
+		model.addAttribute("expenseData", expenseData);
+		// 〇年〇月の状況 用
+		model.addAttribute("year", year);
+		model.addAttribute("month", month);
+		// 予算-収入＝残金
+		model.addAttribute("checknull", checknull);
+		model.addAttribute("budget", budget);
+		model.addAttribute("totalAmmount", totalAmmount);
+		model.addAttribute("balance", balance);
+		// 履歴10件
+		model.addAttribute("recordsLimit10", recordsLimit10);
+		model.addAttribute("categoriesToIcon", categoriesToIcon);
+		model.addAttribute("nullRecord", nullRecord);
+		
+		System.out.println(currentUser.getPassword());
+
+		return "record-home";
+	}
+
 	// 出入金記録を登録
 	@PostMapping("/money-record/post")
 	public String process(@Validated @ModelAttribute("moneyRecord") MoneyRecord moneyRecord, BindingResult result,
@@ -88,7 +167,6 @@ public class RecordController {
 
 		// 履歴データがあるかチェック用
 		List<MoneyRecordList> nullRecord = new ArrayList<MoneyRecordList>();
-
 
 		refineCondition.setCategoryCode("all");
 		refineCondition.setStartDate(mrService.getOldestDate(loginUser.getName()));

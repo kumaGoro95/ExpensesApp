@@ -2,21 +2,21 @@
 body {
 	background-color: rgb(255, 250, 250);
 	display: flex;
-    min-height: 100vh;
-    flex-direction: column;
+	min-height: 100vh;
+	flex-direction: column;
 }
 
 main {
-    flex: 1 0 auto;
-  }
-
-.tab-text{
-	font-size:16px;
+	flex: 1 0 auto;
 }
 
-.label{
-	display:block;
-	font-size:16px;
+.tab-text {
+	font-size: 16px;
+}
+
+.label {
+	display: block;
+	font-size: 16px;
 }
 
 /* ヘッダー */
@@ -24,7 +24,7 @@ nav .brand-logo {
 	padding: 0px 10px 0px 15px;
 }
 
-.header-submenu{
+.header-submenu {
 	font-size: 14px;
 }
 
@@ -37,19 +37,20 @@ nav .brand-logo {
 }
 
 .message {
-	border-radius: 5px;
+	opacity: 0.7;
 	padding:2px;
-	opacity: 0.8;
+}
+
+.alert{
+	padding:0 0 0 7px;
 }
 
 /* フッター */
-.footer-copyright{
-	background-color:rgb(238, 110, 115);
-	padding:15px;
-	color:white;
+.footer-copyright {
+	background-color: rgb(238, 110, 115);
+	padding: 15px;
+	color: white;
 }
-
-
 
 /* Index */
 .backgroundimg img {
@@ -57,16 +58,14 @@ nav .brand-logo {
 	width: 100%;
 }
 
-
-
 .card {
 	border-radius: 5px;
 	padding: 10px 0 10px 0;
 	margin: 20px;
 }
 
-.forms{
-	padding:20px;
+.forms {
+	padding: 20px;
 }
 
 .divider {
@@ -84,7 +83,7 @@ nav .brand-logo {
 /* Home */
 .exChart-category {
 	font-size: 12px;
-	padding:10px 0 0 0;
+	padding: 10px 0 0 0;
 }
 
 .exChart-top {
@@ -198,16 +197,16 @@ nav .brand-logo {
 	padding: 0 0 0 5px;
 }
 
-.search-btn{
-	margin:0 0 0 20px;
+.search-btn {
+	margin: 0 0 0 20px;
 }
 
-.sort-content{
-	font-size:14px;
+.sort-content {
+	font-size: 14px;
 }
 
-.select-month{
-	margin:0 0 0 20px;
+.select-month {
+	margin: 0 0 0 20px;
 }
 
 .expense {
@@ -247,21 +246,16 @@ nav .brand-logo {
 
 .incomeDots {
 	color: rgb(238, 110, 115);
-	padding:0 5px 0 5px;
+	padding: 0 5px 0 5px;
 }
 
 .calendar {
 	padding: 10px;
 }
 
-
-
-
 .setting-update {
 	margin: 10px 10px 10px 0;
 }
-
-
 
 .postbtn {
 	bottom: 40px;
@@ -327,83 +321,78 @@ textarea {
 	padding: 0 0 0 5px;
 }
 
-
-
-
 /* post部分 */
-
-.post-title{
-	padding:0 0 0 10px;
+.post-title {
+	padding: 0 0 0 10px;
 	font-weight: bold;
-	font-size:13px;
+	font-size: 13px;
 }
 
 .postbody {
 	padding: 0 0 10px 0;
 	white-space: pre-wrap;
 }
-.postdetail-post-title{
+
+.postdetail-post-title {
 	font-weight: bold;
-	font-size:16px;
-	
+	font-size: 16px;
 }
-.postdetail-postbody{
+
+.postdetail-postbody {
 	padding: 30px 10px 20px 10px;
 	white-space: pre-wrap;
 }
 
-.user-icon{
-	padding:0 10px 0 0;
+.user-icon {
+	padding: 0 10px 0 0;
 }
 
-.postuser{
-	padding:10px 0 2px 0;
+.postuser {
+	padding: 10px 0 2px 0;
 }
 
-.postuser h6{
-	padding:3px 0 0 0;
+.postuser h6 {
+	padding: 3px 0 0 0;
 }
 
 /*コメント部分*/
-.commentuser h6{
+.commentuser h6 {
 	font-weight: bold;
 }
 
 .commentbody {
-  white-space: pre-wrap;
-  padding:0 0 0 15px;
+	white-space: pre-wrap;
+	padding: 0 0 0 15px;
 }
 
-.comment-like{
-	padding:0 10px 0px 0px;
-	font-size:9px;
+.comment-like {
+	padding: 0 10px 0px 0px;
+	font-size: 9px;
 }
 
 @media only screen and (min-width:1200px) {
 	.post-title {
 		font-size: 20px;
 	}
-	.comment-like{
-	    font-size: 15px;
+	.comment-like {
+		font-size: 15px;
 	}
-	
-	.postdetail-post-title{
-	font-weight: bold;
-	font-size:20px;
+	.postdetail-post-title {
+		font-weight: bold;
+		font-size: 20px;
 	}
 }
-
-
 
 /* Test */
 #smallcategory {
-  position:relative;
-}
-#smallcategory select {
-  display:none;
-  position:absolute;
-}
-#smallcategory select.on {
-  display:block;
+	position: relative;
 }
 
+#smallcategory select {
+	display: none;
+	position: absolute;
+}
+
+#smallcategory select.on {
+	display: block;
+}

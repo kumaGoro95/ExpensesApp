@@ -30,6 +30,8 @@
 						<div class="row"></div>
 						<form th:action="@{/qanda/post}" th:object="${post}" method="post"
 							novalidate>
+							<p class="text-danger red-text" th:errors="*{*}"></p>
+							<div class="row"></div>
 							<input type="hidden" name="username" th:value="${user.username}" />
 							<div class="form-group">
 								<label><span class="label">タイトル</span></label> <input type="text" th:field="*{postTitle}"
@@ -38,9 +40,8 @@
 							</div>
 							<div class="row"></div>
 							<div class="form-group">
-								<textarea rows="10" cols="40" th:errorclass="is-invalid"
+								<textarea rows="10" cols="40" 
 									th:field="*{postBody}" placeholder="本文"></textarea>
-								<div class="invalid-feedback" th:errors="*{postBody}"></div>
 							</div>
 							<div class="row"></div>
 							<div class="form-group">
@@ -52,7 +53,6 @@
 											<option th:value="${postCategory['key']}">[[${postCategory['value']}]]</option>
 									</span>
 									</select>
-									<div class="invalid-feedback" th:errors="*{postCategory}"></div>
 									<label><span class="label">カテゴリ</span></label>
 								</div>
 							</div>

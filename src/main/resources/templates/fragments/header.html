@@ -48,18 +48,15 @@
 			</nav>
 			<!-- End of Header -->
 		</div>
-		<div class="row messagebar">
-			<div class="test"></div>
+		<div class="messagebar">
 			<th:block th:if="${flashMsg != null}">
-				<div class="test light-green message" id="message">
-					<h5 class="center-align yellow-text text-lighten-4"
-						th:text="${flashMsg}"></h5>
+				<div class="teal message" id="message">
+					<h6 class="center-align lime-text text-lighten-5"
+						th:text="${flashMsg}"></h6>
 				</div>
 			</th:block>
 			<th:block th:unless="${flashMsg != null}">
-				<div class="col s12 m4 l6"></div>
 			</th:block>
-			<div class="col s12 m4 l3"></div>
 		</div>
 	</th:block>
 </body>

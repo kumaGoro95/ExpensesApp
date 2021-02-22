@@ -8,6 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.Length;
@@ -37,6 +38,7 @@ public class PostComment {
 	private int postId;
 	
 	@Length(min=0, max=500)
+	@NotBlank
 	@Column(name = "comment_body")
 	private String commentBody;
 	
