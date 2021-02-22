@@ -26,7 +26,6 @@ import com.example.demo.model.PostComment;
 import com.example.demo.model.beans.PostByNickname;
 import com.example.demo.repository.SiteUserRepository;
 import com.example.demo.service.PostService;
-import com.example.demo.util.CategoryCodeToName;
 import com.example.demo.util.PostCategoryCodeToIcon;
 import com.example.demo.util.PostCategoryCodeToName;
 import com.example.demo.repository.PostCommentRepository;

@@ -8,13 +8,9 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.PostConstruct;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 import org.springframework.security.core.Authentication;
@@ -27,16 +23,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.demo.util.CategoryCodeToIcon;
 import com.example.demo.util.CategoryCodeToName;
 import com.example.demo.util.PostCategoryCodeToIcon;
 import com.example.demo.util.PostCategoryCodeToName;
-import com.example.demo.model.Category;
-import com.example.demo.model.Like;
 import com.example.demo.model.MoneyRecord;
 import com.example.demo.model.SiteUser;
 import com.example.demo.model.beans.FileUploadForm;
@@ -50,33 +42,23 @@ import com.example.demo.repository.MoneyRecordRepository;
 import com.example.demo.repository.PostRepository;
 import com.example.demo.repository.CategoryRepository;
 import com.example.demo.repository.LikeRepository;
-import com.example.demo.dao.MoneyRecordDaoImpl;
 
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Controller
-public class HomeController {
+public class UserController {
 
 	// DI
 	private final SiteUserRepository userRepository;
 	private final MoneyRecordRepository moneyRecordRepository;
-	private MoneyRecordDaoImpl mrDao;
 	private final MoneyRecordService mrService;
 	private final CategoryRepository categoryRepository;
 	private final PostRepository postRepository;
-	private final BCryptPasswordEncoder passwordEncoder;
 	private final LikeRepository likeRepository;
 	private final FileUploadService iResizer;
 	private final PostService pService;
-
-	@PersistenceContext
-	EntityManager em;
-
-	@PostConstruct
-	public void init() {
-		mrDao = new MoneyRecordDaoImpl(em);
-	}
+	private final BCryptPasswordEncoder passwordEncoder;
 
 
 
@@ -275,6 +257,9 @@ public class HomeController {
 		}
 		LocalDateTime ldt = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
 		user.setUpdatedAt(ldt);
+		
+		user.setPassword(passwordEncoder.encode(user.getPassword()));
+		
 		userRepository.save(user);
 
 		redirectAttributes.addFlashAttribute("flashMsg", "パスワードを変更しました");

@@ -1,8 +1,6 @@
 package com.example.demo.model.beans;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.Date;
 
 import lombok.Data;

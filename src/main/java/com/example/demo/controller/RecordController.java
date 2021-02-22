@@ -5,7 +5,6 @@ import java.math.RoundingMode;
 import java.net.URI;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -13,9 +12,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.PostConstruct;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 
 import org.springframework.security.core.Authentication;
@@ -27,18 +23,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import com.example.demo.dao.MoneyRecordDaoImpl;
 import com.example.demo.model.Category;
 import com.example.demo.model.MoneyRecord;
 import com.example.demo.model.SiteUser;
-import com.example.demo.model.beans.DailySumGraph;
 import com.example.demo.model.beans.MoneyRecordList;
-import com.example.demo.model.beans.RecordDataList;
 import com.example.demo.model.beans.RefineCondition;
 import com.example.demo.model.beans.SummaryByCategory;
 import com.example.demo.repository.CategoryRepository;
@@ -53,7 +45,6 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Controller
-@SessionAttributes(types = RecordDataList.class)
 public class RecordController {
 
 	// DI
@@ -61,15 +52,7 @@ public class RecordController {
 	private final MoneyRecordRepository moneyRecordRepository;
 	private final MoneyRecordService mrService;
 	private final DateService dService;
-	private MoneyRecordDaoImpl mrDao;
 	private final CategoryRepository categoryRepository;
-	@PersistenceContext
-	EntityManager em;
-
-	@PostConstruct
-	public void init() {
-		mrDao = new MoneyRecordDaoImpl(em);
-	}
 
 	// 出入金記録を登録
 	@PostMapping("/money-record/post")
@@ -106,13 +89,6 @@ public class RecordController {
 		// 履歴データがあるかチェック用
 		List<MoneyRecordList> nullRecord = new ArrayList<MoneyRecordList>();
 
-		// 並べ替え用recordId一覧
-		List<Integer> intList = new ArrayList<Integer>();
-		for (int i = 0; i < records.size(); i++) {
-			intList.add(records.get(i).getRecordId());
-		}
-		Integer[] recordIds = intList.toArray(new Integer[records.size()]);
-		RecordDataList dataList = new RecordDataList(recordIds);
 
 		refineCondition.setCategoryCode("all");
 		refineCondition.setStartDate(mrService.getOldestDate(loginUser.getName()));
@@ -124,7 +100,6 @@ public class RecordController {
 		model.addAttribute("categories", categories);
 		model.addAttribute("nullRecord", nullRecord);
 		model.addAttribute("refineCondition", refineCondition);
-		model.addAttribute("dataList", dataList);
 
 		return "record-history";
 	}

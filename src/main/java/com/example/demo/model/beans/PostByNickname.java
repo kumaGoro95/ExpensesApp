@@ -1,7 +1,6 @@
 package com.example.demo.model.beans;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 import lombok.Data;
