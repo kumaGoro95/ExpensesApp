@@ -1,14 +1,11 @@
 package com.example.demo.controller;
 
 import java.math.BigInteger;
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -26,7 +23,7 @@ import com.example.demo.model.beans.FileUploadForm;
 import com.example.demo.repository.SiteUserRepository;
 import com.example.demo.service.FileUploadService;
 import com.example.demo.service.PostService;
-import com.example.demo.repository.MoneyRecordRepository;
+import com.example.demo.service.UserService;
 import com.example.demo.repository.PostRepository;
 import com.example.demo.repository.LikeRepository;
 
@@ -38,12 +35,11 @@ public class UserController {
 
 	// DI
 	private final SiteUserRepository userRepository;
-	private final MoneyRecordRepository moneyRecordRepository;
 	private final PostRepository postRepository;
 	private final LikeRepository likeRepository;
 	private final FileUploadService iResizer;
 	private final PostService pService;
-	private final BCryptPasswordEncoder passwordEncoder;
+	private final UserService uService;
 
 
 	// ユーザー詳細画面へ遷移
@@ -106,30 +102,24 @@ public class UserController {
 	public String process(@Validated @ModelAttribute("user") SiteUser user, BindingResult result,
 			@ModelAttribute("file") FileUploadForm file, HttpServletResponse response, Authentication loginUser,
 			RedirectAttributes redirectAttributes) {
-		// 同名ユーザー、メールアドレスのアカウントが存在していないか確認
-		SiteUser emailCheck = userRepository.findByUsername(loginUser.getName());
-		if (user.getEmail().equals(emailCheck.getEmail()) && userRepository.countByEmail(user.getEmail()) > 1) {
+		
+		//もし同名ユーザー・同メールアドレスユーザーが存在すれば、リダイレクトする
+		if(uService.existsSameAccount(loginUser.getName(),user)){
 			return "redirect:/setting?setting";
 		}
-		if (user.getEmail().equals(emailCheck.getEmail()) == false
-				&& userRepository.countByEmail(user.getEmail()) == 1) {
-			return "redirect:/setting?setting";
-		}
-
 		// @Validatedで入力値チェック→BindingResultに結果が入る→result.hasErrors()でエラーがあるか確認
 		if (result.hasErrors()) {
 			System.out.println(result);
-			return "redirect:setting?setting";
+			return "redirect:/setting?setting";
 		}
-		// 画像アップロード・リサイズ
-		String str = iResizer.uploadImage(response, file.getUploadedFile());
-
-		user.setIcon(str);
-		user.setPassword(user.getPassword());
-		System.out.println(user.getPassword());
-		LocalDateTime ldt = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
-		user.setUpdatedAt(ldt);
-		userRepository.save(user);
+		
+		
+		/*ユーザープロフィールを更新する*/
+		
+		//アイコン画像画像アップロード・リサイズ
+		String iconStr = iResizer.uploadImage(response, file.getUploadedFile());
+		//更新処理
+		uService.updateSetting(user, iconStr);
 
 		redirectAttributes.addFlashAttribute("flashMsg", "プロフィールを変更しました");
 
@@ -153,14 +143,8 @@ public class UserController {
 		if (result.hasErrors()) {
 			return "setting";
 		}
-		LocalDateTime ldt = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
-		user.setUpdatedAt(ldt);
 		
-		System.out.println("変更前:" + user.getPassword());
-		user.setPassword(passwordEncoder.encode(user.getPassword()));
-		System.out.println("変更後:" + user.getPassword());
-		
-		userRepository.save(user);
+		uService.changePassword(user);
 
 		redirectAttributes.addFlashAttribute("flashMsg", "パスワードを変更しました");
 
@@ -171,8 +155,8 @@ public class UserController {
 	@Transactional
 	@GetMapping("/deleteUser")
 	public String deleteUser(Authentication loginUser) {
-		moneyRecordRepository.deleteByUsername(loginUser.getName());
-		userRepository.deleteByUsername(loginUser.getName());
+		
+		uService.deleteUserInfo(loginUser.getName());
 
 		return "redirect:/logout?setting";
 	}

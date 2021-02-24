@@ -92,7 +92,7 @@
 
 							</div>
 							<div class="center">
-								<span class="noData" th:if="${expenseData == checknull}"><h6>表示できるデータがありません</h6></span>
+								<span class="noData" th:if="${graphDataExists}"><h6>表示できるデータがありません</h6></span>
 							</div>
 						</div>
 					</div>
@@ -128,11 +128,11 @@
 										</ul>
 
 									</tr>
+									</span>
 							</tbody>
 						</table>
-						</span>
 						<div class="center">
-							<span th:if="${recordsLimit10 == nullRecord}"><h6>表示できるデータがありません</h6></span>
+							<span th:if="${historyDataExists}"><h6>表示できるデータがありません</h6></span>
 						</div>
 					</div>
 
