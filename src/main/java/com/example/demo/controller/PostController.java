@@ -64,10 +64,12 @@ public class PostController {
 	// 投稿系ホーム画面
 	@GetMapping("/qanda")
 	public String goToPost(@ModelAttribute("posts") Post post, Authentication loginUser, Model model) {
+		
+		//コメント数、クリップ数
 		Map<Integer, BigInteger> commentCount = postRepository.findCommentCount();
 		Map<Integer, BigInteger> likeCount = likeRepository.findLikeCount();
 
-		// 検索用
+		// 検索ワード格納用変数
 		SearchingWords searchingWords = new SearchingWords(null);
 
 		// カテゴリ
@@ -90,6 +92,10 @@ public class PostController {
 
 	@PostMapping("/qanda/search")
 	public String post(@ModelAttribute("swords") SearchingWords swords, Authentication loginUser, Model model) {
+		
+		//コメント数、クリップ数
+		Map<Integer, BigInteger> commentCount = postRepository.findCommentCount();
+		Map<Integer, BigInteger> likeCount = likeRepository.findLikeCount();
 
 		List<PostByNickname> list = pService.getWords(swords.getWord());
 		model.addAttribute("posts", list);
@@ -99,8 +105,6 @@ public class PostController {
 		Map<Integer, String> postCategoriesToIcon = PostCategoryCodeToIcon.PostCategoriesToIcon;
 
 		model.addAttribute("user", userRepository.findByUsername(loginUser.getName()));
-		Map<Integer, BigInteger> commentCount = postRepository.findCommentCount();
-		Map<Integer, BigInteger> likeCount = likeRepository.findLikeCount();
 		model.addAttribute("commentCount", commentCount);
 		model.addAttribute("user", userRepository.findByUsername(loginUser.getName()));
 		model.addAttribute("likeCount", likeCount);
@@ -234,6 +238,8 @@ public class PostController {
 	@Transactional
 	public String Like(@PathVariable("postId") int postId, @ModelAttribute("like") Like like, Authentication loginUser,
 			Model model, UriComponentsBuilder builder) {
+		
+		
 		if (likeRepository.existsByUsernameAndPostId(loginUser.getName(), postId) == true) {
 			likeRepository.deleteByUsernameAndPostId(loginUser.getName(), postId);
 		} else {
@@ -260,6 +266,7 @@ public class PostController {
 	// コメント編集画面へ遷移
 	@GetMapping("/qanda/comment/{commentId}/edit")
 	public String editComment(@PathVariable("commentId") int commentId, Authentication loginUser, Model model) {
+		
 		model.addAttribute("comment", commentRepository.findByCommentId(commentId));
 		model.addAttribute("user", userRepository.findByUsername(loginUser.getName()));
 

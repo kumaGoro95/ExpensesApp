@@ -25,6 +25,8 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 	public Post findByPostId(int postId);
 
 	public void deleteByPostId(int postId);
+	
+	public void deleteByUsername(String username);
 
 	public List<Post> findByUsername(String username);
 

@@ -73,16 +73,12 @@ public class RecordController {
 
 		/* 円グラフ用 */
 
-		// 収支別円グラフパラメータ
+		// 円グラフパラメータ
 		String expenseLabel[] = mrService.getExpenseLabel();
 		BigDecimal expenseData[] = mrService.getExpenseData(loginUser.getName(), currentMonth);
 
 		// 円グラフに表示するデータがあるか確認
-		List<BigDecimal> checknullList = new ArrayList<BigDecimal>();
-		for (int i = 0; i < 15; i++) {
-			checknullList.add(BigDecimal.valueOf(0));
-		}
-		BigDecimal checknull[] = checknullList.toArray(new BigDecimal[checknullList.size()]);
+		boolean graphDataExists = mrService.existsGraphData(expenseData);
 
 		/* 最近の履歴表示用 */
 		List<MoneyRecordList> recordsLimit10 = moneyRecordRepository.findMoneyRecordListLimit10(loginUser.getName());
@@ -105,7 +101,8 @@ public class RecordController {
 		BigDecimal balance = budget.subtract(totalAmmount);
 
 		// 履歴データがあるかチェック用
-		List<MoneyRecordList> nullRecord = new ArrayList<MoneyRecordList>();
+		boolean historyDataExists = mrService.existsHistoryData(recordsLimit10);
+		
 
 		/* model */
 
@@ -119,16 +116,14 @@ public class RecordController {
 		model.addAttribute("year", year);
 		model.addAttribute("month", month);
 		// 予算-収入＝残金
-		model.addAttribute("checknull", checknull);
+		model.addAttribute("graphDataExists", graphDataExists);
 		model.addAttribute("budget", budget);
 		model.addAttribute("totalAmmount", totalAmmount);
 		model.addAttribute("balance", balance);
 		// 履歴10件
 		model.addAttribute("recordsLimit10", recordsLimit10);
 		model.addAttribute("categoriesToIcon", categoriesToIcon);
-		model.addAttribute("nullRecord", nullRecord);
-		
-		System.out.println(currentUser.getPassword());
+		model.addAttribute("historyDataExists", historyDataExists);
 
 		return "record-home";
 	}
@@ -436,6 +431,8 @@ public class RecordController {
 	// Authentication・・・認証済みのユーザー情報を取得
 	public String analysis(@ModelAttribute("moneyRecord") MoneyRecord moneyRecord, Authentication loginUser,
 			Model model) {
+		
+		//ログインユーザーの情報を取得
 		SiteUser currentUser = userRepository.findByUsername(loginUser.getName());
 		model.addAttribute("user", currentUser);
 

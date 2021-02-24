@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import com.example.demo.repository.MoneyRecordRepository;
 import com.example.demo.util.CategoryCodeToName;
 import com.example.demo.model.Category;
 import com.example.demo.model.beans.DailySumGraph;
+import com.example.demo.model.beans.MoneyRecordList;
 import com.example.demo.model.beans.SummaryByCategory;
 
 @Service
@@ -29,7 +31,7 @@ public class MoneyRecordService {
 		this.categoryRepository = categoryRepository;
 	}
 
-	// 円グラフ（支出）用ラベル
+	// 円グラフ（支出）用ラベルを取得する
 	public String[] getExpenseLabel() {
 		List<String> expenseCategory = new ArrayList<String>();
 		for (int i = 1; i < CategoryCodeToName.Categories.size(); i++) {
@@ -40,7 +42,7 @@ public class MoneyRecordService {
 		return expenseLabel;
 	}
 
-	// 円グラフ（収入）用ラベル
+	// 円グラフ（収入）用ラベルを取得する
 	public String[] getIncomeLabel() {
 		List<Category> incomeCategories = categoryRepository.findBycategoryCode(99);
 		List<String> incomeCategoriesStr = new ArrayList<String>();
@@ -52,6 +54,7 @@ public class MoneyRecordService {
 		return incomeLabel;
 	}
 
+	// 円グラフ（支出）用金額データを取得
 	public BigDecimal[] getExpenseData(String username, String currentMonth) {
 		List<SummaryByCategory> expenseByCategory = moneyRecordRepository.findCategorySummaries(username, currentMonth);
 		List<BigDecimal> expenseAmmount = new ArrayList<BigDecimal>();
@@ -63,6 +66,7 @@ public class MoneyRecordService {
 		return expenseData;
 	}
 
+	// 円グラフ（収入）用金額データを取得
 	public BigDecimal[] getIncomeData(String username, String currentMonth) {
 		List<SummaryByCategory> incomeByCategory = moneyRecordRepository.findSubcategorySummaries(username,
 				currentMonth, 99);
@@ -74,10 +78,10 @@ public class MoneyRecordService {
 
 		return incomeData;
 	}
-	
-    //日ごとグラフの支出金額を算出
+
+	// 日ごとグラフの支出金額を算出
 	public BigDecimal[] getDailyAmmount(String username, String currentMonth) {
-		//その月の初日を取得
+		// その月の初日を取得
 		String firstDayStr = currentMonth + "-01";
 		LocalDate firstDay = LocalDate.parse(firstDayStr, DateTimeFormatter.ISO_DATE);
 		LocalDate lastDay = YearMonth.now().atEndOfMonth();
@@ -90,15 +94,15 @@ public class MoneyRecordService {
 
 		return dailyAmmount;
 	}
-	
-	//日ごとグラフの収入金額を算出
+
+	// 日ごとグラフの収入金額を算出
 	public BigDecimal[] getDailyAmmountIncome(String username, String currentMonth) {
-		//その月の初日を取得
+		// その月の初日を取得
 		String firstDayStr = currentMonth + "-01";
 		LocalDate firstDay = LocalDate.parse(firstDayStr, DateTimeFormatter.ISO_DATE);
-		//その月の末日を取得
+		// その月の末日を取得
 		LocalDate lastDay = YearMonth.now().atEndOfMonth();
-		
+
 		List<DailySumGraph> dailySum = moneyRecordRepository.findDailyGraphIncome(username, firstDay, lastDay);
 		List<BigDecimal> dailyAmmountList = new ArrayList<BigDecimal>();
 		for (int i = 0; i < dailySum.size(); i++) {
@@ -109,7 +113,7 @@ public class MoneyRecordService {
 		return dailyAmmountIncome;
 	}
 
-	//日ごとグラフの日付一覧を取得
+	// 日ごとグラフの日付一覧を取得
 	public Integer[] getDays(String username, String currentMonth) {
 		String firstDayStr = currentMonth + "-01";
 		LocalDate firstDay = LocalDate.parse(firstDayStr, DateTimeFormatter.ISO_DATE);
@@ -123,19 +127,51 @@ public class MoneyRecordService {
 
 		return days;
 	}
-	
-	//一番古い記録を取得する
+
+	// 一番古い記録を取得する
 	public String getOldestDate(String username) {
 		String oldestDate = null;
-		//出入金記録があるか確認
-		if(moneyRecordRepository.existsByUsername(username)) {
+		// 出入金記録があるか確認
+		if (moneyRecordRepository.existsByUsername(username)) {
 			oldestDate = moneyRecordRepository.getOldestDate(username).toString();
-		}else {
+		} else {
 			LocalDate ld = LocalDate.now();
 			oldestDate = ld.toString();
 		}
-		
+
 		return oldestDate;
+	}
+
+	// 円グラフに表示する出入金データが存在するかどうかチェック
+	public boolean existsGraphData(BigDecimal[] data) {
+
+		// 確認用の配列を用意
+		List<BigDecimal> checknullList = new ArrayList<BigDecimal>();
+		for (int i = 0; i < 15; i++) {
+			checknullList.add(BigDecimal.valueOf(0));
+		}
+		BigDecimal checknull[] = checknullList.toArray(new BigDecimal[checknullList.size()]);
+
+		//確認用配列と出入金データが等値ならtrue,そうでないならfalse
+		if (Arrays.equals(data, checknull)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	//履歴データが存在するか確認する
+	public boolean existsHistoryData(List<MoneyRecordList> records) {
+		
+		//確認用Listクラス
+		List<MoneyRecordList> nullRecord = new ArrayList<MoneyRecordList>();
+
+		//確認用Listとデータが等値ならtrue,そうでないならfalse
+		if (records.equals(nullRecord)) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 }
