@@ -2,7 +2,6 @@ package com.example.demo.repository;
 
 import java.math.BigInteger;
 import java.sql.Timestamp;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -15,8 +14,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.example.demo.model.Post;
-import com.example.demo.model.beans.DailySumGraph;
-import com.example.demo.model.beans.MoneyRecordList;
 import com.example.demo.model.beans.PostByNickname;
 
 @Repository

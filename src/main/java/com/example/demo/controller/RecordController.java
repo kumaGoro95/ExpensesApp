@@ -4,9 +4,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.net.URI;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -23,7 +20,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -64,36 +60,28 @@ public class RecordController {
 		// カテゴリ一覧を取得
 		Map<Integer, String> categories = CategoryCodeToName.Categories;
 
-		// 現在の月を取得
-		LocalDate now = LocalDate.now();
-		String strNow = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-		String currentMonth = strNow.substring(0, 7);
-		String year = currentMonth.substring(0, 4);
-		String month = currentMonth.substring(5, 7);
+		// 現在の年月を取得
+		String currentMonthForSql = mrService.getCurrentMonthForSql();
+		String currentMonthForView = mrService.getCurrentMonthForView(currentMonthForSql);
 
 		/* 円グラフ用 */
 
 		// 円グラフパラメータ
 		String expenseLabel[] = mrService.getExpenseLabel();
-		BigDecimal expenseData[] = mrService.getExpenseData(loginUser.getName(), currentMonth);
+		BigDecimal expenseData[] = mrService.getExpenseData(currentUser.getUsername(), currentMonthForSql);
 
 		// 円グラフに表示するデータがあるか確認
 		boolean graphDataExists = mrService.existsGraphData(expenseData);
 
 		/* 最近の履歴表示用 */
-		List<MoneyRecordList> recordsLimit10 = moneyRecordRepository.findMoneyRecordListLimit10(loginUser.getName());
+		List<MoneyRecordList> recordsLimit10 = moneyRecordRepository
+				.findMoneyRecordListLimit10(currentUser.getUsername());
 		Map<Integer, String> categoriesToIcon = CategoryCodeToIcon.CategoriesToIcon;
 
 		/* 予算-収入=残金用 */
 
 		// 支出合計を算出
-		List<SummaryByCategory> expenseByCategory = moneyRecordRepository.findCategorySummaries(loginUser.getName(),
-				currentMonth);
-		BigDecimal totalAmmount = new BigDecimal(0.0);
-		// 収入分を除く
-		for (int i = 0; i < expenseByCategory.size() - 1; i++) {
-			totalAmmount = totalAmmount.add(expenseByCategory.get(i).getSum());
-		}
+		BigDecimal totalAmmount = moneyRecordRepository.findExpenseSum(currentUser.getUsername(), currentMonthForSql);
 
 		// 予算を取得
 		BigDecimal budget = currentUser.getBudget().setScale(0, RoundingMode.DOWN);
@@ -102,7 +90,6 @@ public class RecordController {
 
 		// 履歴データがあるかチェック用
 		boolean historyDataExists = mrService.existsHistoryData(recordsLimit10);
-		
 
 		/* model */
 
@@ -113,8 +100,7 @@ public class RecordController {
 		model.addAttribute("expenseLabel", expenseLabel);
 		model.addAttribute("expenseData", expenseData);
 		// 〇年〇月の状況 用
-		model.addAttribute("year", year);
-		model.addAttribute("month", month);
+		model.addAttribute("currentMonth", currentMonthForView);
 		// 予算-収入＝残金
 		model.addAttribute("graphDataExists", graphDataExists);
 		model.addAttribute("budget", budget);
@@ -132,14 +118,12 @@ public class RecordController {
 	@PostMapping("/money-record/post")
 	public String process(@Validated @ModelAttribute("moneyRecord") MoneyRecord moneyRecord, BindingResult result,
 			Authentication loginUser, RedirectAttributes redirectAttributes) {
+
 		if (result.hasErrors()) {
 			System.out.println(result);
 			return "redirect:/money-record?money-record";
 		}
-		LocalDateTime ldt = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
 
-		moneyRecord.setCreatedAt(ldt);
-		moneyRecordRepository.save(moneyRecord);
 		redirectAttributes.addFlashAttribute("flashMsg", "投稿しました");
 
 		return "redirect:/money-record?money-record";
@@ -149,29 +133,25 @@ public class RecordController {
 	@GetMapping("/money-record/history")
 	public String showRecords(@ModelAttribute("refineCondition") RefineCondition refineCondition,
 			Authentication loginUser, Model model) {
-		List<MoneyRecordList> records = moneyRecordRepository.findMoneyRecordList(loginUser.getName());
-		for (int i = 0; i < records.size(); i++) {
-			if (records.get(i).getNote().length() > 13) {
-				records.get(i).setNote(records.get(i).getNote().substring(0, 10) + "…");
-			}
-		}
+
+		// 出入金履歴一覧を取得
+		List<MoneyRecordList> records = mrService.getMoneyRecordList(loginUser.getName());
 
 		// カテゴリ一覧を取得
 		Map<Integer, String> categories = CategoryCodeToName.Categories;
 		Map<Integer, String> categoriesToIcon = CategoryCodeToIcon.CategoriesToIcon;
 
 		// 履歴データがあるかチェック用
-		List<MoneyRecordList> nullRecord = new ArrayList<MoneyRecordList>();
+		boolean historyDataExists = mrService.existsHistoryData(records);
 
-		refineCondition.setCategoryCode("all");
-		refineCondition.setStartDate(mrService.getOldestDate(loginUser.getName()));
-		refineCondition.setEndDate(LocalDate.now().toString());
+		// 絞込条件を設定（すべての履歴が表示される条件設定）
+		refineCondition = mrService.setRefineCondition(refineCondition, loginUser.getName());
 
 		model.addAttribute("user", userRepository.findByUsername(loginUser.getName()));
 		model.addAttribute("records", records);
 		model.addAttribute("categoriesToIcon", categoriesToIcon);
 		model.addAttribute("categories", categories);
-		model.addAttribute("nullRecord", nullRecord);
+		model.addAttribute("historyDataExists", historyDataExists);
 		model.addAttribute("refineCondition", refineCondition);
 
 		return "record-history";
@@ -203,12 +183,12 @@ public class RecordController {
 		}
 
 		// 履歴データがあるかチェック用
-		List<MoneyRecordList> nullRecord = new ArrayList<MoneyRecordList>();
+		boolean historyDataExists = mrService.existsHistoryData(records);
 
 		model.addAttribute("user", userRepository.findByUsername(loginUser.getName()));
 		model.addAttribute("records", records);
 		model.addAttribute("categoriesToIcon", categoriesToIcon);
-		model.addAttribute("nullRecord", nullRecord);
+		model.addAttribute("historyDataExists", historyDataExists);
 		model.addAttribute("categories", categories);
 
 		return "record-history";
@@ -240,12 +220,12 @@ public class RecordController {
 		}
 
 		// 履歴データがあるかチェック用
-		List<MoneyRecordList> nullRecord = new ArrayList<MoneyRecordList>();
+		boolean historyDataExists = mrService.existsHistoryData(records);
 
 		model.addAttribute("user", userRepository.findByUsername(loginUser.getName()));
 		model.addAttribute("records", records);
 		model.addAttribute("categoriesToIcon", categoriesToIcon);
-		model.addAttribute("nullRecord", nullRecord);
+		model.addAttribute("historyDataExists", historyDataExists);
 		model.addAttribute("categories", categories);
 
 		return "record-history";
@@ -277,12 +257,12 @@ public class RecordController {
 		}
 
 		// 履歴データがあるかチェック用
-		List<MoneyRecordList> nullRecord = new ArrayList<MoneyRecordList>();
+		boolean historyDataExists = mrService.existsHistoryData(records);
 
 		model.addAttribute("user", userRepository.findByUsername(loginUser.getName()));
 		model.addAttribute("records", records);
 		model.addAttribute("categoriesToIcon", categoriesToIcon);
-		model.addAttribute("nullRecord", nullRecord);
+		model.addAttribute("historyDataExists", historyDataExists);
 		model.addAttribute("categories", categories);
 
 		return "record-history";
@@ -332,16 +312,14 @@ public class RecordController {
 		Map<Integer, String> categoriesToIcon = CategoryCodeToIcon.CategoriesToIcon;
 
 		// 履歴データがあるかチェック用
-		List<MoneyRecordList> nullRecord = new ArrayList<MoneyRecordList>();
+		boolean historyDataExists = mrService.existsHistoryData(records);
 
 		model.addAttribute("user", userRepository.findByUsername(loginUser.getName()));
 		model.addAttribute("records", records);
 		model.addAttribute("categoriesToIcon", categoriesToIcon);
 		model.addAttribute("categories", categories);
-		model.addAttribute("nullRecord", nullRecord);
+		model.addAttribute("historyDataExists", historyDataExists);
 		model.addAttribute("refineCondition", refineCondition);
-
-		System.out.println(refineCondition);
 
 		return "record-history";
 	}
@@ -351,18 +329,21 @@ public class RecordController {
 	public String showRecordsByDate(@PathVariable("date") String date,
 			@ModelAttribute("refineCondition") RefineCondition refineCondition, Authentication loginUser, Model model) {
 
+		// 特定の日付の出入金履歴を取得
+		List<MoneyRecordList> records = mrService.getOneDayRecordList(loginUser.getName(), date);
+
 		// カテゴリ一覧を取得
 		Map<Integer, String> categories = CategoryCodeToName.Categories;
 		Map<Integer, String> categoriesToIcon = CategoryCodeToIcon.CategoriesToIcon;
 
 		// 履歴データがあるかチェック用
-		List<MoneyRecordList> nullRecord = new ArrayList<MoneyRecordList>();
+		boolean historyDataExists = mrService.existsHistoryData(records);
 
-		model.addAttribute("records", moneyRecordRepository.findOneDayRecord(loginUser.getName(), date));
+		model.addAttribute("records", records);
 		model.addAttribute("user", userRepository.findByUsername(loginUser.getName()));
 		model.addAttribute("categoriesToIcon", categoriesToIcon);
 		model.addAttribute("categories", categories);
-		model.addAttribute("nullRecord", nullRecord);
+		model.addAttribute("historyDataExists", historyDataExists);
 
 		return "record-history";
 	}
@@ -372,6 +353,7 @@ public class RecordController {
 	@GetMapping("/money-record/delete/{recordId}/{pageNum}")
 	public String deleteRecord(@PathVariable("recordId") int recordId, @PathVariable("pageNum") int pageNum,
 			Model model, RedirectAttributes redirectAttributes, UriComponentsBuilder builder) {
+
 		moneyRecordRepository.deleteByRecordId(recordId);
 
 		redirectAttributes.addFlashAttribute("flashMsg", "削除しました");
@@ -388,11 +370,18 @@ public class RecordController {
 	@GetMapping("/money-record/edit/{recordId}/{pageNum}")
 	public String editRecord(@PathVariable("recordId") int recordId, @PathVariable("pageNum") int pageNum,
 			Authentication loginUser, Model model) {
-		model.addAttribute("record", moneyRecordRepository.findByRecordId(recordId));
-		model.addAttribute("user", userRepository.findByUsername(loginUser.getName()));
-		model.addAttribute("subcategories", categoryRepository.findAll());
+
+		// カテゴリ一覧を取得
 		Map<Integer, String> categories = CategoryCodeToName.Categories;
+		List<Category> subcategories = categoryRepository.findAll();
+
+		MoneyRecord record = moneyRecordRepository.findByRecordId(recordId);
+
+		model.addAttribute("record", record);
+		model.addAttribute("user", userRepository.findByUsername(loginUser.getName()));
+		model.addAttribute("subcategories", subcategories);
 		model.addAttribute("categories", categories);
+		// 遷移元がホーム画面か履歴画面か判別するための引数
 		model.addAttribute("pageNum", pageNum);
 
 		return "record-edit";
@@ -411,10 +400,7 @@ public class RecordController {
 			return "redirect:" + location.toString();
 		}
 
-		LocalDateTime ldt = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
-		moneyRecord.setUpdatedAt(ldt);
-
-		moneyRecordRepository.save(moneyRecord);
+		mrService.updateRecord(moneyRecord);
 
 		redirectAttributes.addFlashAttribute("flashMsg", "変更しました");
 
@@ -431,8 +417,8 @@ public class RecordController {
 	// Authentication・・・認証済みのユーザー情報を取得
 	public String analysis(@ModelAttribute("moneyRecord") MoneyRecord moneyRecord, Authentication loginUser,
 			Model model) {
-		
-		//ログインユーザーの情報を取得
+
+		// ログインユーザーの情報を取得
 		SiteUser currentUser = userRepository.findByUsername(loginUser.getName());
 		model.addAttribute("user", currentUser);
 
@@ -444,25 +430,23 @@ public class RecordController {
 		// 月一覧を取得
 		String[] allMonths = dService.getAllMonths(loginUser.getName());
 
-		// 現在の月を取得
-		LocalDate now = LocalDate.now();
-		String strNow = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-		String currentMonth = strNow.substring(0, 7);
-		String year = currentMonth.substring(0, 4);
-		String month = currentMonth.substring(5, 7);
+		// 現在の年月を取得
+		String currentMonthForSql = mrService.getCurrentMonthForSql();
+		String currentMonthForView = mrService.getCurrentMonthForView(currentMonthForSql);
 
-		// 日ごとグラフ用のパラメータ
+		/* 日ごとグラフ用のパラメータ */
 		// 支出
-		BigDecimal dailyAmmount[] = mrService.getDailyAmmount(loginUser.getName(), currentMonth);
+		BigDecimal dailyAmmount[] = mrService.getDailyAmmount(loginUser.getName(), currentMonthForSql);
 		// 収入
-		BigDecimal dailyAmmountIncome[] = mrService.getDailyAmmountIncome(loginUser.getName(), currentMonth);
-		Integer days[] = mrService.getDays(loginUser.getName(), currentMonth);
+		BigDecimal dailyAmmountIncome[] = mrService.getDailyAmmountIncome(loginUser.getName(), currentMonthForSql);
+		Integer days[] = mrService.getDays(loginUser.getName(), currentMonthForSql);
 
-		// 収支別円グラフパラメータ
+		
+		/* 収支別円グラフパラメータ */
 		String expenseLabel[] = mrService.getExpenseLabel();
-		BigDecimal expenseData[] = mrService.getExpenseData(loginUser.getName(), currentMonth);
+		BigDecimal expenseData[] = mrService.getExpenseData(loginUser.getName(), currentMonthForSql);
 		String incomeLabel[] = mrService.getIncomeLabel();
-		BigDecimal incomeData[] = mrService.getIncomeData(loginUser.getName(), currentMonth);
+		BigDecimal incomeData[] = mrService.getIncomeData(loginUser.getName(), currentMonthForSql);
 
 		/* 支出円グラフ用 */
 
@@ -470,71 +454,34 @@ public class RecordController {
 		Map<Integer, String> categoriesToIcon = CategoryCodeToIcon.CategoriesToIcon;
 
 		// カテゴリ毎の合計を取得
-		List<SummaryByCategory> expenseByCategory = moneyRecordRepository.findCategorySummaries(loginUser.getName(),
-				currentMonth);
+		List<SummaryByCategory> expenseByCategory = mrService.getExpenseByCategory(loginUser.getName(),
+				currentMonthForSql);
 
-		// 収入分を削除
-		expenseByCategory.remove(expenseByCategory.size() - 1);
+		// 月の支出合計額を算出
+		BigDecimal totalAmmountExpense = moneyRecordRepository.findExpenseSum(currentUser.getUsername(), currentMonthForSql);
 
-		// 月の合計額を算出
-		BigDecimal totalAmmountExpense = new BigDecimal(0.0);
-		for (int i = 0; i < expenseByCategory.size(); i++) {
-			totalAmmountExpense = totalAmmountExpense.add(expenseByCategory.get(i).getSum());
-		}
 		// カテゴリ÷全体支出の割合を算出
-		Map<Integer, BigDecimal> percentages = new HashMap<Integer, BigDecimal>();
-		for (int i = 0; i < expenseByCategory.size(); i++) {
-			if (totalAmmountExpense == BigDecimal.valueOf(0)) {
-				break;
-			}
-			BigDecimal number = BigDecimal.valueOf(100);
-			BigDecimal result = expenseByCategory.get(i).getSum().divide(totalAmmountExpense, 3, RoundingMode.DOWN)
-					.multiply(number).setScale(1, RoundingMode.DOWN);
-			percentages.put(i + 1, result);
-		}
-
+		Map<Integer, BigDecimal> expensePercentages = mrService.getPercentages(expenseByCategory, totalAmmountExpense);
+		
+		
 		/* 収入円グラフ用 */
 		// サブカテゴリ毎の合計を算出
-		List<SummaryByCategory> incomeTotalsBySubCategory = moneyRecordRepository
-				.findSubcategorySummaries(currentUser.getUsername(), currentMonth, 99);
+		List<SummaryByCategory> incomeBySubcategory = moneyRecordRepository
+				.findSubcategorySummaries(currentUser.getUsername(), currentMonthForSql, 99);
 		// サブカテゴリを取得
-		List<Category> incomeSubcategoryList = categoryRepository.findBycategoryCode(99);
-		Map<Integer, String> incomeSubcategories = new HashMap<Integer, String>();
-		for (int i = 0; i < incomeSubcategoryList.size(); i++) {
-			Integer key = incomeSubcategoryList.get(i).getCategoryId();
-			String value = incomeSubcategoryList.get(i).getSubcategoryName();
-			incomeSubcategories.put(key, value);
-		}
-
+		Map<Integer, String> incomeSubcategories = mrService.findSubcategory(99);
+		
 		// 収入の合計を算出
-		BigDecimal totalAmmountIncome = new BigDecimal(0.0);
-		for (int i = 0; i < incomeTotalsBySubCategory.size(); i++) {
-			totalAmmountIncome = totalAmmountIncome.add(incomeTotalsBySubCategory.get(i).getSum());
-		}
+		BigDecimal totalAmmountIncome = moneyRecordRepository.findIncomeSum(currentUser.getUsername(), currentMonthForSql);
 
-		Map<Integer, BigDecimal> incomePercentages = new HashMap<Integer, BigDecimal>();
-		for (int i = 0; i < 0 + incomeTotalsBySubCategory.size(); i++) {
-			if (totalAmmountIncome == BigDecimal.valueOf(0)) {
-				break;
-			}
-			int incomeSubcateFirstNumber = 9901;
-			BigDecimal number = BigDecimal.valueOf(100);
-			BigDecimal result = incomeTotalsBySubCategory.get(i).getSum()
-					.divide(totalAmmountIncome, 3, RoundingMode.DOWN).multiply(number).setScale(1, RoundingMode.DOWN);
-			incomePercentages.put(i + incomeSubcateFirstNumber, result);
-		}
-
-		// 円グラフに表示するデータがあるか確認
-		List<BigDecimal> checknullList = new ArrayList<BigDecimal>();
-		for (int i = 0; i < 15; i++) {
-			checknullList.add(BigDecimal.valueOf(0));
-		}
-		List<BigDecimal> checknullIncomeList = new ArrayList<BigDecimal>();
-		for (int i = 0; i < 3; i++) {
-			checknullIncomeList.add(BigDecimal.valueOf(0));
-		}
-		BigDecimal checknull[] = checknullList.toArray(new BigDecimal[checknullList.size()]);
-		BigDecimal checknullIncome[] = checknullIncomeList.toArray(new BigDecimal[checknullIncomeList.size()]);
+		//カテゴリ÷収入合計の割合を表示
+		Map<Integer, BigDecimal> incomePercentages = mrService.getPercentagesForIncome(incomeBySubcategory, totalAmmountIncome);
+		
+		/* 円グラフに表示するデータがあるか確認 */
+		//支出
+		boolean expenseDataExists = mrService.existsGraphData(expenseData);
+		//収入
+		boolean incomeDataExists = mrService.existsGraphDataForIncome(incomeData);
 
 		// 今月の収支を計算
 		BigDecimal total = totalAmmountIncome.subtract(totalAmmountExpense);
@@ -548,12 +495,12 @@ public class RecordController {
 		// 支出内訳用
 		model.addAttribute("categories", categories);
 		model.addAttribute("categoriesToIcon", categoriesToIcon);
-		model.addAttribute("percentages", percentages);
+		model.addAttribute("percentages", expensePercentages);
 		model.addAttribute("totalsByCategory", expenseByCategory);
 		model.addAttribute("totalAmmountExpense", totalAmmountExpense);
 
 		// 収入内訳用
-		model.addAttribute("incomeTotals", incomeTotalsBySubCategory);
+		model.addAttribute("incomeTotals", incomeBySubcategory);
 		model.addAttribute("incomeSubcategories", incomeSubcategories);
 		model.addAttribute("totalAmmountIncome", totalAmmountIncome);
 		model.addAttribute("incomePercentages", incomePercentages);
@@ -565,8 +512,8 @@ public class RecordController {
 		model.addAttribute("incomeData", incomeData);
 
 		// 円グラフデータチェック用
-		model.addAttribute("checknull", checknull);
-		model.addAttribute("checknullIncome", checknullIncome);
+		model.addAttribute("expenseDataExists", expenseDataExists);
+		model.addAttribute("incomeDataExists", incomeDataExists);
 
 		// 日ごとグラフ
 		model.addAttribute("label", days);
@@ -575,11 +522,7 @@ public class RecordController {
 
 		// 月切り替え用パラメータ
 		model.addAttribute("months", allMonths);
-		model.addAttribute("year", year);
-		model.addAttribute("month", month);
-
-		// 現在の月をドロップダウンに表示
-		model.addAttribute("currentMonth", currentMonth);
+		model.addAttribute("currentMonth", currentMonthForView);
 
 		return "record-analysis";
 	}
@@ -589,14 +532,15 @@ public class RecordController {
 	// Authentication・・・認証済みのユーザー情報を取得
 	public String analysisByMonth(@PathVariable("month") String month, Authentication loginUser, Model model) {
 		SiteUser currentUser = userRepository.findByUsername(loginUser.getName());
+		
 		model.addAttribute("user", currentUser);
 		model.addAttribute("subcategories", categoryRepository.findAll());
 		Map<Integer, String> categories = CategoryCodeToName.Categories;
 		model.addAttribute("categories", categories);
 
 		// 年月を取得
-		String currentYear = month.substring(0, 4);
-		String currentMonth = month.substring(5, 7);
+		String currentMonthForSql = month;
+		String currentMonthForView = mrService.getCurrentMonthForView(currentMonthForSql);
 
 		// 月一覧を取得
 		String[] allMonths = dService.getAllMonths(loginUser.getName());
@@ -619,70 +563,36 @@ public class RecordController {
 		Map<Integer, String> categoriesToIcon = CategoryCodeToIcon.CategoriesToIcon;
 
 		// カテゴリ毎の合計を取得
-		List<SummaryByCategory> expenseByCategory = moneyRecordRepository.findCategorySummaries(loginUser.getName(),
-				month);
+		List<SummaryByCategory> expenseByCategory = mrService.getExpenseByCategory(loginUser.getName(),
+				currentMonthForSql);
 
-		// 収入分を削除
-		expenseByCategory.remove(expenseByCategory.size() - 1);
-
-		// 月の合計額を算出
-		BigDecimal totalAmmountExpense = new BigDecimal(0.0);
-		for (int i = 0; i < expenseByCategory.size(); i++) {
-			totalAmmountExpense = totalAmmountExpense.add(expenseByCategory.get(i).getSum());
-		}
+		// 月の支出合計額を算出
+		BigDecimal totalAmmountExpense = moneyRecordRepository.findExpenseSum(currentUser.getUsername(), currentMonthForSql);
+		
 		// カテゴリ÷全体支出の割合を算出
-		Map<Integer, BigDecimal> percentages = new HashMap<Integer, BigDecimal>();
-		for (int i = 0; i < expenseByCategory.size(); i++) {
-			if (totalAmmountExpense == BigDecimal.valueOf(0)) {
-				break;
-			}
-			BigDecimal number = BigDecimal.valueOf(100);
-			BigDecimal result = expenseByCategory.get(i).getSum().divide(totalAmmountExpense, 3, RoundingMode.DOWN)
-					.multiply(number).setScale(1, RoundingMode.DOWN);
-			percentages.put(i + 1, result);
-		}
-
+		Map<Integer, BigDecimal> expensePercentages = mrService.getPercentages(expenseByCategory, totalAmmountExpense);
+		
+		
 		/* 収入円グラフ用 */
 
 		// サブカテゴリ毎の合計を算出
-		List<SummaryByCategory> incomeTotalsBySubCategory = moneyRecordRepository
-				.findSubcategorySummaries(currentUser.getUsername(), month, 99);
+		List<SummaryByCategory> incomeBySubcategory = moneyRecordRepository
+				.findSubcategorySummaries(currentUser.getUsername(), currentMonthForSql, 99);
+		
 		// サブカテゴリを取得
-		List<Category> incomeSubcategoryList = categoryRepository.findBycategoryCode(99);
-		Map<Integer, String> incomeSubcategories = new HashMap<Integer, String>();
-		for (int i = 0; i < incomeSubcategoryList.size(); i++) {
-			Integer key = incomeSubcategoryList.get(i).getCategoryId();
-			String value = incomeSubcategoryList.get(i).getSubcategoryName();
-			incomeSubcategories.put(key, value);
-		}
+		Map<Integer, String> incomeSubcategories = mrService.findSubcategory(99);
+		
 		// 収入の合計を算出
-		BigDecimal totalAmmountIncome = new BigDecimal(0.0);
-		for (int i = 0; i < incomeTotalsBySubCategory.size(); i++) {
-			totalAmmountIncome = totalAmmountIncome.add(incomeTotalsBySubCategory.get(i).getSum());
-		}
+		BigDecimal totalAmmountIncome = moneyRecordRepository.findIncomeSum(currentUser.getUsername(), currentMonthForSql);
+		
 		// 収入の割合を算出
-		Map<Integer, BigDecimal> incomePercentages = new HashMap<Integer, BigDecimal>();
-		for (int i = 0; i < incomeTotalsBySubCategory.size(); i++) {
-			if (totalAmmountIncome == BigDecimal.valueOf(0)) {
-				break;
-			}
-			BigDecimal number = BigDecimal.valueOf(100);
-			BigDecimal result = incomeTotalsBySubCategory.get(i).getSum()
-					.divide(totalAmmountIncome, 3, RoundingMode.DOWN).multiply(number).setScale(1, RoundingMode.DOWN);
-			incomePercentages.put(i + 1, result);
-		}
+		Map<Integer, BigDecimal> incomePercentages = mrService.getPercentagesForIncome(incomeBySubcategory, totalAmmountIncome);
 
-		// 円グラフに表示するデータがあるか確認
-		List<BigDecimal> checknullList = new ArrayList<BigDecimal>();
-		for (int i = 0; i < 15; i++) {
-			checknullList.add(BigDecimal.valueOf(0));
-		}
-		List<BigDecimal> checknullIncomeList = new ArrayList<BigDecimal>();
-		for (int i = 0; i < 3; i++) {
-			checknullIncomeList.add(BigDecimal.valueOf(0));
-		}
-		BigDecimal checknull[] = checknullList.toArray(new BigDecimal[checknullList.size()]);
-		BigDecimal checknullIncome[] = checknullIncomeList.toArray(new BigDecimal[checknullIncomeList.size()]);
+		/* 円グラフに表示するデータがあるか確認 */
+		//支出
+		boolean expenseDataExists = mrService.existsGraphData(expenseData);
+		//収入
+		boolean incomeDataExists = mrService.existsGraphDataForIncome(incomeData);
 
 		// 今月の収支を計算
 		BigDecimal total = totalAmmountIncome.subtract(totalAmmountExpense);
@@ -695,12 +605,12 @@ public class RecordController {
 		// 支出内訳用
 		model.addAttribute("categories", categories);
 		model.addAttribute("categoriesToIcon", categoriesToIcon);
-		model.addAttribute("percentages", percentages);
+		model.addAttribute("percentages", expensePercentages);
 		model.addAttribute("totalsByCategory", expenseByCategory);
 		model.addAttribute("totalAmmountExpense", totalAmmountExpense);
 
 		// 収入内訳用
-		model.addAttribute("incomeTotals", incomeTotalsBySubCategory);
+		model.addAttribute("incomeTotals", incomeBySubcategory);
 		model.addAttribute("incomeSubcategories", incomeSubcategories);
 		model.addAttribute("totalAmmountIncome", totalAmmountIncome);
 		model.addAttribute("incomePercentages", incomePercentages);
@@ -712,8 +622,8 @@ public class RecordController {
 		model.addAttribute("incomeData", incomeData);
 
 		// 円グラフデータチェック用
-		model.addAttribute("checknull", checknull);
-		model.addAttribute("checknullIncome", checknullIncome);
+		model.addAttribute("expenseDataExists", expenseDataExists);
+		model.addAttribute("incomeDataExists", incomeDataExists);
 
 		// 日ごとグラフ
 		model.addAttribute("label", days);
@@ -722,11 +632,7 @@ public class RecordController {
 
 		// 月切り替え用パラメータ
 		model.addAttribute("months", allMonths);
-		model.addAttribute("year", currentYear);
-		model.addAttribute("month", currentMonth);
-
-		// ドロップダウン用
-		model.addAttribute("currentMonth", month);
+		model.addAttribute("currentMonth",currentMonthForView); 
 
 		return "record-analysis";
 

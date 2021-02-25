@@ -1,5 +1,6 @@
 package com.example.demo.repository;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -116,6 +117,30 @@ public interface MoneyRecordRepository extends JpaRepository<MoneyRecord, Long> 
 		return getOneDayRecord(username, date).stream().map(MoneyRecordList::new).collect(Collectors.toList());
 	}
 
+	// 特定の月の支出合計を算出
+	@Query(value = "select ifnull(sum(income_and_expense), 0) "
+			+ "from money_records M where M.user_id = :username and M.record_date like concat(:month, '%') "
+			+ "and M.category_id not like '99%'", nativeQuery = true)
+	public Object getExpenseSum(@Param("username") String username, @Param("month") String month);
+
+	default BigDecimal findExpenseSum(String username, String month) {
+		// Object型で受けた結果をBigDecimalに変換
+		BigDecimal expenseSum = new BigDecimal(getExpenseSum(username, month).toString());
+		return expenseSum;
+	}
+
+	// 特定の月の収入合計を算出
+	@Query(value = "select ifnull(sum(income_and_expense), 0) "
+			+ "from money_records M where M.user_id = :username and M.record_date like concat(:month, '%') "
+			+ "and M.category_id like '99%'", nativeQuery = true)
+	public Object getIncomeSum(@Param("username") String username, @Param("month") String month);
+
+	default BigDecimal findIncomeSum(String username, String month) {
+		// Object型で受けた結果をBigDecimalに変換
+		BigDecimal incomeSum = new BigDecimal(getIncomeSum(username, month).toString());
+		return incomeSum;
+	}
+
 	// 特定の月の、カテゴリー毎の合計を算出
 	@Query(value = "select category_code, ifnull(sum(income_and_expense), 0) "
 			+ "from categories C left join money_records M "
@@ -169,7 +194,8 @@ public interface MoneyRecordRepository extends JpaRepository<MoneyRecord, Long> 
 			@Param("lastDay") LocalDate lastDay);
 
 	default List<DailySumGraph> findDailyGraphIncome(String username, LocalDate firstDay, LocalDate lastDay) {
-		return getDailyGraphIncome(username, firstDay, lastDay).stream().map(DailySumGraph::new).collect(Collectors.toList());
+		return getDailyGraphIncome(username, firstDay, lastDay).stream().map(DailySumGraph::new)
+				.collect(Collectors.toList());
 	}
 
 	// 日別グラフ用（支出）
