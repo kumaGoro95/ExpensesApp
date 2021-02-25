@@ -31,7 +31,7 @@
 				</div>
 			</ul>
 			<div class="row card">
-				<h2 class="center">[[${year}]]年[[${month}]]月</h2>
+				<h2 class="center">[[${currentMonth}]]</h2>
 				<h4 class="center"
 					th:text="'収支：' + ${#numbers.formatDecimal(total, 0, 'COMMA', 0, 'POINT')} + '円'"></h4>
 				<h4 class="center"
@@ -72,7 +72,7 @@
 							<div class="exChart">
 								<canvas id="expenseChart" class="chartjs-render-monitor"></canvas>
 								<div class="center">
-									<span class="noData" th:if="${expenseData == checknull}"><h6>表示できるデータがありません</h6></span>
+									<span class="noData" th:if="${expenseDataExists}"><h6>表示できるデータがありません</h6></span>
 								</div>
 							</div>
 							<table>
@@ -147,7 +147,7 @@
 							<div class="inChart">
 								<canvas id="incomeChart" class="chartjs-render-monitor"></canvas>
 								<div class="center">
-									<span class="noData" th:if="${incomeData == checknullIncome}"><h6>表示できるデータがありません</h6></span>
+									<span class="noData" th:if="${incomeDataExists}"><h6>表示できるデータがありません</h6></span>
 								</div>
 							</div>
 							<table>

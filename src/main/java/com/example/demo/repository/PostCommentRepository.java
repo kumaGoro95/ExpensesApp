@@ -9,7 +9,6 @@ import org.springframework.data.repository.query.Param;
 
 import com.example.demo.model.PostComment;
 import com.example.demo.model.beans.CommentByNickname;
-import com.example.demo.model.beans.PostByNickname;
 
 public interface PostCommentRepository extends JpaRepository<PostComment, Long> {
 	

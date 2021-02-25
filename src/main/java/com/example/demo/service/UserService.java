@@ -8,7 +8,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.model.SiteUser;
-import com.example.demo.repository.CategoryRepository;
 import com.example.demo.repository.LikeRepository;
 import com.example.demo.repository.MoneyRecordRepository;
 import com.example.demo.repository.PostCommentRepository;
