@@ -32,7 +32,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	public void configure(WebSecurity web) throws Exception{
 		//セキュリティ設定を無視するパスを指定
 		//通常、cssやjs、imgなどの静的リソースを指定する
-		web.ignoring().antMatchers("/css/**", "/webjars/**", "/js/**", "/images/**", "/icons/**");
+		web.ignoring().antMatchers("/css/**", "/webjars/**", "/js/**", "/images/**", "/icons/**", "/error");
 	}
 	
 	@Override
@@ -41,7 +41,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		  //認証リクエストの設定
 		  .authorizeRequests()
 		    //「/index」「/login」「/register」をアクセス可能にする
-		    .antMatchers("/", "/login", "/register").permitAll()
+		    .antMatchers("/", "/login", "/register", "/guest-login").permitAll()
 		    //認証の必要があるように設定
 		    .anyRequest().authenticated()
 		    .and()

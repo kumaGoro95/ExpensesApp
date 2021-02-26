@@ -15,7 +15,7 @@
 <link rel="stylesheet" th:href="@{/css/stylesheet.css}">
 <title>Piggy Bank</title>
 </head>
-<body>
+<body onload="loadFunc()">
 	<main>
 		<div class="container">
 			<div class="row">
@@ -36,29 +36,29 @@
 									<p class="red-text alert">ログアウトしました</p>
 								</div>
 							</div>
-							<form th:action="@{/login}" th:object="${user}" method="post">
+							<form th:action="@{/login}" name="loginForm" th:object="${user}" method="post">
 								<div class="row">
 									<div class="input-field col s12">
-										<input type="text" name="email" placeholder="xxx@xxx.com">
+										<input type="text" name="email" value="test@test.jp">
 										<label for="address"><span class="label"><span
 												class="label">メールアドレス</span></span></label>
 									</div>
 								</div>
 								<div class="row">
 									<div class="input-field col s12">
-										<input type="password" name="password" placeholder="password">
+										<input type="password" name="password" value="password">
 										<label for="password"><span class="label"><span
 												class="label">パスワード</span></span></label>
 									</div>
 								</div>
 								<div class="row">
 								<div class="col s12 center">
-									<button class="waves-effect waves-light btn">ログイン</button>
+									<input type="submit" class="waves-effect waves-light btn">
 								</div>
 								</div>
 								<div class="row center">
 									<p class="guest-login">
-										<a th:href="@{/guest-login}">ゲストログインで試す</a>
+										<a th:href="@{/login/test@test.jp/password}">ゲストログインで試す</a>
 									</p>
 								</div>
 							</form>
@@ -72,7 +72,10 @@
 		</div>
 	</main>
 	<script>
-		$('#message').fadeOut(2000);
+	$('#message').fadeOut(2000);
+	function loadFunc() {
+		document.loginForm.submit();
+    }
 	</script>
 </body>
 <th:block th:insert="fragments/footer :: footer"></th:block>
