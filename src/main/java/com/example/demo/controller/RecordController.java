@@ -4,8 +4,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.net.URI;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -123,6 +121,8 @@ public class RecordController {
 			System.out.println(result);
 			return "redirect:/money-record?money-record";
 		}
+		
+		mrService.saveRecord(moneyRecord);
 
 		redirectAttributes.addFlashAttribute("flashMsg", "投稿しました");
 

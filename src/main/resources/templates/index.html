@@ -21,32 +21,50 @@
 		th:src="@{/images/backgroundimg.jpg}">
 	</span>
 	<div class="container">
+	<div class="row"></div>
 	<div class="row">
 	<div class="col s6">
-	<div class="card">
+	<div class="card index-contents">
 	<div class="card-content">
-	<div class="card-title"></div>
-	テスト
+	<div class="card-title center">かんたん家計簿機能</div>
+	<div class="index-image center"> <img
+		th:src="@{/images/img1.png}">
+		</div>
+		<h6 class="center">
+		シンプル設計だから、かんたんに家計管理ができます
+		</h6>
 	</div>
 	</div>
 	</div>
 	<div class="col s6">
-	<div class="card">
+	<div class="card index-contents">
 	<div class="card-content">
-	<div class="card-title"></div>
-	テスト
+	<div class="card-title center">質問・相談機能</div>
+	<div class="index-image center"> <img
+		th:src="@{/images/img2.png}">
+		</div>
+		<h6 class="center">
+		お金のことでわからないことはすぐ相談できます
+		</h6>
 	</div>
 	</div>
+	</div>
+	<div class="row"></div>
+	<div class="row"></div>
+	<div class="row">
+	<h4 class="center">さあ、はじめよう！</h4>
 	</div>
 	</div>
 	<div class="row">
 	<div class="col s6 center">
-	<a th:href="@{/login}" class="waves-effect waves-light btn-large"><i class="material-icons left">input</i>ログイン</a>
+	<a th:href="@{/login}" class="waves-effect waves-light btn-large"><i class="material-icons left">input</i><span class="index-btn-text">ログイン</span></a><br>
+	<a th:href="@{/guest-login}"><p>ゲストログインはこちら</p></a>
 	</div>
 	<div class="col s6 center">
-	<a th:href="@{/register}" class="waves-effect waves-light btn-large"><i class="material-icons left">person_add</i>会員登録</a>
+	<a th:href="@{/register}" class="waves-effect waves-light btn-large"><i class="material-icons left">person_add</i><span class="index-btn-text">会員登録</span></a>
 	</div>
 	</div>
+	<div class="row"></div>
 	</div>
 
 </main>

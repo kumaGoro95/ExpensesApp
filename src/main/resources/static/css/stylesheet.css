@@ -1,6 +1,6 @@
 /* 全般 */
 body {
-	background-color: rgb(255, 250, 250);
+	background-color: rgb(255,245,245);
 	display: flex;
 	min-height: 100vh;
 	flex-direction: column;
@@ -58,6 +58,19 @@ nav .brand-logo {
 	width: 100%;
 }
 
+.index-image img{
+	width:90%;
+	padding:10px;
+} 
+
+.index-contents{
+	background-color:white;
+}
+
+.index-btn-text{
+	font-size:20px;
+}
+
 .card {
 	border-radius: 5px;
 	padding: 10px 0 10px 0;
@@ -79,6 +92,7 @@ nav .brand-logo {
 	-webkit-border-radius: 50%;
 	-moz-border-radius: 50%;
 }
+
 
 /* Home */
 .exChart-category {
@@ -107,7 +121,7 @@ nav .brand-logo {
 
 /*食費*/
 .fa-utensils {
-	color: rgb(255, 99, 71);
+	color: rgb(255, 30, 30);
 	padding: 0 6px 0 2px;
 }
 /*日用品*/
@@ -190,7 +204,7 @@ nav .brand-logo {
 
 /*収入*/
 .fa-money-bill-wave {
-	color: rgb(238, 110, 115);
+	color: rgb(238, 130, 140);
 }
 
 .record-categories {
@@ -336,6 +350,11 @@ textarea {
 .postdetail-post-title {
 	font-weight: bold;
 	font-size: 16px;
+	width:90%;
+}
+
+.postdetail-post-menu{
+	padding:5px 0 0 0;
 }
 
 .postdetail-postbody {

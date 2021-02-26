@@ -39,7 +39,7 @@ public class Post{
 	@Column(name = "user_id")
 	private String username;
 	
-	@Length(min=0, max=60)
+	@Length(min=0, max=40)
 	@NotBlank
 	@Column(name = "post_title")
 	private String postTitle;
