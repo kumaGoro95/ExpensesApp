@@ -24,7 +24,7 @@ public class S3RestController {
 
 	@RequestMapping(value = "/download", method = RequestMethod.GET)
 	public String download() {
-		BasicAWSCredentials creds = new BasicAWSCredentials("AKIAXQDP475AY6KFP2HP", "Ht6ED5zZjxfBbQAZS6aSbZVNARd/nCXgK47g3RLW");
+		BasicAWSCredentials creds = new BasicAWSCredentials("", "");
 		final AmazonS3 s3 = AmazonS3Client.builder()
 			    .withRegion("ap-northeast-1")
 			    .withCredentials(new AWSStaticCredentialsProvider(creds))
@@ -32,7 +32,7 @@ public class S3RestController {
 
         try {
             // S3のオブジェクトを取得する
-            S3Object o = s3.getObject("piggy-box-s3/icons", "favicon.jpg");
+            S3Object o = s3.getObject("", "favicon.jpg");
             S3ObjectInputStream s3is = o.getObjectContent();
 
             // ダウンロード先のファイルパスを指定する
@@ -64,7 +64,7 @@ public class S3RestController {
 
 	@RequestMapping(value="/upload", method=RequestMethod.GET)
 	public String upload() {
-		BasicAWSCredentials creds = new BasicAWSCredentials("AKIAXQDP475AY6KFP2HP", "Ht6ED5zZjxfBbQAZS6aSbZVNARd/nCXgK47g3RLW");
+		BasicAWSCredentials creds = new BasicAWSCredentials("", "");
 		final AmazonS3 s3 = AmazonS3Client.builder()
 			    .withRegion("ap-northeast-1")
 			    .withCredentials(new AWSStaticCredentialsProvider(creds))
@@ -72,7 +72,7 @@ public class S3RestController {
 
         try {
             // ファイルをS3にアップロードする
-            s3.putObject("piggy-box-s3/icons", "test.txt", new File("C:\\tmp/test.txt"));
+            s3.putObject("", "test.txt", new File("C:\\tmp/test.txt"));
         } catch (AmazonServiceException e) {
             System.err.println(e.getErrorMessage());
             System.exit(1);
