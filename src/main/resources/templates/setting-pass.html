@@ -40,18 +40,39 @@
 
 
 							<div class="form-group">
-								<label for="password"><span class="label">パスワード</span> </label> <input type="password"
+								<label for="password"><span class="label">パスワード</span> </label> 
+								<span th:unless="${user.username.equals('GuestUser')}">
+								<input type="password"
 									id="pass1" th:errorclass="is-invalid" th:field="*{password}"
 									placeholder="4文字以上で入力してください">
+									</span>
+									<span th:if="${user.username.equals('GuestUser')}">
+									<input type="password"
+									id="pass1" th:errorclass="is-invalid" th:field="*{password}"
+									readonly>
+									</span>
 								<div class="invalid-feedback" th:errors="*{password}"></div>
 							</div>
 							<div class="form-group">
-								<label for="password"><span class="label">もう一度入力してください</span></label> <input
+								<label for="password"><span class="label">もう一度入力してください</span></label> 
+								<span th:unless="${user.username.equals('GuestUser')}">
+								<input
 									type="password" id="pass2" placeholder="4文字以上で入力してください">
+									</span>
+									<span th:if="${user.username.equals('GuestUser')}">
+									<input
+									type="password" id="pass2" readonly>
+									</span>
 							</div>
 							<div class="row"></div>
 							<div class="center">
+							<span th:unless="${user.username.equals('GuestUser')}">
 							<input type="submit" class="btn" value="更新">
+							</span>
+							<span th:if="${user.username.equals('GuestUser')}">
+							<input type="submit" class="btn" value="更新" disabled>
+							<p class="red-text">ゲストユーザーはパスワード変更ができません</p>
+							</span>
 							</div>
 						</form>
 					</div>
