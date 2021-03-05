@@ -1,2 +1,2 @@
-# ExpensesApp
-[![Image from Gyazo](https://i.gyazo.com/a3d7793b3cbc34465d153d6f3472561d.gif)](https://gyazo.com/a3d7793b3cbc34465d153d6f3472561d)
+# 
+[![Image from Gyazo](https://i.gyazo.com/cfa2a5409b4b0f54370f2f2180d32458.gif)](https://gyazo.com/cfa2a5409b4b0f54370f2f2180d32458)
