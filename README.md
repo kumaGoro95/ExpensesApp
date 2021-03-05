@@ -56,6 +56,7 @@
   - 検索機能
 
 # DB設計
+![PiggyBank-ER](https://user-images.githubusercontent.com/68217595/110123954-de54cb00-7e04-11eb-972b-07fa671da904.png)
 
 # インフラ設計
 
