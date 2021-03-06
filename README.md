@@ -27,6 +27,7 @@
 - インフラ：AWS
   - EC2
   - RDS
+  - S3
   - ELB
   - Route53
   - ACM
