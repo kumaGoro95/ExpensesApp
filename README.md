@@ -2,7 +2,7 @@
  
  「お金でわからないことはすぐ相談できる」チャット相談機能付家計簿アプリ。家計簿機能と質問機能を実装しています。
   
-[![Image from Gyazo](https://i.gyazo.com/cfa2a5409b4b0f54370f2f2180d32458.gif)](https://gyazo.com/cfa2a5409b4b0f54370f2f2180d32458)
+[![Image from Gyazo](https://i.gyazo.com/987d86e72e7e6db6e69a2790d79f9955.gif)](https://gyazo.com/987d86e72e7e6db6e69a2790d79f9955)
 
  # URL
  
