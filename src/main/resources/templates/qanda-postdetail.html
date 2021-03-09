@@ -84,7 +84,7 @@
 
 							<div class="user-icon left">
 								<a th:href="@{/user/__${post.username}__}"> <img
-									th:src="@{/icons/__${user.icon}__}">
+									th:src="${iconUrl} + ${post.userIcon}">
 								</a>
 							</div>
 							<div class="postuser">
@@ -130,14 +130,13 @@
 										</ul></span>
 								</div>
 								<div class="user-icon left">
-									<a th:href="@{/user/__${post.username}__}"> <img
-										th:src="@{/icons/__${user.icon}__}">
+									<a th:href="@{/user/__${comment.username}__}"> <img
+										th:src="${iconUrl} + ${comment.userIcon}">
 									</a>
 								</div>
 								<div class="commentuser">
-								<a th:href="@{/user/__${comment.username}__}"><h6
-										class="black-text">[[${comment.userNickname}]]</h6></a>
-								[[${#temporals.format(post.createdAt, 'yyyy-MM-dd HH:ss')}]]
+								<a th:href="@{/user/__${comment.username}__}"><span class="comment-username black-text">[[${comment.userNickname}]]</span></a><br>
+								<span class="black-text">[[${#temporals.format(post.createdAt, 'yyyy-MM-dd HH:ss')}]]</span>
 								<div class="row"></div>
 								<span class="row commentbody">[[${comment.commentBody}]]</span>
 							</div>

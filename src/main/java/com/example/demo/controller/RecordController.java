@@ -55,6 +55,7 @@ public class RecordController {
 			Model model) {
 		SiteUser currentUser = userRepository.findByUsername(loginUser.getName());
 
+		
 		// カテゴリ一覧を取得
 		Map<Integer, String> categories = CategoryCodeToName.Categories;
 

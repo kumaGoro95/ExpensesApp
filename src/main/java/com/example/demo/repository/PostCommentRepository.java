@@ -20,7 +20,7 @@ public interface PostCommentRepository extends JpaRepository<PostComment, Long> 
 	
 	public void deleteByUsername(String username);
 	
-	@Query(value = "select comment_id, post_id, U.user_id, U.user_name, comment_body, C.created_at, C.updated_at "
+	@Query(value = "select comment_id, post_id, U.user_id, U.user_name, U.user_icon, comment_body, C.created_at, C.updated_at "
 			+ "from comments C left join users U on C.user_id = U.user_id where C.post_id = :postId", nativeQuery = true)
 	public List<Object[]> getCommentsByPostId(@Param("postId") int postId);
 	
