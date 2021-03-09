@@ -60,7 +60,7 @@
 ![PiggyBank-ER](https://user-images.githubusercontent.com/68217595/110123954-de54cb00-7e04-11eb-972b-07fa671da904.png)
 
 # インフラ設計
-![infra](https://user-images.githubusercontent.com/68217595/110206534-a2cc0680-7ec1-11eb-9067-4765b14f85e6.png)
+![infra](https://user-images.githubusercontent.com/68217595/110447290-6c7dc980-8103-11eb-9ec9-7cc39b703b8b.png)
 
 # 参考
 実装機能詳細や、今後の展望等については以下の記事で詳細に説明しています。
