@@ -75,13 +75,13 @@
 - 絞込・ソート機能やカレンダー表示機能で、自分が確認したい履歴だけを表示できるようにした
 
 [![Image from Gyazo](https://i.gyazo.com/8fbbdb9d6cd753ce73917b4faa42e0b8.gif)](https://gyazo.com/8fbbdb9d6cd753ce73917b4faa42e0b8)
-
 [![Image from Gyazo](https://i.gyazo.com/4f3d9a44dc279d8f67a28dd20b706735.gif)](https://gyazo.com/4f3d9a44dc279d8f67a28dd20b706735)
 
+ 
 ### 質問・相談機能
 - 後から読み返すことができるよう「お気に入り」機能を実装
 - カテゴリ分け・検索機能を実装して、欲しい情報にすぐアクセスできるように
-　
+
 [![Image from Gyazo](https://i.gyazo.com/810e609ab4f31426091eb2c2af64d133.gif)](https://gyazo.com/810e609ab4f31426091eb2c2af64d133)
 
  
