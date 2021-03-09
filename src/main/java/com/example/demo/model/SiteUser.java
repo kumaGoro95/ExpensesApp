@@ -41,7 +41,6 @@ public class SiteUser{
 	@Column(name = "user_email", nullable = false)
 	private String email;
 	
-	@NotBlank
 	@Size(min = 4, max = 255)
 	@Column(name = "user_password", nullable = false)
 	private String password;

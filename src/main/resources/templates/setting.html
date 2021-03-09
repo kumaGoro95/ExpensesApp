@@ -27,6 +27,9 @@
 						<div class="card-content">
 							<div class="card-title center">プロフィール編集</div>
 							<div class="row"></div>
+							<span class="error-message center" th:if="${errorMsg}">
+									<p class="red-text alert">[[${errorMsg}]]</p>
+								</span>
 							<span th:if="${user.username.equals('GuestUser')}">
 								<p class="red-text">ゲストユーザーは、アイコン画像・ユーザー名・メールアドレスを変更できません</p>
 								</span>
@@ -102,8 +105,11 @@
 									<button class="waves-effect waves-light btn setting-update">更新</button>
 								</div>
 								
-								<a th:href="@{/setting/pass}">パスワード変更</a><br> <br> <a
+								<a th:href="@{/setting/pass}">パスワード変更</a><br> <br> 
+								<span th:unless="${user.username.equals('GuestUser')}">
+								<a
 									th:href="@{/deleteUser}">退会する</a>
+									</span>
 							</form>
 						</div>
 					</div>

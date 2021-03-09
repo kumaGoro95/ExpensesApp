@@ -28,12 +28,12 @@
 							<div class="user-icon center">
 								<img th:src="${iconUrl}">
 							</div>
-							<h4 class="center">[[${selectedUser.userNickname}]]</h4>
+							<h4 class="user-username center">[[${selectedUser.userNickname}]]</h4>
 							<div class="center">
 								<span class="grey-text">@[[${selectedUser.username}]]</span>
 							</div>
 							<div class="row"></div>
-							<div class="center">[[${selectedUser.introduce}]]</div>
+							<div class="user-introduce center">[[${selectedUser.introduce}]]</div>
 							<div class="row"></div> <th:block th:if="${user == selectedUser}">
 								<div class="center">
 									<a th:href="@{/setting}" class="waves-effect waves-light btn"><i

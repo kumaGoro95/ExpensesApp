@@ -4,6 +4,7 @@ import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.stereotype.Service;
+import org.springframework.util.MimeTypeUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.amazonaws.AmazonServiceException;
@@ -28,13 +29,43 @@ import java.time.format.DateTimeFormatter;
 @Service
 public class FileUploadService {
 
+	// ファイルが画像なのか判定
+	public boolean isImageFileByImageIO(MultipartFile file) {
+
+		try {
+			// MultipartFileをFile形式に変換
+			File convFile = new File(file.getOriginalFilename());
+			// 拡張子を除いたファイル名を取得
+			convFile.createNewFile();
+			FileOutputStream fos = new FileOutputStream(convFile);
+			fos.write(file.getBytes());
+			fos.close();
+			System.out.println(convFile.isFile());
+
+			// ImageIOで、ファイルを読み込み
+			if (convFile != null && convFile.isFile()) {
+				BufferedImage bi;
+				bi = ImageIO.read(convFile);
+				System.out.println(bi != null);
+				// 引数に渡したFileが画像ファイル以外の場合、BufferedImageがnullで返ってくる。
+				if (bi != null) {
+					return true;
+				} else {
+					return false;
+				}
+			} else {
+				return false;
+			}
+
+		} catch (IOException e) {
+			throw new RuntimeException("Error uploading file.", e);
+		}
+
+	}
+
 	// 画像アップロード
 	public String uploadImage(HttpServletResponse response, MultipartFile file) {
-		// ファイルが空の場合は HTTP 400 を返す。
-		if (file.isEmpty()) {
-			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			return "";
-		}
+
 		// アップロードされたファイルを保存。
 		try {
 
@@ -75,8 +106,8 @@ public class FileUploadService {
 
 		// リサイズ
 		BufferedImage bi = scaleImage(originalFile, 120, 120);
-		
-		//オリジナルファイルを削除
+
+		// オリジナルファイルを削除
 		originalFile.delete();
 
 		// リサイズ後のファイルを保存
@@ -94,16 +125,15 @@ public class FileUploadService {
 				.withCredentials(new AWSStaticCredentialsProvider(creds)).build();
 
 		try {
-			
+
 			// ファイルをS3にアップロードする
 			s3.putObject("piggy-box-s3/icons", resizedFilename, new File(resizedFilepath));
-			//リサイズ後のファイルを削除
+			// リサイズ後のファイルを削除
 			resizedFile.delete();
 		} catch (AmazonServiceException e) {
 			System.err.println(e.getErrorMessage());
 			System.exit(1);
 		}
-		
 
 		return resizedFilename;
 	}
