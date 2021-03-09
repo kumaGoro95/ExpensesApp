@@ -283,14 +283,15 @@ public class MoneyRecordService {
 
 		Map<Integer, BigDecimal> percentages = new HashMap<Integer, BigDecimal>();
 		for (int i = 0; i < data.size(); i++) {
-			if (total == BigDecimal.valueOf(0)) {
+			if (total.compareTo(BigDecimal.valueOf(0)) == 0) {
 				break;
-			}
+			}else {
 			// 掛け数
 			BigDecimal number = BigDecimal.valueOf(100);
 			BigDecimal result = data.get(i).getSum().divide(total, 3, RoundingMode.DOWN).multiply(number).setScale(1,
 					RoundingMode.DOWN);
 			percentages.put(i + 1, result);
+			}
 		}
 
 		return percentages;
@@ -301,9 +302,9 @@ public class MoneyRecordService {
 
 		Map<Integer, BigDecimal> percentages = new HashMap<Integer, BigDecimal>();
 		for (int i = 0; i < data.size(); i++) {
-			if (total == BigDecimal.valueOf(0)) {
+			if (total.compareTo(BigDecimal.valueOf(0)) == 0) {
 				break;
-			}
+			}else {
 			// 掛け数
 			BigDecimal number = BigDecimal.valueOf(100);
 			BigDecimal result = data.get(i).getSum().divide(total, 3, RoundingMode.DOWN).multiply(number).setScale(1,
@@ -312,6 +313,7 @@ public class MoneyRecordService {
 			//サブカテゴリの最初のID 9901を足す
 			int incomeSubcateFirstNumber = 9901;
 			percentages.put(i + incomeSubcateFirstNumber, result);
+			}
 		}
 
 		return percentages;

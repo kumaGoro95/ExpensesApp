@@ -24,7 +24,7 @@ public class S3RestController {
 
 	@RequestMapping(value = "/download", method = RequestMethod.GET)
 	public String download() {
-		BasicAWSCredentials creds = new BasicAWSCredentials("AKIAXQDP475AY6KFP2HP", "Ht6ED5zZjxfBbQAZS6aSbZVNARd/nCXgK47g3RLW");
+		BasicAWSCredentials creds = new BasicAWSCredentials("", "");
 		final AmazonS3 s3 = AmazonS3Client.builder()
 			    .withRegion("ap-northeast-1")
 			    .withCredentials(new AWSStaticCredentialsProvider(creds))
@@ -64,7 +64,7 @@ public class S3RestController {
 
 	@RequestMapping(value="/upload", method=RequestMethod.GET)
 	public String upload() {
-		BasicAWSCredentials creds = new BasicAWSCredentials("AKIAXQDP475AY6KFP2HP", "Ht6ED5zZjxfBbQAZS6aSbZVNARd/nCXgK47g3RLW");
+		BasicAWSCredentials creds = new BasicAWSCredentials("", "");
 		final AmazonS3 s3 = AmazonS3Client.builder()
 			    .withRegion("ap-northeast-1")
 			    .withCredentials(new AWSStaticCredentialsProvider(creds))

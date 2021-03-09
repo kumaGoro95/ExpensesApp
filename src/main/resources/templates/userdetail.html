@@ -26,7 +26,7 @@
 					<div class="list">
 						<span th:inline="text">
 							<div class="user-icon center">
-								<img th:src="@{/icons/__${user.icon}__}">
+								<img th:src="${iconUrl}">
 							</div>
 							<h4 class="center">[[${selectedUser.userNickname}]]</h4>
 							<div class="center">

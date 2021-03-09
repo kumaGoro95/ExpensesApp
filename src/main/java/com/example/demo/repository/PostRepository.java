@@ -46,21 +46,21 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 	}
 
 	// 全投稿を取得
-	@Query(value = "select post_id, post_category, U.user_id, U.user_name, post_title, post_body, P.created_at, P.updated_at "
+	@Query(value = "select post_id, post_category, U.user_id, U.user_name, U.user_icon, P.post_title, P.post_body, P.created_at, P.updated_at "
 			+ "from posts P left join users U on P.user_id = U.user_id order by P.created_at desc", nativeQuery = true)
 	public List<Object[]> getAllPosts();
 
 	default List<PostByNickname> findAllPosts() {
 		List<Object[]> list = getAllPosts();
 		for (int i = 0; i < list.size(); i++) {
-			Timestamp tst1 = (Timestamp) list.get(i)[6];
+			Timestamp tst1 = (Timestamp) list.get(i)[7];
 			LocalDateTime ldt1 = tst1.toLocalDateTime();
-			list.get(i)[6] = ldt1;
+			list.get(i)[7] = ldt1;
 
-			if (list.get(i)[7] != null) {
-				Timestamp tst2 = (Timestamp) list.get(i)[7];
+			if (list.get(i)[8] != null) {
+				Timestamp tst2 = (Timestamp) list.get(i)[8];
 				LocalDateTime ldt2 = tst2.toLocalDateTime();
-				list.get(i)[7] = ldt2;
+				list.get(i)[8] = ldt2;
 			}
 		}
 		List<PostByNickname> returnList = list.stream().map(PostByNickname::new).collect(Collectors.toList());
@@ -68,21 +68,21 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 	}
 
 	// 固有のユーザーの投稿を取得
-	@Query(value = "select post_id, post_category, U.user_id, U.user_name, post_title, post_body, P.created_at, P.updated_at "
+	@Query(value = "select post_id, post_category, U.user_id, U.user_name, U.user_icon, post_title, P.post_body, P.created_at, P.updated_at "
 			+ "from posts P left join users U on P.user_id = U.user_id where P.user_id = :username order by P.created_at desc", nativeQuery = true)
 	public List<Object[]> getAllPostsByUsername(@Param("username") String username);
 
 	default List<PostByNickname> findAllPostsByUsername(String username) {
 		List<Object[]> list = getAllPostsByUsername(username);
 		for (int i = 0; i < list.size(); i++) {
-			Timestamp tst1 = (Timestamp) list.get(i)[6];
+			Timestamp tst1 = (Timestamp) list.get(i)[7];
 			LocalDateTime ldt1 = tst1.toLocalDateTime();
-			list.get(i)[6] = ldt1;
+			list.get(i)[7] = ldt1;
 
-			if (list.get(i)[7] != null) {
-				Timestamp tst2 = (Timestamp) list.get(i)[7];
+			if (list.get(i)[8] != null) {
+				Timestamp tst2 = (Timestamp) list.get(i)[8];
 				LocalDateTime ldt2 = tst2.toLocalDateTime();
-				list.get(i)[7] = ldt2;
+				list.get(i)[8] = ldt2;
 			}
 		}
 		List<PostByNickname> returnList = list.stream().map(PostByNickname::new).collect(Collectors.toList());
@@ -90,7 +90,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 	}
 	
 	//固有のユーザーがお気に入りした投稿を取得
-	@Query(value = "select P.post_id, P.post_category, L.user_id, U.user_name, post_title, post_body, P.created_at, P.updated_at "
+	@Query(value = "select P.post_id, P.post_category, L.user_id, U.user_name, U.user_icon, P.post_title, P.post_body, P.created_at, P.updated_at "
 			+ "from posts P inner join likes L on P.post_id = L.post_id "
 			+ "inner join users U on U.user_id = L.user_id where L.user_id = :username order by P.created_at desc", nativeQuery = true)
 	public List<Object[]> getLikedPostsByUsername(@Param("username") String username);
@@ -98,14 +98,14 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 	default List<PostByNickname> findLikedPostsByUsername(String username) {
 		List<Object[]> list = getLikedPostsByUsername(username);
 		for (int i = 0; i < list.size(); i++) {
-			Timestamp tst1 = (Timestamp) list.get(i)[6];
+			Timestamp tst1 = (Timestamp) list.get(i)[7];
 			LocalDateTime ldt1 = tst1.toLocalDateTime();
-			list.get(i)[6] = ldt1;
+			list.get(i)[7] = ldt1;
 
-			if (list.get(i)[7] != null) {
-				Timestamp tst2 = (Timestamp) list.get(i)[7];
+			if (list.get(i)[8] != null) {
+				Timestamp tst2 = (Timestamp) list.get(i)[8];
 				LocalDateTime ldt2 = tst2.toLocalDateTime();
-				list.get(i)[7] = ldt2;
+				list.get(i)[8] = ldt2;
 			}
 		}
 		List<PostByNickname> returnList = list.stream().map(PostByNickname::new).collect(Collectors.toList());
@@ -113,21 +113,21 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 	}
 
 	// postIdで検索
-	@Query(value = "select post_id, post_category, U.user_id, U.user_name, post_title, post_body, P.created_at, P.updated_at "
+	@Query(value = "select post_id, post_category, U.user_id, U.user_name, U.user_icon, post_title, P.post_body, P.created_at, P.updated_at "
 			+ "from posts P left join users U on P.user_id = U.user_id where P.post_id = :postId", nativeQuery = true)
 	public List<Object[]> getPostByPostId(@Param("postId") int postId);
 
 	default List<PostByNickname> findPostByPostId(int postId) {
 		List<Object[]> list = getPostByPostId(postId);
 		for (int i = 0; i < list.size(); i++) {
-			Timestamp tst1 = (Timestamp) list.get(i)[6];
+			Timestamp tst1 = (Timestamp) list.get(i)[7];
 			LocalDateTime ldt1 = tst1.toLocalDateTime();
-			list.get(i)[6] = ldt1;
+			list.get(i)[7] = ldt1;
 
-			if (list.get(i)[7] != null) {
-				Timestamp tst2 = (Timestamp) list.get(i)[7];
+			if (list.get(i)[8] != null) {
+				Timestamp tst2 = (Timestamp) list.get(i)[8];
 				LocalDateTime ldt2 = tst2.toLocalDateTime();
-				list.get(i)[7] = ldt2;
+				list.get(i)[8] = ldt2;
 			}
 		}
 		List<PostByNickname> returnList = list.stream().map(PostByNickname::new).collect(Collectors.toList());
@@ -135,21 +135,21 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 	}
 
 	//カテゴリで検索
-	@Query(value = "select post_id, post_category, U.user_id, U.user_name, post_title, post_body, P.created_at, P.updated_at "
+	@Query(value = "select post_id, post_category, U.user_id, U.user_name, U.user_icon, P.post_title, P.post_body, P.created_at, P.updated_at "
 			+ "from posts P left join users U on P.user_id = U.user_id where P.post_category = :category order by P.created_at desc", nativeQuery = true)
 	public List<Object[]> getPostByCategory(@Param("category") int category);
 
 	default List<PostByNickname> findPostByCategory(int category) {
 		List<Object[]> list = getPostByCategory(category);
 		for (int i = 0; i < list.size(); i++) {
-			Timestamp tst1 = (Timestamp) list.get(i)[6];
+			Timestamp tst1 = (Timestamp) list.get(i)[7];
 			LocalDateTime ldt1 = tst1.toLocalDateTime();
-			list.get(i)[6] = ldt1;
+			list.get(i)[7] = ldt1;
 
-			if (list.get(i)[7] != null) {
-				Timestamp tst2 = (Timestamp) list.get(i)[7];
+			if (list.get(i)[8] != null) {
+				Timestamp tst2 = (Timestamp) list.get(i)[8];
 				LocalDateTime ldt2 = tst2.toLocalDateTime();
-				list.get(i)[7] = ldt2;
+				list.get(i)[8] = ldt2;
 			}
 		}
 		List<PostByNickname> returnList = list.stream().map(PostByNickname::new).collect(Collectors.toList());

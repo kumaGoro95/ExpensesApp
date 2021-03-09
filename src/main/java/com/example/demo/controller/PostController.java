@@ -26,6 +26,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import com.example.demo.model.Post;
 import com.example.demo.model.Like;
 import com.example.demo.model.PostComment;
+import com.example.demo.model.SiteUser;
 import com.example.demo.model.beans.PostByNickname;
 import com.example.demo.repository.SiteUserRepository;
 import com.example.demo.service.PostService;
@@ -186,6 +187,7 @@ public class PostController {
 			Authentication loginUser, Model model) {
 		Map<Integer, BigInteger> commentCount = postRepository.findCommentCount();
 		Map<Integer, BigInteger> likeCount = likeRepository.findLikeCount();
+		SiteUser user = userRepository.findByUsername(loginUser.getName());
 
 		// 検索用
 		SearchingWords searchingWords = new SearchingWords(null);
@@ -196,7 +198,11 @@ public class PostController {
 
 		List<PostByNickname> list = postRepository.findPostByPostId(postId);
 
-		model.addAttribute("user", userRepository.findByUsername(loginUser.getName()));
+		//アイコン表示用のURL
+		String iconUrl = "https://piggy-box-s3.s3-ap-northeast-1.amazonaws.com/icons/";
+
+		model.addAttribute("iconUrl", iconUrl);
+		model.addAttribute("user", user);
 		model.addAttribute("post", list.get(0));
 		model.addAttribute("comments", commentRepository.findCommentsByPostId(postId));
 		model.addAttribute("commentCount", commentCount);
