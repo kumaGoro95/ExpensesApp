@@ -111,7 +111,7 @@ public class MoneyRecordService {
 
 		// 確認用の配列を用意
 		List<BigDecimal> checknullList = new ArrayList<BigDecimal>();
-		for (int i = 0; i < 3; i++) {
+		for (int i = 0; i < 4; i++) {
 			checknullList.add(BigDecimal.valueOf(0));
 		}
 		BigDecimal checknull[] = checknullList.toArray(new BigDecimal[checknullList.size()]);
@@ -190,6 +190,20 @@ public class MoneyRecordService {
 
 		return oldestDate;
 	}
+	
+	//一番新しい記録を取得する
+	public String getLatestDate(String username) {
+		String latestDate = null;
+		// 出入金記録があるか確認
+		if (moneyRecordRepository.existsByUsername(username)) {
+			latestDate = moneyRecordRepository.getLatestDate(username).toString();
+		} else {
+			LocalDate ld = LocalDate.now();
+			latestDate = ld.toString();
+		}
+
+		return latestDate;
+	}
 
 	// 履歴データが存在するか確認する
 	public boolean existsHistoryData(List<MoneyRecordList> records) {
@@ -244,7 +258,7 @@ public class MoneyRecordService {
 		// 全ての履歴が表示される条件設定にする
 		condition.setCategoryCode("all");
 		condition.setStartDate(getOldestDate(username));
-		condition.setEndDate(LocalDate.now().toString());
+		condition.setEndDate(getLatestDate(username));
 
 		return condition;
 

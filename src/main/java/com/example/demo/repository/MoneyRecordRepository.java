@@ -210,8 +210,12 @@ public interface MoneyRecordRepository extends JpaRepository<MoneyRecord, Long> 
 		return getDailyGraph(username, firstDay, lastDay).stream().map(DailySumGraph::new).collect(Collectors.toList());
 	}
 
-	// 最古の記録を取得する
+	// 一番古い記録を取得する
 	@Query(value = "select record_date from money_records where user_id = :username order by record_date asc limit 1", nativeQuery = true)
 	public Object getOldestDate(@Param("username") String username);
+
+	// 一番新しい記録を取得する
+	@Query(value = "select record_date from money_records where user_id = :username order by record_date desc limit 1", nativeQuery = true)
+	public Object getLatestDate(@Param("username") String username);
 
 }

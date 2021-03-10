@@ -60,7 +60,6 @@ public class SecurityController {
 		user.setUserNickname(user.getUsername());
 		if (result.hasErrors()) {
 			System.out.println(result);
-
 			return "register";
 		}
 		
