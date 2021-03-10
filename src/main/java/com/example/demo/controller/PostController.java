@@ -65,8 +65,8 @@ public class PostController {
 	// 投稿系ホーム画面
 	@GetMapping("/qanda")
 	public String goToPost(@ModelAttribute("posts") Post post, Authentication loginUser, Model model) {
-		
-		//コメント数、クリップ数
+
+		// コメント数、クリップ数
 		Map<Integer, BigInteger> commentCount = postRepository.findCommentCount();
 		Map<Integer, BigInteger> likeCount = likeRepository.findLikeCount();
 
@@ -93,8 +93,8 @@ public class PostController {
 
 	@PostMapping("/qanda/search")
 	public String post(@ModelAttribute("swords") SearchingWords swords, Authentication loginUser, Model model) {
-		
-		//コメント数、クリップ数
+
+		// コメント数、クリップ数
 		Map<Integer, BigInteger> commentCount = postRepository.findCommentCount();
 		Map<Integer, BigInteger> likeCount = likeRepository.findLikeCount();
 
@@ -148,7 +148,7 @@ public class PostController {
 	@GetMapping("/qanda/post")
 	public String post(@ModelAttribute("post") Post post, Authentication loginUser, Model model) {
 		model.addAttribute("user", userRepository.findByUsername(loginUser.getName()));
-		
+
 		// カテゴリ
 		Map<Integer, String> postCategories = PostCategoryCodeToName.PostCategories;
 
@@ -159,10 +159,13 @@ public class PostController {
 
 	// 投稿実行
 	@PostMapping("/qanda/post")
-	public String post(@Validated @ModelAttribute("post") Post post, BindingResult result, Authentication loginUser, Model model, RedirectAttributes redirectAttributes) {
+	public String post(@Validated @ModelAttribute("post") Post post, BindingResult result, Authentication loginUser,
+			Model model, RedirectAttributes redirectAttributes) {
+
+		// 投稿内容に不備があるかチェック
 		if (result.hasErrors()) {
 			model.addAttribute("user", userRepository.findByUsername(loginUser.getName()));
-			
+
 			// カテゴリ
 			Map<Integer, String> postCategories = PostCategoryCodeToName.PostCategories;
 
@@ -175,7 +178,7 @@ public class PostController {
 
 		post.setCreatedAt(ldt);
 		postRepository.save(post);
-		
+
 		redirectAttributes.addFlashAttribute("flashMsg", "投稿しました");
 
 		return "redirect:/qanda?qanda-post";
@@ -198,7 +201,7 @@ public class PostController {
 
 		List<PostByNickname> list = postRepository.findPostByPostId(postId);
 
-		//アイコン表示用のURL
+		// アイコン表示用のURL
 		String iconUrl = "https://piggy-box-s3.s3-ap-northeast-1.amazonaws.com/icons/";
 
 		model.addAttribute("iconUrl", iconUrl);
@@ -232,7 +235,7 @@ public class PostController {
 
 		comment.setCreatedAt(ldt);
 		commentRepository.save(comment);
-		
+
 		redirectAttributes.addFlashAttribute("flashMsg", "投稿しました");
 
 		return "redirect:" + location.toString();
@@ -244,8 +247,7 @@ public class PostController {
 	@Transactional
 	public String Like(@PathVariable("postId") int postId, @ModelAttribute("like") Like like, Authentication loginUser,
 			Model model, UriComponentsBuilder builder) {
-		
-		
+
 		if (likeRepository.existsByUsernameAndPostId(loginUser.getName(), postId) == true) {
 			likeRepository.deleteByUsernameAndPostId(loginUser.getName(), postId);
 		} else {
@@ -272,7 +274,7 @@ public class PostController {
 	// コメント編集画面へ遷移
 	@GetMapping("/qanda/comment/{commentId}/edit")
 	public String editComment(@PathVariable("commentId") int commentId, Authentication loginUser, Model model) {
-		
+
 		model.addAttribute("comment", commentRepository.findByCommentId(commentId));
 		model.addAttribute("user", userRepository.findByUsername(loginUser.getName()));
 
@@ -285,18 +287,20 @@ public class PostController {
 			Authentication loginUser, UriComponentsBuilder builder, RedirectAttributes redirectAttributes) {
 
 		// リダイレクト先を指定
-		URI location = builder.path("/qanda/" + comment.getPostId()).build().toUri();
+		URI locationForErrors = builder.path("/qanda/comment/" + comment.getCommentId() + "/edit").build().toUri();
 
 		if (result.hasErrors()) {
-			return "redirect:" + location.toString();
+			return "redirect:" + locationForErrors.toString();
 		}
 
 		LocalDateTime ldt = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
 		comment.setUpdatedAt(ldt);
 
 		commentRepository.save(comment);
-		
+
 		redirectAttributes.addFlashAttribute("flashMsg", "投稿しました");
+		
+		URI location = builder.path("/qanda/" + comment.getPostId()).build().toUri();
 
 		return "redirect:" + location.toString();
 	}
@@ -313,6 +317,13 @@ public class PostController {
 	// 投稿編集画面へ遷移
 	@GetMapping("/qanda/{postId}/edit")
 	public String editPost(@PathVariable("postId") int postId, Authentication loginUser, Model model) {
+
+		if (model.asMap().containsKey("postBindingResult")) {
+			model.addAttribute("org.springframework.validation.BindingResult.post",
+					model.asMap().get("postBindingResult"));
+		}
+		
+		
 		model.addAttribute("post", postRepository.findByPostId(postId));
 		model.addAttribute("user", userRepository.findByUsername(loginUser.getName()));
 		// カテゴリ
@@ -333,25 +344,21 @@ public class PostController {
 
 		if (result.hasErrors()) {
 			System.out.println(result);
+			redirectAttributes.addFlashAttribute("postBindingResult", result);
 			redirectAttributes.addFlashAttribute("post", post);
-	        // テンプレート内で#fieldsやth:errorsでバリデーションエラーを参照するには、
-	        // org.springframework.validation.BindingResult.{クラス名 (Camel Case)}というキー名で設定する必要がある。
-	        redirectAttributes.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + Conventions.getVariableName(post), result);
-	        System.out.println(BindingResult.MODEL_KEY_PREFIX);
-	        System.out.println(Conventions.getVariableName(post));
 
 			return "redirect:" + locationForErrors.toString();
 
 		}
-		
-		//投稿を更新
+
+		// 投稿を更新
 		pService.updatePost(post);
-		
+
 		redirectAttributes.addFlashAttribute("flashMsg", "更新しました");
-		
-		//リダイレクト先を指定
+
+		// リダイレクト先を指定
 		URI location = builder.replacePath("/qanda/" + post.getPostId()).build().toUri();
-		
+
 		return "redirect:" + location.toString();
 	}
 

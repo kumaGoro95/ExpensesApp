@@ -430,6 +430,7 @@ public class RecordController {
 
 		// 月一覧を取得
 		String[] allMonths = dService.getAllMonths(loginUser.getName());
+		System.out.println(allMonths);
 
 		// 現在の年月を取得
 		String currentMonthForSql = mrService.getCurrentMonthForSql();

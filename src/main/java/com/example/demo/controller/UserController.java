@@ -104,7 +104,7 @@ public class UserController {
 	@GetMapping("/setting")
 	public String setting(@ModelAttribute("file") FileUploadForm file, Authentication loginUser, Model model) {
 		SiteUser currentUser = userRepository.findByUsername(loginUser.getName());
-		
+
 		// アイコン表示用のURL
 		String iconUrl = "https://piggy-box-s3.s3-ap-northeast-1.amazonaws.com/icons/";
 		iconUrl = iconUrl + currentUser.getIcon();
@@ -121,22 +121,33 @@ public class UserController {
 			@ModelAttribute("file") FileUploadForm file, HttpServletResponse response, Authentication loginUser,
 			RedirectAttributes redirectAttributes) {
 
-		// もし同名ユーザー・同メールアドレスユーザーが存在すれば、リダイレクトする
+		// もし同メールアドレスユーザーが存在すれば、リダイレクトする
 		if (uService.existsSameAccount(loginUser.getName(), user)) {
+			redirectAttributes.addFlashAttribute("errorMsg", "すでに同じメールアドレスで登録されています");
 			return "redirect:/setting?setting";
 		}
 		// @Validatedで入力値チェック→BindingResultに結果が入る→result.hasErrors()でエラーがあるか確認
 		if (result.hasErrors()) {
+
 			System.out.println(result);
 			return "redirect:/setting?setting";
+		}
+		if (!file.getUploadedFile().isEmpty() && !iResizer.isImageFileByImageIO(file.getUploadedFile())) {
+				redirectAttributes.addFlashAttribute("errorMsg", "追加されたファイルは画像ではありません");
+				return "redirect:/setting?setting";
 		}
 
 		/* ユーザープロフィールを更新する */
 
-		// アイコン画像画像アップロード・リサイズ
-		String iconStr = iResizer.uploadImage(response, file.getUploadedFile());
-		// 更新処理
-		uService.updateSetting(user, iconStr);
+		if (!file.getUploadedFile().isEmpty()) {
+			// アイコン画像画像アップロード・リサイズ
+			String iconStr = iResizer.uploadImage(response, file.getUploadedFile());
+			user.setIcon(iconStr);
+		}
+		
+		uService.updateSetting(user);
+		
+		
 
 		redirectAttributes.addFlashAttribute("flashMsg", "プロフィールを変更しました");
 

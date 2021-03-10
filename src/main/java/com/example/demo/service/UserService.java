@@ -56,13 +56,12 @@ public class UserService {
 	}
 
 	// ユーザープロファイル更新
-	public void updateSetting(SiteUser user, String iconStr) {
+	public void updateSetting(SiteUser user) {
 
 		//更新日時を取得
 		LocalDateTime ldt = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
 		
 		user.setUpdatedAt(ldt);
-		user.setIcon(iconStr);
 		user.setPassword(user.getPassword());
 
 		userRepository.save(user);

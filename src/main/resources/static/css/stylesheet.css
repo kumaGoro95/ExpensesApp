@@ -97,6 +97,11 @@ nav .brand-logo {
 	-moz-border-radius: 50%;
 }
 
+/*ログイン画面*/
+input#submit_button {
+	color:white;
+}
+
 
 /* Home */
 .exChart-category {
@@ -117,6 +122,14 @@ nav .brand-logo {
 
 .moneylabel {
 	font-size: 16px;
+}
+
+/*ユーザー詳細画面*/
+.user-username{
+	padding:0 10px 0 10px;
+}
+.user-introduce{
+	padding:10px 20px 10px 20px;
 }
 
 /* MoneyRecord */
@@ -376,6 +389,11 @@ textarea {
 
 .postuser h6 {
 	padding: 3px 0 0 0;
+}
+
+/*クリップアイコン*/
+.fa-paperclip{
+	padding: 0 2px 0 0;
 }
 
 /*コメント部分*/

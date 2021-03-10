@@ -26,28 +26,26 @@
 						<div class="row"></div>
 						<form th:action="@{/register}" th:object="${user}" method="post"
 							novalidate>
+							<p class="text-danger red-text" th:errors="*{*}"></p>
+							<div class="row"></div>
 							<div class="form-group">
 								<label for="name"><span class="label">ユーザーID</span> </label> <input type="text"
 									th:errorclass="is-invalid" th:field="*{username}"
 									placeholder="４文字以上20文字以内で入力してください">
-								<div class="invalid-feedback" th:errors="*{username}"></div>
 							</div>
 							<div class="form-group">
 								<label for="email"><span class="label">メールアドレス</span> </label> <input type="email"
 									th:errorclass="is-invalid" th:field="*{email}"
 									placeholder="xxx@xxx.com">
-								<div class="invalid-feedback" th:errors="*{email}"></div>
 							</div>
 							<div class="form-group">
 								<label for="password"><span class="label">パスワード</span> </label> <input type="password"
 									th:errorclass="is-invalid" th:field="*{password}"
 									placeholder="4文字以上で入力してください">
-								<div class="invalid-feedback" th:errors="*{password}"></div>
 							</div>
 							<div class="form-group">
 								<label for="budget"><span class="label">月の予算</span></label> <input type="number"
 									th:errorclass="is-invalid" th:field="*{budget}">
-								<div class="invalid-feedback" th:errors="*{budget}"></div>
 							</div>
 							<div class="row form-check"></div>
 							<div class="center">

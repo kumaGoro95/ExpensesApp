@@ -48,7 +48,7 @@ public class MoneyRecord{
 	@Column(name = "category_id")
 	private int categoryId;
 	
-	@Length(min=0, max=500)
+	@Length(min=0, max=20)
 	@Column(name = "record_note")
 	private String note;
 	
