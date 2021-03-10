@@ -32,7 +32,7 @@ public class S3RestController {
 
         try {
             // S3のオブジェクトを取得する
-            S3Object o = s3.getObject("piggy-box-s3/icons", "favicon.jpg");
+            S3Object o = s3.getObject("", "favicon.jpg");
             S3ObjectInputStream s3is = o.getObjectContent();
 
             // ダウンロード先のファイルパスを指定する
@@ -72,7 +72,7 @@ public class S3RestController {
 
         try {
             // ファイルをS3にアップロードする
-            s3.putObject("piggy-box-s3/icons", "test.txt", new File("C:\\tmp/test.txt"));
+            s3.putObject("", "test.txt", new File("C:\\tmp/test.txt"));
         } catch (AmazonServiceException e) {
             System.err.println(e.getErrorMessage());
             System.exit(1);
