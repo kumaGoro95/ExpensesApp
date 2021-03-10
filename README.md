@@ -104,7 +104,7 @@
 - 今回はEC2、RDS、ELB、S3、Route53、ACMを利用しました。
 - ELBはACMを使用するために導入しており、EC2冗長化等は行っておりません。
 - S3については、ユーザーのアイコン画像を格納するために導入しています。
-![infra](https://user-images.githubusercontent.com/68217595/110447290-6c7dc980-8103-11eb-9ec9-7cc39b703b8b.png)
+![infra](https://user-images.githubusercontent.com/68217595/110613128-3c522b80-81d4-11eb-8a7a-5e70c9dc1125.png)
 
  
 # 今後追加したい機能等
