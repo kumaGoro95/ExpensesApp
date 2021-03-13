@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <th:block th:insert="fragments/header :: header"></th:block>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script th:src="@{/webjars/jquery/3.5.1/jquery.min.js}"></script>
 <link rel="stylesheet"
 	th:href="@{/webjars/materializecss/1.0.0/css/materialize.min.css}">
 <script type="text/javascript"
@@ -75,7 +76,13 @@
 }
 </style>
 	<script>
-		$('#message').fadeOut(2000);
+		
+		$(document).ready(function(){
+			$('#message').fadeOut(2000);
+		    $('.sidenav').sidenav();
+		    $(".dropdown-trigger").dropdown();
+		  });
+
 	</script>
 
 </body>

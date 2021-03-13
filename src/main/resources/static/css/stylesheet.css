@@ -1,6 +1,6 @@
 /* 全般 */
 body {
-	background-color: rgb(255,245,245);
+	background-color: rgb(255, 245, 245);
 	display: flex;
 	min-height: 100vh;
 	flex-direction: column;
@@ -14,8 +14,8 @@ main {
 	font-size: 16px;
 }
 
-.comment-username{
-	font-size:18px;
+.comment-username {
+	font-size: 18px;
 }
 
 .label {
@@ -24,6 +24,25 @@ main {
 }
 
 /* ヘッダー */
+@media only screen and (max-width:600px) {
+	nav .fa-piggy-bank {
+		font-size:20px;
+		padding:24px 0 0 0;
+	}
+	nav .brand-title{
+	    font-size:22px;
+	}
+}
+
+@media only screen and (max-width:360px) {
+	nav .fa-piggy-bank {
+		display:none;
+	}
+	nav .brand-title{
+	    font-size:20px;
+	}
+}
+
 nav .brand-logo {
 	padding: 0px 10px 0px 15px;
 }
@@ -36,17 +55,25 @@ nav .brand-logo {
 	font-size: 18px;
 }
 
+.username{
+	min-width:150px;
+}
+
 .messagebar {
 	height: 50px;
 }
 
 .message {
 	opacity: 0.7;
-	padding:2px;
+	padding: 2px;
 }
 
-.alert{
-	padding:0 0 0 7px;
+.alert {
+	padding: 0 0 0 7px;
+}
+
+.sidenav{
+	padding:10px;
 }
 
 /* フッター */
@@ -62,17 +89,17 @@ nav .brand-logo {
 	width: 100%;
 }
 
-.index-image img{
-	width:90%;
-	padding:10px;
-} 
-
-.index-contents{
-	background-color:white;
+.index-image img {
+	width: 90%;
+	padding: 10px;
 }
 
-.index-btn-text{
-	font-size:20px;
+.index-contents {
+	background-color: white;
+}
+
+.index-btn-text {
+	font-size: 20px;
 }
 
 .card {
@@ -99,9 +126,8 @@ nav .brand-logo {
 
 /*ログイン画面*/
 input#submit_button {
-	color:white;
+	color: white;
 }
-
 
 /* Home */
 .exChart-category {
@@ -114,9 +140,24 @@ input#submit_button {
 	padding: 20px;
 }
 
-@media only screen and (min-width:1200px) {
+@media only screen and (min-width:1201px) {
 	.exChart-category {
 		font-size: 15px;
+	}
+	.recordbtn {
+		display: none;
+	}
+}
+
+@media only screen and (max-width:1200px) {
+	.record-post {
+		display: none;
+	}
+	.recordbtn {
+		bottom: 40px;
+		right: 40px;
+		padding: 4px 20px;
+		position: fixed;
 	}
 }
 
@@ -125,11 +166,12 @@ input#submit_button {
 }
 
 /*ユーザー詳細画面*/
-.user-username{
-	padding:0 10px 0 10px;
+.user-username {
+	padding: 0 10px 0 10px;
 }
-.user-introduce{
-	padding:10px 20px 10px 20px;
+
+.user-introduce {
+	padding: 10px 20px 10px 20px;
 }
 
 /* MoneyRecord */
@@ -367,11 +409,11 @@ textarea {
 .postdetail-post-title {
 	font-weight: bold;
 	font-size: 16px;
-	width:90%;
+	width: 90%;
 }
 
-.postdetail-post-menu{
-	padding:5px 0 0 0;
+.postdetail-post-menu {
+	padding: 5px 0 0 0;
 }
 
 .postdetail-postbody {
@@ -392,7 +434,7 @@ textarea {
 }
 
 /*クリップアイコン*/
-.fa-paperclip{
+.fa-paperclip {
 	padding: 0 2px 0 0;
 }
 

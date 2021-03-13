@@ -21,42 +21,9 @@
 	<div class="container">
 		<span th:inline="text">
 			<div class="row">
-				<div class="col s4">
-					<div class="card">
-						<div class="card-content">
-							<div class="card-title center">検索</div>
-							<form class="row s12" th:action="@{/qanda/search}"
-								th:object="${swords}" method="post">
-								<div class="input-field">
-									<i class="material-icons prefix">search</i> <input
-										id="input_text" type="text" data-length="10"
-										th:field="*{word}"> <label for="icon_prefix2">検索ワード</label>
-									<div class="col s12 center">
-										<button class="waves-effect waves-light btn">検索</button>
-									</div>
-								</div>
-							</form>
-						</div>
-					</div>
-
-					<div class="row"></div>
-
-					<div class="card">
-						<div class="card-content">
-							<div class="card-title center">カテゴリ</div>
-							<span th:each="postCategory : ${postCategories}" th:inline="text">
-								<ul>
-									<li><a th:href="@{/qanda/category/__${postCategory['key']}__}"><i
-											th:class="${postCategoriesToIcon.get(postCategory['key'])}+' fa-lg'"></i><span
-											class="black-text categories">[[${postCategory['value']}]]</span></a></li>
-								</ul>
-
-							</span>
-						</div>
-					</div>
-				</div>
-
-				<div class="col s8">
+			
+			
+			<div class="col xl8 s12 right">
 					<div class="card">
 						<div class="card-content">
 							<h5 class="postdetail-post-title left">[[${post.postTitle}]]</h5>
@@ -166,6 +133,44 @@
 						</div>
 					</div>
 				</div>
+				
+				
+				<div class="col xl4 s12">
+					<div class="card">
+						<div class="card-content">
+							<div class="card-title center">検索</div>
+							<form class="row s12" th:action="@{/qanda/search}"
+								th:object="${swords}" method="post">
+								<div class="input-field">
+									<i class="material-icons prefix">search</i> <input
+										id="input_text" type="text" data-length="10"
+										th:field="*{word}"> <label for="icon_prefix2">検索ワード</label>
+									<div class="col s12 center">
+										<button class="waves-effect waves-light btn">検索</button>
+									</div>
+								</div>
+							</form>
+						</div>
+					</div>
+
+					<div class="row"></div>
+
+					<div class="card">
+						<div class="card-content">
+							<div class="card-title center">カテゴリ</div>
+							<span th:each="postCategory : ${postCategories}" th:inline="text">
+								<ul>
+									<li><a th:href="@{/qanda/category/__${postCategory['key']}__}"><i
+											th:class="${postCategoriesToIcon.get(postCategory['key'])}+' fa-lg'"></i><span
+											class="black-text categories">[[${postCategory['value']}]]</span></a></li>
+								</ul>
+
+							</span>
+						</div>
+					</div>
+				</div>
+
+				
 			</div>
 		</span>
 	</div>
@@ -173,6 +178,7 @@
 	<script>
 		$(document).ready(function() {
 			$(".dropdown-trigger").dropdown();
+			$('.sidenav').sidenav();
 		});
 		$('#message').fadeOut(5000);
 	</script>
