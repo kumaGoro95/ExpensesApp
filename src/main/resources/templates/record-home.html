@@ -23,17 +23,17 @@
 	<div class="container" th:inline="text">
 		<div class="row"></div>
 		<div class="row">
-			<div class="col s9">
+			<div class="col xl9 s12">
 				<div class="card">
 					<div class="card-content">
 						<div class="row">
-							<div class="col s12 center">
+							<div class="center">
 								<h4>[[${currentMonth}]]の状況</h4>
 							</div>
 						</div>
 						<div class="row"></div>
 						<div class="card-title">
-							<div class="col s3 center">
+							<div class="col xl3 s3 center">
 								<div class="cell">
 									<p class="frame">
 										<span class="moneylabel">予算</span><br> <span
@@ -41,11 +41,11 @@
 									</p>
 								</div>
 							</div>
-							<div class="col s1 center">
+							<div class="col xl1 s1 center">
 								<br>
 								<h5>－</h5>
 							</div>
-							<div class="col s3 center">
+							<div class="col xl3 s3 center">
 								<div class="cell">
 									<p class="frame">
 										<span class="moneylabel">支出</span><br> <span
@@ -53,11 +53,11 @@
 									</p>
 								</div>
 							</div>
-							<div class="col s1 center">
+							<div class="col xl1 s1 center">
 								<br>
 								<h5>=</h5>
 							</div>
-							<div class="col s3 center">
+							<div class="col xl3 s3 center">
 								<div class="cell">
 									<p class="frame">
 										<span class="moneylabel">残り</span><br> <span
@@ -138,8 +138,8 @@
 
 				</div>
 			</div>
-			<div class="col s3">
-				<div class="row card">
+			<div class="col xl3">
+				<div class="row card record-post">
 					<div class="card-content">
 						<h5 class="center gray-text">家計簿入力</h5>
 						<div class="row"></div>
@@ -193,6 +193,12 @@
 				</div>
 			</div>
 		</div>
+		
+<!-- Mobile用フローティングボタン -->
+
+<a th:href="@{/money-record/post}"><button class="waves-effect waves-light btn-large recordbtn">
+						記録する<i class="material-icons right">note_add</i>
+					</button></a>
 
 	</div>
 	</main>
@@ -253,44 +259,12 @@
   });
   
   
-  $(function() {
-  	
-  	// 国名が変更されたら発動
-  	$('select[name="mainselect"]').change(function() {
-  		
-  		// 選択されている国のクラス名を取得
-  		var category = $('select[name="mainselect"] option:selected').attr("class");
-  		
-  	    // 都市名の要素数を取得
-		var count = $('select[name="categoryId"]').children().length;
-		
-		// 都市名の要素数分、for文で回す
-		for (var i=0; i<count; i++) {
-			
-			var subcategory = $('select[name="categoryId"] option:eq(' + i + ')');
-			console.log("サブカテゴリ" + subcategory.attr("class"));
-			console.log("カテゴリ" + category);
-			console.log(subcategory.attr("class") == category);
-			
-			if(subcategory.attr("class") === category) {
-				// 選択した国と同じクラス名だった場合
-				
-				// 都市の要素を表示
-				$('select[name="categoryId"] option:eq(' + i + ')').show();
-			}else {
-				// 選択した国とクラス名が違った場合
-				
-				// 都市の要素を非表示
-				subcategory.css("visibility", "hidden");
-			}
-		}
-	})
-})
 
 	$(document).ready(
 			function() {
 				$(".dropdown-trigger").dropdown();
 				$('select').formSelect();
+				$('.sidenav').sidenav();
 				$('.datepicker').datepicker(
 						{
 							format : "yyyy-mm-dd",

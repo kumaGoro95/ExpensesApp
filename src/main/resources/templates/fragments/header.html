@@ -10,44 +10,105 @@
 			<nav>
 				<div class="nav-wrapper">
 					<span th:if="${user.username != null}" th:inline="text"> <a
-						th:href="@{/money-record}" class="brand-logo">Piggy Bank<i
-							class="fas fa-piggy-bank fa-lg right"></i></a>
+						th:href="@{/money-record}" class="brand-logo"><span class="brand-title">Piggy Bank</span><i
+							class="fas fa-piggy-bank fa-lg right"></i>
+							
+							</a> <a href="#"
+						class="sidenav-trigger" data-target="mobile-nav"> <i
+							class="material-icons">menu</i>
+					</a>
+
 						<ul id="nav-mobile" class="right hide-on-med-and-down">
 							<li><a class="dropdown-trigger" href="#!"
-								data-target="dropdown-header-record"><span class="header-menu">家計簿</span><i
-									class="material-icons left">description</i></a></li>
+								data-target="dropdown-header-record"><span
+									class="header-menu">家計簿</span><i class="material-icons left">description</i></a></li>
 							<li><a th:href="@{/qanda}"><i
-									class="material-icons left">people_outline</i><span class="header-menu">みんなの節約術</span></a></li>
-							<li><a class="dropdown-trigger" href="#!"
+									class="material-icons left">people_outline</i><span
+									class="header-menu">みんなの節約術</span></a></li>
+							<li><a class="dropdown-trigger username center" href="#!"
 								data-target="dropdown-header-user"><span class="header-menu">[[${user.userNickname}]]</span>
-									<i class="material-icons right">arrow_drop_down</i>
-							</a></li>
+									<i class="material-icons right">arrow_drop_down</i> </a></li>
 						</ul>
 						<ul id="dropdown-header-record" class="dropdown-content">
-							<li><a th:href="@{/}"><i class="material-icons left">home</i><span class="header-submenu">Top</span></a></li>
+							<li><a th:href="@{/}"><i class="material-icons left">home</i><span
+									class="header-submenu">Top</span></a></li>
 							<li><a th:href="@{/money-record/history}"><i
-									class="material-icons left">history</i><span class="header-submenu">履歴</span></a></li>
+									class="material-icons left">history</i><span
+									class="header-submenu">履歴</span></a></li>
 							<li><a th:href="@{/money-record/analysis}"><i
-									class="material-icons left">insert_chart</i><span class="header-submenu">分析</span></a></li>
+									class="material-icons left">insert_chart</i><span
+									class="header-submenu">分析</span></a></li>
 						</ul>
 						<ul id="dropdown-header-user" class="dropdown-content">
 							<li><a th:href="@{/mypage}"><i
-									class="material-icons left">settings</i><span class="header-submenu">マイページ</span></a></li>
+									class="material-icons left">settings</i><span
+									class="header-submenu">マイページ</span></a></li>
 							<li><a th:href="@{/logout}"><i
-									class="material-icons left">exit_to_app</i><span class="header-submenu">ログアウト</span></a></li>
+									class="material-icons left">exit_to_app</i><span
+									class="header-submenu">ログアウト</span></a></li>
 						</ul>
 					</span> <span th:if="${user.username == null}"> <a th:href="@{/}"
 						class="brand-logo">Piggy Bank<i
-							class="fas fa-piggy-bank fa-lg right"></i></a>
+							class="fas fa-piggy-bank fa-lg right"></i></a> <a href="#"
+						class="sidenav-trigger" data-target="mobile-nav"> <i
+							class="material-icons">menu</i>
+					</a>
+
+
 						<ul id="nav-mobile" class="right hide-on-med-and-down">
-							<li><a th:href="@{/login}"><span class="header-menu"><i class="material-icons left">input</i>ログイン</span></a></li>
-							<li><a th:href="@{/register}"><span class="header-menu"><i class="material-icons left">person_add</i>会員登録</span></a></li>
+							<li><a th:href="@{/login}"><span class="header-menu"><i
+										class="material-icons left">input</i>ログイン</span></a></li>
+							<li><a th:href="@{/register}"><span class="header-menu"><i
+										class="material-icons left">person_add</i>会員登録</span></a></li>
+
 						</ul>
 					</span>
 				</div>
 			</nav>
-			<!-- End of Header -->
 		</div>
+		<!-- 以降レスポンシブ用メニュー -->
+
+		<span th:if="${user.username != null}" th:inline="text">
+
+			<ul id="mobile-nav" class="sidenav">
+				<li><a class="dropdown-trigger" href="#!"
+					data-target="dropdown-header-record-mobile"><span class="header-menu">家計簿</span><i
+						class="material-icons left">description</i></a></li>
+				<li><a th:href="@{/qanda}"><i class="material-icons left">people_outline</i><span
+						class="header-menu">みんなの節約術</span></a></li>
+				<li><a class="dropdown-trigger" href="#!"
+					data-target="dropdown-header-user-mobile"><span class="header-menu">[[${user.userNickname}]]</span>
+						<i class="material-icons left">face</i> </a></li>
+			</ul>
+			<ul id="dropdown-header-record-mobile" class="dropdown-content">
+				<li><a th:href="@{/}"><i class="material-icons left">home</i><span
+						class="header-submenu">Top</span></a></li>
+				<li><a th:href="@{/money-record/history}"><i
+						class="material-icons left">history</i><span
+						class="header-submenu">履歴</span></a></li>
+				<li><a th:href="@{/money-record/analysis}"><i
+						class="material-icons left">insert_chart</i><span
+						class="header-submenu">分析</span></a></li>
+			</ul>
+			<ul id="dropdown-header-user-mobile" class="dropdown-content">
+				<li><a th:href="@{/mypage}"><i class="material-icons left">settings</i><span
+						class="header-submenu">マイページ</span></a></li>
+				<li><a th:href="@{/logout}"><i class="material-icons left">exit_to_app</i><span
+						class="header-submenu">ログアウト</span></a></li>
+			</ul>
+		</span>
+		<span th:if="${user.username == null}">
+			<ul id="mobile-nav" class="sidenav">
+				<li><a th:href="@{/login}"><span class="header-mobile-menu"><i
+							class="material-icons left">input</i>ログイン</span></a></li>
+				<li><a th:href="@{/register}"><span
+						class="header-mobile-menu"><i class="material-icons left">person_add</i>会員登録</span></a></li>
+						
+			</ul>
+			
+		</span>
+
+		<!-- End of Header -->
 		<div class="messagebar">
 			<th:block th:if="${flashMsg != null}">
 				<div class="teal message" id="message">

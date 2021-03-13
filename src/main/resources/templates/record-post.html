@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<th:block th:replace="fragments/header :: header"></th:block>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script th:src="@{/webjars/jquery/3.5.1/jquery.min.js}"></script>
+<script type="text/javascript"
+	th:src="@{/webjars/materializecss/1.0.0/js/materialize.min.js/}"></script>
+<link rel="stylesheet"
+	th:href="@{/webjars/materializecss/1.0.0/css/materialize.min.css}">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+	rel="stylesheet">
+<link href="https://use.fontawesome.com/releases/v5.6.1/css/all.css"
+	rel="stylesheet">
+<link rel="stylesheet" th:href="@{/css/stylesheet.css}">
+<title>Piggy Bank</title>
+</head>
+<body>
+<main>
+	<div class="container">
+		<div class="row">
+			<div class="col s0 l2"></div>
+			<div class="col s12 l8">
+				<div class="card forms">
+					<div class="card-content">
+						<h5 class="center gray-text">家計簿入力</h5>
+						<div class="row"></div>
+						<form th:action="@{/money-record/post}" th:object="${moneyRecord}"
+							method="post" novalidate>
+							<input type="hidden" name="username" th:value="${user.username}" />
+							<div class="form-group">
+								<label for="recordDate"><span class="label">日付</span></label> <input type="text"
+									class="datepicker" th:errorclass="is-invalid"
+									th:field="*{recordDate}">
+								<div class="invalid-feedback" th:errors="*{recordDate}"></div>
+							</div>
+							<div class="form-group">
+								<label for="incomeAndExpense"><span class="label">金額</span></label> <input type="number"
+									th:errorclass="is-invalid" th:field="*{incomeAndExpense}">
+								<div class="invalid-feedback" th:errors="*{incomeAndExpense}"></div>
+							</div>
+							<div class="form-group">
+								<div class="input-field">
+									<select th:field="*{categoryId}">
+										<div th:each="category, index : ${categories}"
+											th:inline="text">
+											<optgroup th:label="${category['value']}">
+												<div th:each="subcategory : ${subcategories}"
+													th:inline="text">
+													<th:block
+														th:if="${subcategory.categoryCode == category['key']}">
+														<option th:value="${subcategory.categoryId}">[[${subcategory.subcategoryName}]]</option>
+													</th:block>
+											</optgroup>
+										</div>
+									</select> <label for="recordDate"><span class="label">カテゴリ</span></label>
+								</div>
+							</div>
+
+
+								<div class="form-group">
+									<label for="textarea1"><span class="label">備考(20文字以内)</span></label>
+									<textarea id="textarea1" class="materialize-textarea"
+										th:errorclass="is-invalid" th:field="*{note}"></textarea>
+
+									<div class="invalid-feedback" th:errors="*{note}"></div>
+								</div>
+								<div class="center">
+									<button class="waves-effect waves-light btn-large">
+										記録する <i class="material-icons right">note_add</i>
+									</button>
+								</div>
+						</form>
+					</div>
+				</div>
+			</div>
+			<div class="col s0 l2"></div>
+		</div>
+	</div>
+	</main>
+	<script>
+		$(document).ready(function() {
+			$(".dropdown-trigger").dropdown();
+			$('select').formSelect();
+			$('.sidenav').sidenav();
+		});
+	</script>
+</body>
+<th:block th:insert="fragments/footer :: footer"></th:block>
+</html>
