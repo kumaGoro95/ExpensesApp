@@ -25,6 +25,7 @@ public class Category {
 	@NotBlank
 	@Column(name = "category_code", nullable = false)
 	private int categoryCode;
+
 	
 	@NotBlank
 	@Column(name = "subcategory_name", nullable = false)
