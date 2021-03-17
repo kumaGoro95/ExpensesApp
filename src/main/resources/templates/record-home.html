@@ -145,17 +145,16 @@
 						<div class="row"></div>
 						<form th:action="@{/money-record/post}" th:object="${moneyRecord}"
 							method="post" novalidate>
+							<p class="text-danger red-text" th:errors="*{*}"></p>
 							<input type="hidden" name="username" th:value="${user.username}" />
 							<div class="form-group">
 								<label for="recordDate"><span class="label">日付</span></label> <input type="text"
 									class="datepicker" th:errorclass="is-invalid"
 									th:field="*{recordDate}">
-								<div class="invalid-feedback" th:errors="*{recordDate}"></div>
 							</div>
 							<div class="form-group">
 								<label for="incomeAndExpense"><span class="label">金額</span></label> <input type="number"
 									th:errorclass="is-invalid" th:field="*{incomeAndExpense}">
-								<div class="invalid-feedback" th:errors="*{incomeAndExpense}"></div>
 							</div>
 							<div class="form-group">
 								<div class="input-field">
@@ -181,7 +180,6 @@
 									<textarea id="textarea1" class="materialize-textarea"
 										th:errorclass="is-invalid" th:field="*{note}"></textarea>
 
-									<div class="invalid-feedback" th:errors="*{note}"></div>
 								</div>
 								<div class="center">
 									<button class="waves-effect waves-light btn-large">

@@ -186,8 +186,13 @@ public class PostController {
 
 	// 投稿内容詳細画面へ遷移
 	@RequestMapping("/qanda/{postId}")
-	public String showPost(@PathVariable("postId") int postId, @ModelAttribute("comment") PostComment comment,
+	public String showPost(@PathVariable("postId") int postId,
 			Authentication loginUser, Model model) {
+		
+		if (!model.containsAttribute("comment")) {
+	        model.addAttribute("comment", new PostComment());
+	    }
+		
 		Map<Integer, BigInteger> commentCount = postRepository.findCommentCount();
 		Map<Integer, BigInteger> likeCount = likeRepository.findLikeCount();
 		SiteUser user = userRepository.findByUsername(loginUser.getName());
@@ -227,6 +232,8 @@ public class PostController {
 		URI location = builder.path("/qanda/" + comment.getPostId()).build().toUri();
 
 		if (result.hasErrors()) {
+			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.comment", result);
+			redirectAttributes.addFlashAttribute("comment", comment);
 			System.out.println(result);
 
 			return "redirect:" + location.toString();
@@ -299,7 +306,7 @@ public class PostController {
 		commentRepository.save(comment);
 
 		redirectAttributes.addFlashAttribute("flashMsg", "投稿しました");
-		
+
 		URI location = builder.path("/qanda/" + comment.getPostId()).build().toUri();
 
 		return "redirect:" + location.toString();
@@ -318,13 +325,24 @@ public class PostController {
 	@GetMapping("/qanda/{postId}/edit")
 	public String editPost(@PathVariable("postId") int postId, Authentication loginUser, Model model) {
 
-		if (model.asMap().containsKey("postBindingResult")) {
-			model.addAttribute("org.springframework.validation.BindingResult.post",
-					model.asMap().get("postBindingResult"));
-		}
-		
-		
 		model.addAttribute("post", postRepository.findByPostId(postId));
+		model.addAttribute("user", userRepository.findByUsername(loginUser.getName()));
+		// カテゴリ
+		Map<Integer, String> postCategories = PostCategoryCodeToName.PostCategories;
+
+		model.addAttribute("postCategories", postCategories);
+
+		return "qanda-post-edit";
+	}
+
+	// 投稿編集画面へ遷移
+	@GetMapping("/qanda/edit")
+	public String editPostForRedirect(Authentication loginUser, Model model) {
+
+		if (!model.containsAttribute("post")) {
+	        model.addAttribute("post", new Post());
+	    }
+
 		model.addAttribute("user", userRepository.findByUsername(loginUser.getName()));
 		// カテゴリ
 		Map<Integer, String> postCategories = PostCategoryCodeToName.PostCategories;
@@ -340,11 +358,10 @@ public class PostController {
 			Authentication loginUser, UriComponentsBuilder builder, RedirectAttributes redirectAttributes) {
 
 		// エラー時のリダイレクト先を指定
-		URI locationForErrors = builder.path("/qanda/" + post.getPostId() + "/edit").build().toUri();
+		URI locationForErrors = builder.path("/qanda/edit").build().toUri();
 
 		if (result.hasErrors()) {
-			System.out.println(result);
-			redirectAttributes.addFlashAttribute("postBindingResult", result);
+			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.post", result);
 			redirectAttributes.addFlashAttribute("post", post);
 
 			return "redirect:" + locationForErrors.toString();

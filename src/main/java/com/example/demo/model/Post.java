@@ -54,7 +54,7 @@ public class Post{
 	private LocalDateTime createdAt;
 	
 	@Column(name = "updatedAt")
-	@DateTimeFormat(iso = ISO.DATE_TIME)
+	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
 	private LocalDateTime updatedAt;
 	
 }
