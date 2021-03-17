@@ -2,6 +2,7 @@ package com.example.demo.model.beans;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 import lombok.Data;
 
@@ -22,11 +23,11 @@ public class CommentByNickname implements Serializable{
 
 	private String commentBody;
 
-	private Timestamp createdAt;
+	private LocalDateTime createdAt;
 
-	private Timestamp updatedAt;
+	private LocalDateTime updatedAt;
 	
-	public CommentByNickname(int commentId, int postId, String username, String userNickname, String userIcon, String commentBody, Timestamp createdAt, Timestamp updatedAt) {
+	public CommentByNickname(int commentId, int postId, String username, String userNickname, String userIcon, String commentBody, LocalDateTime createdAt, LocalDateTime updatedAt) {
 		this.commentId = commentId;
 		this.postId = postId;
 		this.username = username;
@@ -38,7 +39,7 @@ public class CommentByNickname implements Serializable{
 	}
 	
 	public CommentByNickname(Object[] objects) {
-        this((int) objects[0],(int) objects[1], (String) objects[2], (String) objects[3], (String) objects[4], (String) objects[5], (Timestamp) objects[6], (Timestamp) objects[7]);
+        this((int) objects[0],(int) objects[1], (String) objects[2], (String) objects[3], (String) objects[4], (String) objects[5], (LocalDateTime) objects[6], (LocalDateTime) objects[7]);
     }
 
 }

@@ -103,7 +103,7 @@
 								</div>
 								<div class="commentuser">
 								<a th:href="@{/user/__${comment.username}__}"><span class="comment-username black-text">[[${comment.userNickname}]]</span></a><br>
-								<span class="black-text">[[${#temporals.format(post.createdAt, 'yyyy-MM-dd HH:ss')}]]</span>
+								<span class="black-text">[[${#temporals.format(comment.createdAt, 'yyyy-MM-dd HH:mm')}]]</span>
 								<div class="row"></div>
 								<span class="row commentbody">[[${comment.commentBody}]]</span>
 							</div>
@@ -115,13 +115,13 @@
 							<div class="card-title"></div>
 							<form th:action="@{/qanda/comment}" th:object="${comment}"
 								method="post" novalidate>
+								<p class="text-danger red-text" th:errors="*{*}"></p>
 								<input type="hidden" name="username" th:value="${user.username}" />
 								<input type="hidden" name="postId" th:value="${post.postId}" />
 								<div class="form-group">
 									<label for="note"><span class="label">コメント</span></label>
 									<textarea rows="5" cols="40" th:errorclass="is-invalid"
 										th:field="*{commentBody}"></textarea>
-									<div class="invalid-feedback" th:errors="*{commentBody}"></div>
 								</div>
 
 								<div class="form-check"></div>

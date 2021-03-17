@@ -23,6 +23,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import com.example.demo.model.Category;
 import com.example.demo.model.MoneyRecord;
+import com.example.demo.model.Post;
 import com.example.demo.model.SiteUser;
 import com.example.demo.model.beans.MoneyRecordList;
 import com.example.demo.model.beans.RefineCondition;
@@ -51,8 +52,13 @@ public class RecordController {
 	// アプリホーム画面
 	@GetMapping("/money-record")
 	// Authentication・・・認証済みのユーザー情報を取得
-	public String goHome(@ModelAttribute("moneyRecord") MoneyRecord moneyRecord, Authentication loginUser,
+	public String goHome(Authentication loginUser,
 			Model model) {
+		
+		if (!model.containsAttribute("moneyRecord")) {
+	        model.addAttribute("moneyRecord", new MoneyRecord());
+	    }
+		
 		SiteUser currentUser = userRepository.findByUsername(loginUser.getName());
 
 		// カテゴリ一覧を取得
@@ -137,7 +143,9 @@ public class RecordController {
 			Authentication loginUser, RedirectAttributes redirectAttributes) {
 
 		if (result.hasErrors()) {
-			System.out.println(result);
+			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.moneyRecord", result);
+			redirectAttributes.addFlashAttribute("moneyRecord", moneyRecord);
+			
 			return "redirect:/money-record?money-record";
 		}
 
